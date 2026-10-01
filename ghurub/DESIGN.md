@@ -30,6 +30,7 @@ These are your messages from the Gemini session, kept verbatim in order (only ob
 12. **How Kuzuryu survives.** "Kuzuryu makes a pact with a high demon who keeps him in a stasis field or pod (combined effort of an evil scientist, who I want to model after Neil deGrasse Tyson, and demons). We will see Kuzuryu in 2007. He will disappear and at some point we will find the pod. The details of his survival in the future are not known; most people figure him to be a regular human born in the regular future."
 13. **Name and hub.** "Ghurub is close enough." "Shinjuku makes more sense."
 14. **Antagonist, the pod, the factory, the sects.** "[The person who reopens Kuzuryu's pod is] probably the main antagonist of the game, maybe a person revered as a hero among humanity on both sides in the future who also is in the past. He however survived by fusing himself with a demon. The antagonist's goons may reopen Kuzuryu's pod out of legend but they find out he is useless though and the stories of his greatness are more myth than legend." "Ghurub unit sitting in factory line in 2007 would be super cool." "Yes, they can destroy [the pod], and we should give them a reason to in the future. Potentially we see Kuzuryu with slaves or treating people bad in Shinjuku Station on the floor he controls. It should be a nice moment to end him." "That would be great if the future sects descend from the two corporations but it should be kind of obscure. Like not overt."
+15. **The antagonist in 2007.** "The antagonist should be a 20s year old-ish person like the protagonist, he could be kind of kooky (I'm thinking of like Ryuji or the standard sidekicks in Persona who are goofy). He could seem like he has pie-in-the-sky aspirations. Talk about his idea for a tech startup. The truth is, his dad is wealthy and his ideas are actually coming together more than he leads on. He sticks with the protagonist for a while because he recognizes the device and is curious who protagonist is and goes on his adventure with him as a form of espionage. He will leave the party several times or maybe just is a part of it for a stretch and a side character who pops up." "I like your other ideas... Let's note them."
 
 ---
 
@@ -164,16 +165,33 @@ These are your messages from the Gemini session, kept verbatim in order (only ob
 ### 5.8 The main antagonist
 
 - **In the future:** revered as **a hero by humanity on both sides.** Both sects, who agree on nothing else, honor him.
-- **In 2007:** he's also alive and active. **Who he is in 2007: TBD.**
-- **How he lasted 2,000 years:** he **fused himself with a demon.** Unlike Kuzuryu, who slept through it, he lived through every century. That's how he became a legend.
+- **In 2007 (decided):** a guy in his **early-to-mid 20s, about the protagonist's age.** He's the goofy sidekick type, like **Ryuji** or other Persona comic-relief friends: loud, kooky and likeable.
+- **How he fused:** he **fused himself with a demon** and lived through all 2,000 years. Unlike Kuzuryu, who slept through it, he lived every century, and that's how he became a legend.
 - **His people:** his followers or goons are the ones who dig up Kuzuryu's pod, chasing a myth.
 - **Why it works:** Kuzuryu is the cheap version of the same trick (a deal, a pod, and luck). The antagonist is the real thing (a fusion, and two millennia of planning). One is a punchline and the other is a god-king.
 
-**Ideas for his 2007 identity** (pick one or none):
-- **The holy elite with the device.** The one God-side elite who secretly owns demon tech is also the one who fuses with a demon. Sacred to both sides in the future because he was a founder on one side and a secret partner of the other.
-- **The evil scientist.** The celebrity scientist becomes the savior of the future. Very on-theme, but it's a lot to put on one character.
-- **Someone the player helps.** An ally in 2007 who betrays the player late, the way SMT handles its Law and Chaos heroes. Seeing a statue of him in Act I without knowing who he is would make the reveal hit hard.
-- **The man behind the time machine.** If he's planned for 2,000 years, maybe the war over the time machine in the opening was his doing.
+**His 2007 cover**
+- He always talks about **his tech startup idea.** It sounds like pie in the sky, and everyone, the player included, should roll their eyes.
+- **The truth:** his **dad is wealthy**, and his plans are **much further along than he lets on.** The goofiness is partly real and partly a mask.
+- **Why he tags along:** he **recognizes the device** on the protagonist's arm. He wants to know who this guy is and where he got it, so he joins the adventure **as a spy.**
+- **How he's in the party:** he leaves and rejoins **several times**, or is a party member for one stretch and a recurring side character after that. Each time he leaves, he could be reporting back to someone.
+
+**Planting clues without spoiling it** (ideas):
+- He knows a little too much about the device's menus, then plays it off: "Lucky guess! I'm a tech guy, remember?"
+- His "startup" has a name and logo. In Act I, that logo appears worn on a future statue or a sect banner (see 5.6). Players won't recognize it until much later.
+- Ghurub runs a biometric scan on him like it does on Kuzuryu, and the result comes back **"[DATA CORRUPTED]"** or a match it refuses to show. Ghurub flags the anomaly and gives no conclusion.
+- He's too relaxed around demons for someone who supposedly just saw his first one.
+- His dad's money shows in small slips: a black card, a private car, keys to a building he shouldn't own.
+
+**The reveal hits hardest if** the player has seen him honored as a hero by both sides in the future (a statue in Act I or the Shinjuku hub), and only later realizes it's their goofy friend.
+
+**Still open about him:**
+- His name, and the demon he fuses with.
+- **Who is his dad?** The obvious fit is an executive at the demon-side corporation that builds the devices. That's why he recognizes the device, and the factory level (5.9) could be his family's plant. Or his dad is at the *God-side* company, and he's betting on both horses, which would explain why both future sects worship him.
+- **When and why he fuses** with a demon: before Ground Zero, during it, or because of something the player does?
+- **Does the player cause his rise?** The protagonist brings future tech and knowledge into 2007 and he's right there watching. A classic SMT irony: by trying to stop the end, the protagonist hands him the blueprint.
+
+*(The earlier alternatives — the holy elite with the device, the evil scientist, or the man behind the time machine — are replaced by this version. The holy elite and the scientist stay as their own characters.)*
 
 ### 5.9 Your Ghurub on the 2007 factory line
 
@@ -326,9 +344,19 @@ Ghurub can start to *hypothesize* once it has data. For example:
 - **The player can destroy the pod.** The reason: his slave floor in future Shinjuku (5.5).
 - **The protagonist's Ghurub unit is on the 2007 factory line** (5.9).
 - **The future sects descend from the 2007 corporations,** but it's only hinted, never stated (5.6).
+- **The antagonist** is a goofy, Ryuji-style guy in his 20s with a startup idea and a rich dad. He tags along with the protagonist to spy on him (5.8).
+
+### Liked, but not decided yet
+You said you like these. They're noted to come back to:
+- The factory-line chain (5.9): your unit is a reject Kuzuryu smuggled out, the override key controls every unit, the protagonist scratched the SUMMON label himself, and Ghurub recovers its first memory. Ghurub recommends destroying the factory, itself included, as the level's climax.
+- Talking to the blank 2007 Ghurub unit (5.9).
+- The pod paradox rule: they're outside their own timeline, so destroying the pod changes the future they're heading to, not the past they came from (5.5).
+- Sparing Kuzuryu could be worth something (the override key), so destroying the pod is a real choice (5.5).
+- The evil scientist could also be Ghurub's designer (5.7).
+- The hints that the sects came from the corporations: worn logos, drifting names, scripture that's really a corporate handbook, sacred sites at old HQs (5.6).
 
 ### Open
-1. **Who is the antagonist in 2007?** Options in 5.8. His name, and the demon he fused with.
+1. **The antagonist's details:** his name, his dad, the demon he fuses with, and whether the protagonist accidentally causes his rise (5.8).
 2. **The pod paradox:** go with the "they're outside their own timeline" rule (5.5), or something else?
 3. **Should sparing Kuzuryu be worth something** (the override key)? Or is ending him simply the right call?
 4. **Which future sect comes from which 2007 corporation,** and which one is the protagonist from? The scout?
