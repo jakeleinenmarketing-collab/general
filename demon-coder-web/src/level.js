@@ -102,13 +102,21 @@ function deskParts() {
 export function buildLevel(scene, T) {
   const L = { lights: [], flicker: [], notes: [], shutter: null, bodies: [], arena: {}, windowFaces: [], floorCells: [] };
   const lam = (opts) => new THREE.MeshLambertMaterial({ shadowSide: THREE.DoubleSide, ...opts });
+  const pbr = (opts) => new THREE.MeshStandardMaterial({ shadowSide: THREE.DoubleSide, roughness: 0.85, metalness: 0, ...opts });
+  const ns = new THREE.Vector2(1, 1);
 
   const mats = {
-    lino: lam({ map: T.lino }), wood: lam({ map: T.wood }), ceiling: lam({ map: T.ceiling }),
-    wall: lam({ map: T.wall }), board: lam({ map: T.board }), blackboard: lam({ map: T.blackboard }),
-    lockers: lam({ map: T.lockers }),
-    window: lam({ map: T.window, alphaMap: T.windowAlpha, alphaTest: 0.5 }),
+    // the corridor floor is waxed lino with wet patches: it should catch every light
+    lino: pbr({ map: T.lino, normalMap: T.linoN, normalScale: ns.clone().multiplyScalar(0.6), roughness: 0.55, roughnessMap: T.linoR }),
+    wood: pbr({ map: T.wood, normalMap: T.woodN, roughness: 0.48 }),
+    ceiling: pbr({ map: T.ceiling, normalMap: T.ceilingN, roughness: 0.95 }),
+    wall: pbr({ map: T.wall, normalMap: T.wallN, roughness: 0.82 }),
+    board: pbr({ map: T.board, normalMap: T.boardN, roughness: 0.8 }),
+    blackboard: pbr({ map: T.blackboard, normalMap: T.blackboardN, roughness: 0.7 }),
+    lockers: pbr({ map: T.lockers, normalMap: T.lockersN, roughness: 0.42, metalness: 0.55 }),
+    window: pbr({ map: T.window, normalMap: T.windowN, alphaMap: T.windowAlpha, alphaTest: 0.5, roughness: 0.6 }),
   };
+  L.pbr = pbr;
   const batches = {};
   const batch = (k) => (batches[k] ||= new QuadBatch());
 
@@ -136,6 +144,7 @@ export function buildLevel(scene, T) {
       if (x === 11 && y === 6 && s.n[1] === -1) key = 'board';
       let uv;
       if (key === 'blackboard') { let rs = x; while (at(rs - 1, y - 1) === 'B') rs--; const i = x - rs; uv = [i / 3, 0, (i + 1) / 3, 1]; }
+      (L.wallFaces ||= []).push({ o: new THREE.Vector3(s.o[0] + s.u[0], 0, s.o[1] + s.u[1]), u: new THREE.Vector3(-s.u[0], 0, -s.u[1]).normalize(), n: new THREE.Vector3(s.nn[0], 0, s.nn[1]), key, x, y, floor: c });
       if (key === 'window') L.windowFaces.push({ o: new THREE.Vector3(s.o[0] + s.u[0], 0, s.o[1] + s.u[1]), u: new THREE.Vector3(-s.u[0], 0, -s.u[1]).normalize(), n: new THREE.Vector3(s.nn[0], 0, s.nn[1]) });
       batch(key).quad(new THREE.Vector3(s.o[0] + s.u[0], 0, s.o[1] + s.u[1]), new THREE.Vector3(-s.u[0], 0, -s.u[1]), new THREE.Vector3(0, WALL_H, 0), new THREE.Vector3(s.nn[0], 0, s.nn[1]), uv);
     }
@@ -181,7 +190,7 @@ export function buildLevel(scene, T) {
 
   // ---------------------------------------------------------------- shutter
   const shutterTex = T.shutter.clone(); shutterTex.wrapS = THREE.RepeatWrapping; shutterTex.repeat.set(2, 1); shutterTex.needsUpdate = true;
-  const shutter = new THREE.Mesh(new THREE.PlaneGeometry(CELL * 2, WALL_H), new THREE.MeshLambertMaterial({ map: shutterTex, side: THREE.DoubleSide }));
+  const shutter = new THREE.Mesh(new THREE.PlaneGeometry(CELL * 2, WALL_H), new THREE.MeshStandardMaterial({ map: shutterTex, normalMap: T.shutterN, roughness: 0.5, metalness: 0.6, side: THREE.DoubleSide }));
   shutter.rotation.y = -Math.PI / 2;
   shutter.position.set(24 * CELL + 0.02, WALL_H / 2, 7 * CELL);
   scene.add(shutter);
@@ -197,8 +206,8 @@ export function buildLevel(scene, T) {
     if (rand() < 0.15) continue;
     deskSpots.push({ x, y });
   }
-  const woodMat = new THREE.MeshLambertMaterial({ color: 0xb98c58 });
-  const metalMat = new THREE.MeshLambertMaterial({ color: 0x7f8a8c });
+  const woodMat = new THREE.MeshStandardMaterial({ color: 0x9a7448, roughness: 0.5 });
+  const metalMat = new THREE.MeshStandardMaterial({ color: 0x6f787a, roughness: 0.35, metalness: 0.8 });
   const iw = new THREE.InstancedMesh(dp.wood, woodMat, deskSpots.length);
   const im = new THREE.InstancedMesh(dp.metal, metalMat, deskSpots.length);
   const m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), e = new THREE.Euler();
@@ -291,7 +300,7 @@ export function buildLevel(scene, T) {
   // the black ribbon on the locker next to yours
   {
     const rib = new THREE.MeshLambertMaterial({ color: 0x0c0c10, side: THREE.DoubleSide });
-    const g = new THREE.Group(); g.position.set(5 * CELL + 1.2, 1.55, 11 * CELL - 0.03);
+    const g = new THREE.Group(); g.position.set(5 * CELL + 1.25, 1.62, 11 * CELL + 0.39);
     for (const s of [-1, 1]) {
       const loop = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.12, 4), rib);
       loop.rotation.z = s * Math.PI / 2; loop.position.x = s * 0.06; loop.scale.z = 0.3; g.add(loop);

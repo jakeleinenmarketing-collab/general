@@ -5,16 +5,42 @@ let seed = 1234;
 export function rand() { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }
 const rr = (a, b) => a + rand() * (b - a);
 
-function canvas(w, h) {
+// Surfaces are painted in a 256-unit space and rasterized at 2x for crisper detail.
+const RES = 2;
+function canvas(w, h, res = RES) {
   const c = document.createElement('canvas');
-  c.width = w; c.height = h;
-  return [c, c.getContext('2d')];
+  c.width = w * res; c.height = h * res;
+  const g = c.getContext('2d');
+  g.scale(res, res);
+  return [c, g];
+}
+
+// A normal map from the painted surface: darker paint reads as lower (grout, seams, cracks).
+function normalFrom(c, strength = 2, { repeat = false, invert = false } = {}) {
+  const w = c.width, h = c.height;
+  const src = c.getContext('2d').getImageData(0, 0, w, h).data;
+  const H = new Float32Array(w * h);
+  for (let i = 0; i < w * h; i++) H[i] = (src[i * 4] * 0.3 + src[i * 4 + 1] * 0.59 + src[i * 4 + 2] * 0.11) / 255 * (invert ? -1 : 1);
+  const out = document.createElement('canvas'); out.width = w; out.height = h;
+  const og = out.getContext('2d'); const img = og.createImageData(w, h);
+  const at = (x, y) => H[((y + h) % h) * w + ((x + w) % w)];
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const dx = (at(x + 1, y) - at(x - 1, y)) * strength, dy = (at(x, y + 1) - at(x, y - 1)) * strength;
+    const l = Math.hypot(dx, dy, 1);
+    const i = (y * w + x) * 4;
+    img.data[i] = (-dx / l * 0.5 + 0.5) * 255; img.data[i + 1] = (dy / l * 0.5 + 0.5) * 255; img.data[i + 2] = (1 / l * 0.5 + 0.5) * 255; img.data[i + 3] = 255;
+  }
+  og.putImageData(img, 0, 0);
+  const t = new THREE.CanvasTexture(out);
+  t.colorSpace = THREE.NoColorSpace; t.anisotropy = 8;
+  if (repeat) t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  return t;
 }
 
 function finish(c, { repeat = false, srgb = true } = {}) {
   const t = new THREE.CanvasTexture(c);
   if (srgb) t.colorSpace = THREE.SRGBColorSpace;
-  t.anisotropy = 4;
+  t.anisotropy = 8;
   if (repeat) t.wrapS = t.wrapT = THREE.RepeatWrapping;
   return t;
 }
@@ -74,6 +100,14 @@ export function makeTextures() {
       g.beginPath(); g.moveTo(x, y); g.quadraticCurveTo(x + rr(-20, 20), y + rr(-8, 8), x + rr(-30, 30), y + rr(-10, 10)); g.stroke();
     }
     T.lino = finish(c, { repeat: true });
+    T.linoN = normalFrom(c, 3, { repeat: true });
+    { // wet patches: where the floor is glossy
+      const [r, gr] = canvas(256, 256, 1);
+      gr.fillStyle = '#9a9a9a'; gr.fillRect(0, 0, 256, 256);
+      for (let i = 0; i < 40; i++) { const x = rand() * 256, y = rand() * 256, rad = rr(10, 60); const gg = gr.createRadialGradient(x, y, 0, x, y, rad); gg.addColorStop(0, 'rgba(10,10,10,.8)'); gg.addColorStop(1, 'rgba(10,10,10,0)'); gr.fillStyle = gg; gr.fillRect(0, 0, 256, 256); }
+      for (let i = 0; i < 2000; i++) { gr.fillStyle = `rgba(255,255,255,${rand() * .25})`; gr.fillRect(rand() * 256, rand() * 256, 2, 2); }
+      T.linoR = finish(r, { repeat: true, srgb: false });
+    }
   }
 
   { // classroom wood floor
@@ -90,6 +124,7 @@ export function makeTextures() {
     }
     noise(g, 256, 256, 2000, 0.06);
     T.wood = finish(c, { repeat: true });
+    T.woodN = normalFrom(c, 2.5, { repeat: true });
   }
 
   { // ceiling tiles
@@ -101,12 +136,14 @@ export function makeTextures() {
     st.addColorStop(0, 'rgba(120,95,40,.35)'); st.addColorStop(1, 'rgba(120,95,40,0)');
     g.fillStyle = st; g.fillRect(0, 0, 128, 128);
     T.ceiling = finish(c, { repeat: true });
+    T.ceilingN = normalFrom(c, 2, { repeat: true });
   }
 
   { // plain wall
     const [c, g] = canvas(256, 384);
     wallBase(g, 256, 384);
     T.wall = finish(c);
+    T.wallN = normalFrom(c, 2.2);
   }
 
   { // wall with a noticeboard (corridor variety)
@@ -125,6 +162,7 @@ export function makeTextures() {
     }
     g.fillStyle = '#22201a'; g.font = 'bold 18px sans-serif'; g.fillText('文化祭', 96, 104);
     T.board = finish(c);
+    T.boardN = normalFrom(c, 2.2);
   }
 
   { // window wall: lit frame and sill, with an alpha map that cuts the panes out
@@ -140,6 +178,7 @@ export function makeTextures() {
     g.fillStyle = '#4c524e'; g.fillRect(x0 - 12, y1 + 10, x1 - x0 + 24, 8);   // sill
     noise(g, 256, 384, 800, 0.06);
     T.window = finish(c);
+    T.windowN = normalFrom(c, 2.2);
     const [a, ga] = canvas(256, 384);
     ga.fillStyle = '#fff'; ga.fillRect(0, 0, 256, 384);
     ga.fillStyle = '#000';
@@ -176,6 +215,7 @@ export function makeTextures() {
     g.fillStyle = '#6a5a40'; g.fillRect(28, 228, 712, 8);
     g.fillStyle = '#eee'; g.fillRect(120, 229, 18, 4); g.fillStyle = '#f7a'; g.fillRect(160, 229, 14, 4); g.fillStyle = '#9cf'; g.fillRect(560, 229, 16, 4);
     T.blackboard = finish(c);
+    T.blackboardN = normalFrom(c, 1.5);
   }
 
   { // shoe lockers (getabako)
@@ -193,6 +233,7 @@ export function makeTextures() {
     noise(g, 256, 384, 2500, 0.06);
     grime(g, 256, 384, 0.8);
     T.lockers = finish(c);
+    T.lockersN = normalFrom(c, 3);
   }
 
   { // fire shutter
@@ -212,6 +253,7 @@ export function makeTextures() {
     g.fillStyle = 'rgba(30,20,20,.25)';
     for (let i = 0; i < 4; i++) { g.beginPath(); g.ellipse(rr(60, 200), rr(140, 260), 9, 12, 0, 0, 7); g.fill(); }
     T.shutter = finish(c);
+    T.shutterN = normalFrom(c, 4);
   }
 
   { // light panel

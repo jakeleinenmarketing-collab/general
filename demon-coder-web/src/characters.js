@@ -1,36 +1,32 @@
-// Characters are built from primitives at load time: cel-shaded, ink-outlined, lit by the world.
-// The original designs are a starting point; clean and readable beats faithful.
+// Characters are built from sculpted primitives at load time and lit like everything else in the world.
+// Humans are proportioned like people; demons are meant to be wrong to look at.
 import * as THREE from 'three';
 
 const V = (x, y, z) => new THREE.Vector3(x, y, z);
-const INK = 0x0b0a10;
 
 // Cold rim light on every lit surface; battle code may tint it.
 export const RIM = { value: new THREE.Color(0.20, 0.30, 0.42) };
 
-// Shared shader patch: a burn-in/burn-out dissolve for every material, rim light for lit ones,
-// and the inverted-hull push for outlines.
+// Shared shader patch: a burn-in/burn-out dissolve for every material and rim light for lit ones.
 const DIS_GLSL = `uniform float dissolve; varying vec3 vDis;
 float dh(vec3 p){ return fract(sin(dot(p, vec3(127.1, 311.7, 74.7))) * 43758.5453); }
 float dn3(vec3 p){ vec3 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f);
   return mix(mix(mix(dh(i), dh(i + vec3(1,0,0)), f.x), mix(dh(i + vec3(0,1,0)), dh(i + vec3(1,1,0)), f.x), f.y),
              mix(mix(dh(i + vec3(0,0,1)), dh(i + vec3(1,0,1)), f.x), mix(dh(i + vec3(0,1,1)), dh(i + vec3(1,1,1)), f.x), f.y), f.z); }
 `;
-function patch(m, rig, { lit = false, thickness = 0 } = {}) {
+function patch(m, rig, { lit = false } = {}) {
   m.onBeforeCompile = (sh) => {
     sh.uniforms.dissolve = rig.dissolve;
     if (lit) sh.uniforms.rimColor = RIM;
-    if (thickness) sh.uniforms.thickness = { value: thickness };
-    sh.vertexShader = 'varying vec3 vDis;\n' + (thickness ? 'uniform float thickness;\n' : '') + sh.vertexShader.replace('#include <begin_vertex>',
-      (thickness ? 'vec3 transformed = position + normalize(normal) * thickness;' : '#include <begin_vertex>') +
-      '\nvDis = (modelMatrix * vec4(transformed, 1.0)).xyz;');
+    sh.vertexShader = 'varying vec3 vDis;\n' + sh.vertexShader.replace('#include <begin_vertex>',
+      '#include <begin_vertex>\nvDis = (modelMatrix * vec4(transformed, 1.0)).xyz;');
     sh.fragmentShader = DIS_GLSL + (lit ? 'uniform vec3 rimColor;\n' : '') + sh.fragmentShader
       .replace('#include <clipping_planes_fragment>', '#include <clipping_planes_fragment>\nfloat dnv = dn3(vDis * 9.0) * 0.7 + dn3(vDis * 23.0) * 0.3;\nif (dnv < dissolve) discard;')
       .replace('#include <opaque_fragment>',
-        (lit ? 'outgoingLight += rimColor * pow(1.0 - clamp(abs(dot(normalize(normal), normalize(vViewPosition))), 0.0, 1.0), 2.5);\n' : '') +
+        (lit ? 'outgoingLight += rimColor * pow(1.0 - clamp(abs(dot(normalize(normal), normalize(vViewPosition))), 0.0, 1.0), 3.0);\n' : '') +
         'if (dissolve > 0.0) outgoingLight += vec3(1.0, 0.3, 0.85) * 3.0 * (1.0 - smoothstep(dissolve, dissolve + 0.07, dnv));\n#include <opaque_fragment>');
   };
-  m.customProgramCacheKey = () => (lit ? 'rigL' : 'rigF') + (thickness ? 'O' : '');
+  m.customProgramCacheKey = () => (lit ? 'rigL' : 'rigF');
 }
 
 // One Rig per character instance, so hit flashes and dissolves never bleed into another model.
@@ -41,51 +37,41 @@ class Rig {
     this.body = new THREE.Group();
     this.root.add(this.body);
     this.mats = [];
-    this.outlines = new Map();
     this.dissolve = { value: 0 };
-    this.flashAmt = 0; this.flashColor = new THREE.Color(1, 1, 1);
+    this.flashColor = new THREE.Color(1, 1, 1);
   }
   mat(color, opts = {}) {
-    const m = new THREE.MeshToonMaterial({ color, gradientMap: this.T.ramp, ...opts });
+    const m = new THREE.MeshStandardMaterial({ color, roughness: 0.7, ...opts });
     m.userData.baseEmissive = m.emissive.clone();
     m.userData.baseIntensity = m.emissiveIntensity;
     patch(m, this, { lit: true });
     this.mats.push(m);
     return m;
   }
-  flat(color, opts = {}) {
+  glow(color, opts = {}) {
     const m = new THREE.MeshBasicMaterial({ color, ...opts });
     patch(m, this);
     return m;
   }
-  outline(thickness) {
-    const key = thickness.toFixed(4);
-    if (!this.outlines.has(key)) {
-      const m = new THREE.MeshBasicMaterial({ color: INK, side: THREE.BackSide });
-      patch(m, this, { thickness });
-      this.outlines.set(key, m);
-    }
-    return this.outlines.get(key);
-  }
-  add(geo, mat, parent, pos, { outline = 0.014, scale, rot } = {}) {
+  add(geo, mat, parent, pos, { scale, rot, shadow = true } = {}) {
     const mesh = new THREE.Mesh(geo, typeof mat === 'number' ? this.mat(mat) : mat);
     if (pos) mesh.position.copy(pos);
     if (scale) mesh.scale.set(...(Array.isArray(scale) ? scale : [scale, scale, scale]));
     if (rot) mesh.rotation.set(...rot);
-    mesh.castShadow = !mesh.material.transparent;
-    if (outline > 0) mesh.add(new THREE.Mesh(geo, this.outline(outline * 1.2)));
+    mesh.castShadow = shadow && !mesh.material.transparent;
+    mesh.receiveShadow = true;
     (parent || this.body).add(mesh);
     return mesh;
   }
-  group(parent, pos) {
+  group(parent, pos, rot) {
     const g = new THREE.Group();
     if (pos) g.position.copy(pos);
+    if (rot) g.rotation.set(...rot);
     (parent || this.body).add(g);
     return g;
   }
   setFlash(amt, color) {
     if (color) this.flashColor.set(color);
-    this.flashAmt = amt;
     for (const m of this.mats) {
       m.emissive.copy(m.userData.baseEmissive).lerp(this.flashColor, amt);
       m.emissiveIntensity = m.userData.baseIntensity + amt * 1.4;
@@ -93,235 +79,299 @@ class Rig {
   }
 }
 
-const sphere = (r, w = 20, h = 14, ...arc) => new THREE.SphereGeometry(r, w, h, ...arc);
-const cyl = (rt, rb, h, s = 14) => new THREE.CylinderGeometry(rt, rb, h, s);
-const capsule = (r, l) => new THREE.CapsuleGeometry(r, l, 6, 12);
-const cone = (r, h, s = 14) => new THREE.ConeGeometry(r, h, s);
-const lathe = (pts, s = 24) => new THREE.LatheGeometry(pts.map(([x, y]) => new THREE.Vector2(x, y)), s);
+const sphere = (r, w = 24, h = 18, ...arc) => new THREE.SphereGeometry(r, w, h, ...arc);
+const cyl = (rt, rb, h, s = 16, open = false, ts, tl) => new THREE.CylinderGeometry(rt, rb, h, s, 1, open, ts, tl);
+const cone = (r, h, s = 12, hs = 1) => new THREE.ConeGeometry(r, h, s, hs);
+const lathe = (pts, s = 28) => new THREE.LatheGeometry(pts.map(([x, y]) => new THREE.Vector2(x, y)), s);
+const gauss = (dx, dy, s) => Math.exp(-(dx * dx + dy * dy) / (s * s));
 
-// ---------------------------------------------------------------- faces
-function animeEyes(rig, head, { iris = 0x3a2140, y = 0.0, x = 0.048, z = 0.112, size = 1, lashes = true }) {
-  const eyes = [];
-  for (const s of [-1, 1]) {
-    const eye = rig.group(head, V(s * x, y, z));
-    eye.rotation.y = s * 0.32;
-    const white = rig.add(sphere(0.03, 16, 12), rig.flat(0xfbf8f2), eye, V(0, 0, -0.004), { outline: 0, scale: [1.05 * size, 1.25 * size, 0.35] });
-    const irisM = rig.add(sphere(0.024, 16, 12), rig.flat(iris), eye, V(-s * 0.002, -0.002, 0.004), { outline: 0, scale: [0.92 * size, 1.25 * size, 0.3] });
-    const shine = rig.add(sphere(0.008, 8, 6), rig.flat(0xffffff), eye, V(s * 0.008, 0.012, 0.012), { outline: 0 });
-    if (lashes) rig.add(new THREE.BoxGeometry(0.066 * size, 0.009, 0.01), rig.flat(0x120d14), eye, V(0, 0.036 * size, 0.004), { outline: 0, rot: [0, 0, s * -0.12] });
-    eyes.push({ g: eye, white, iris: irisM, shine });
-  }
-  return eyes;
+// Push every vertex through fn, then rebuild normals.
+function sculpt(geo, fn) {
+  const p = geo.attributes.position, v = new THREE.Vector3();
+  for (let i = 0; i < p.count; i++) { v.fromBufferAttribute(p, i); fn(v); p.setXYZ(i, v.x, v.y, v.z); }
+  geo.computeVertexNormals();
+  return geo;
+}
+// A tapered limb segment, top at the origin, hanging down -y.
+function limb(r0, r1, len, s = 12) {
+  const g = new THREE.CylinderGeometry(r0, r1, len, s, 4);
+  g.translate(0, -len / 2, 0);
+  return g;
 }
 
-function brows(rig, head, { y = 0.058, x = 0.05, z = 0.122, color = 0x1a1418 }) {
-  return [-1, 1].map((s) => {
-    const b = rig.add(new THREE.BoxGeometry(0.044, 0.006, 0.008), rig.flat(color), head, V(s * x, y, z), { outline: 0 });
-    b.rotation.set(0, s * 0.3, s * -0.05);
-    b.userData.side = s;
-    return b;
+// ---------------------------------------------------------------- human head
+// A sphere pushed into a face: longer skull, tapered jaw, sockets, brow, nose, cheekbones, lips.
+function headGeometry({ gaunt = 0, wide = 0 } = {}) {
+  const r = 0.1;
+  return sculpt(new THREE.SphereGeometry(r, 64, 48), (v) => {
+    v.y *= 1.15; v.x *= 0.84 + wide * 0.05;
+    if (v.y < 0) {
+      const t = -v.y / (r * 1.15);
+      v.x *= 1 - (0.36 + gaunt * 0.08) * t * t;
+      v.z *= 1 - 0.1 * t * t;
+      if (v.z > 0) v.z += 0.01 * t;
+    }
+    if (v.z < 0) v.z *= 1.07;
+    if (v.z > 0) {
+      v.z *= 0.93;
+      const f = Math.min(1, v.z / 0.05);
+      for (const s of [-1, 1]) v.z -= (0.011 + gaunt * 0.004) * gauss(v.x - s * 0.033, v.y - 0.008, 0.019) * f;
+      v.z += 0.006 * gauss(v.x * 0.55, v.y - 0.033, 0.028) * f;                         // brow ridge
+      const nose = gauss(v.x, 0, 0.011) * (v.y < 0.026 && v.y > -0.032 ? Math.pow((0.026 - v.y) / 0.058, 0.8) : 0);
+      v.z += nose * 0.024 * f;
+      v.z += 0.008 * gauss(v.x, v.y + 0.032, 0.014) * f;                                   // nose tip
+      for (const s of [-1, 1]) {
+        const c = gauss(v.x - s * 0.048, v.y + 0.012, 0.022) * f;
+        v.z += 0.004 * c; v.x += s * 0.003 * c;
+        v.z -= gaunt * 0.006 * gauss(v.x - s * 0.045, v.y + 0.045, 0.02) * f;              // hollow cheeks
+      }
+      v.z += 0.005 * gauss(v.x * 0.45, v.y + 0.06, 0.009) * f;                            // lips
+      v.z -= 0.003 * gauss(v.x * 0.5, v.y + 0.07, 0.006) * f;                             // under the lip
+    }
   });
 }
+// Find the face surface in front of a point, so eyes and brows sit on it.
+function surfaceZ(geo, x, y) {
+  const p = geo.attributes.position; let best = -1, bz = 0;
+  for (let i = 0; i < p.count; i++) {
+    const z = p.getZ(i); if (z <= 0) continue;
+    const d = (p.getX(i) - x) ** 2 + (p.getY(i) - y) ** 2;
+    if (best < 0 || d < best) { best = d; bz = z; }
+  }
+  return bz;
+}
 
-function blinkEyes(eyes, amt) {
-  for (const e of eyes) e.g.scale.y = Math.max(0.08, 1 - amt);
+function humanFace(rig, head, geo, { skin, iris = 0x2b1f1a, brow = 0x16120f, sclera = 0xcfc9be, eyes = true }) {
+  rig.add(geo, skin, head);
+  const parts = { eyes: [], lids: [], brows: [] };
+  for (const s of [-1, 1]) {
+    const ex = s * 0.033, ey = 0.008;
+    const z = surfaceZ(geo, ex, ey);
+    const eye = rig.group(head, V(ex, ey, z - 0.009));
+    if (eyes) {
+      rig.add(sphere(0.0125, 16, 12), rig.mat(sclera, { roughness: 0.25 }), eye, V(0, 0, 0), { scale: [1.15, 0.85, 1] });
+      const iris_ = rig.add(sphere(0.0068, 12, 10), rig.mat(iris, { roughness: 0.1 }), eye, V(0, 0, 0.0108), { scale: [1, 1, 0.45] });
+      rig.add(sphere(0.0013, 6, 4), rig.glow(0xd8dcd8), iris_, V(0.002, 0.002, 0.003));
+      parts.eyes.push({ g: eye, iris: iris_ });
+    }
+    // upper lid: a skin shell that rotates down to blink, a little lowered by default
+    const lid = rig.group(eye, V(0, 0, 0));
+    rig.add(sphere(0.0138, 16, 10, 0, Math.PI * 2, 0, Math.PI / 2), skin, lid, V(0, 0, 0), { scale: [1.15, 1, 1.05], rot: [0.2, 0, 0] });
+    lid.rotation.x = eyes ? -0.55 : 1.4;
+    parts.lids.push(lid);
+    const bz = surfaceZ(geo, s * 0.034, 0.03);
+    const b = rig.add(new THREE.BoxGeometry(0.034, 0.0045, 0.006), rig.mat(brow), head, V(s * 0.034, 0.031, bz + 0.001), { rot: [0, s * 0.25, s * -0.08] });
+    b.userData.side = s;
+    parts.brows.push(b);
+  }
+  const mz = surfaceZ(geo, 0, -0.058);
+  parts.mouth = rig.add(new THREE.BoxGeometry(0.03, 0.0025, 0.004), rig.mat(0x5a2a2a), head, V(0, -0.058, mz + 0.0015));
+  return parts;
 }
 
 // ---------------------------------------------------------------- student (Touma/Naomi, Anna, bodies)
 export function makeStudent(T, o = {}) {
   const opt = {
-    name: 'student', coat: false, hair: 0x18141d, hairShine: 0x2c2840, skin: 0xf6d8c6, iris: 0x3a2140,
-    uniform: 'sailor', ponytail: false, male: false, closedEyes: false, laptop: false, ...o,
+    name: 'student', coat: false, hair: 0x0b0a0d, skin: 0xc9a594, ponytail: false, male: false, closedEyes: false, laptop: false, ...o,
   };
   const rig = new Rig(T, opt.name);
   const b = rig.body;
-  const skin = rig.mat(opt.skin, { emissive: 0x3a2018 });
-  const legs = rig.mat(opt.male ? 0x15161c : 0x1c1b24);
+  const skin = rig.mat(opt.skin, { roughness: 0.62 });
+  const tights = rig.mat(opt.male ? 0x121318 : 0x0d0d10, { roughness: 0.45 });
+  const shoe = rig.mat(0x16100c, { roughness: 0.3 });
 
-  // legs + shoes
-  const legL = rig.group(b, V(-0.075, 0.8, 0)), legR = rig.group(b, V(0.075, 0.8, 0));
-  for (const leg of [legL, legR]) {
-    rig.add(capsule(0.055, 0.62), legs, leg, V(0, -0.38, 0), { outline: 0.01 });
-    rig.add(new THREE.BoxGeometry(0.11, 0.07, 0.2), rig.mat(0x241812), leg, V(0, -0.76, 0.03), { outline: 0.01 });
+  const legs = [];
+  for (const s of [-1, 1]) {
+    const hip = rig.group(b, V(s * 0.075, 0.84, 0), [0, 0, s * 0.03]);
+    rig.add(limb(0.068, 0.05, 0.42), tights, hip);
+    const knee = rig.group(hip, V(0, -0.42, 0), [0.04, 0, 0]);
+    rig.add(limb(0.05, 0.032, 0.37), tights, knee);
+    rig.add(sculpt(sphere(0.05, 16, 10), (v) => { v.z *= 2.1; v.y *= 0.55; if (v.y < 0) v.y *= 0.3; }), shoe, knee, V(0, -0.39, 0.035));
+    legs.push(hip);
   }
 
-  // lower body
   if (opt.male) {
-    rig.add(cyl(0.16, 0.17, 0.22), 0x15161c, b, V(0, 0.82, 0));
+    rig.add(cyl(0.16, 0.17, 0.2), rig.mat(0x121318, { roughness: 0.6 }), b, V(0, 0.84, 0));
   } else {
-    rig.add(cyl(0.145, 0.27, 0.3, 16), rig.mat(0x1d2742), b, V(0, 0.78, 0));
+    // skirt with knife pleats
+    const skirt = sculpt(cyl(0.155, 0.235, 0.3, 64, true), (v) => {
+      const a = Math.atan2(v.z, v.x), k = (0.15 - v.y) / 0.3;
+      const pleat = Math.abs(((a / (Math.PI * 2)) * 28 % 1 + 1) % 1 - 0.5) * 2;
+      const r = Math.hypot(v.x, v.z) * (1 + pleat * 0.06 * k);
+      v.x = Math.cos(a) * r; v.z = Math.sin(a) * r;
+    });
+    rig.add(skirt, rig.mat(0x1a1f2e, { roughness: 0.8, side: THREE.DoubleSide }), b, V(0, 0.76, 0));
   }
 
-  // torso
-  const torso = rig.group(b, V(0, 0.92, 0));
-  let coatMat;
+  const torso = rig.group(b, V(0, 0.94, 0));
+  let sleeve;
   if (opt.coat) {
-    coatMat = rig.mat(0xf3c22c);
-    rig.add(lathe([[0.001, -0.3], [0.24, -0.3], [0.22, -0.05], [0.18, 0.18], [0.16, 0.3], [0.12, 0.38], [0.001, 0.4]]), coatMat, torso, V(0, 0, 0));
-    for (let i = 0; i < 4; i++) rig.add(sphere(0.016, 8, 6), rig.mat(0x3a2a14), torso, V(0.02, 0.28 - i * 0.13, 0.18 + i * 0.012), { outline: 0 });
-    rig.add(new THREE.BoxGeometry(0.012, 0.6, 0.012), rig.mat(0xc59a1c), torso, V(0, 0.02, 0.2), { outline: 0, rot: [-0.13, 0, 0] });
-    rig.add(new THREE.TorusGeometry(0.105, 0.035, 8, 20), coatMat, torso, V(0, 0.36, 0), { rot: [Math.PI / 2, 0, 0] });
-    // hood resting on the shoulders
-    rig.add(sphere(0.15, 16, 12, 0, Math.PI * 2, 0, Math.PI / 2), coatMat, torso, V(0, 0.38, -0.12), { scale: [1, 0.55, 0.8], rot: [-0.5, 0, 0] });
+    // a rain-slick mustard coat, too big for her
+    const coat = rig.mat(0x9c7a2a, { roughness: 0.42 });
+    sleeve = coat;
+    rig.add(sculpt(lathe([[0.001, -0.36], [0.235, -0.36], [0.215, -0.15], [0.18, 0.04], [0.195, 0.22], [0.205, 0.31], [0.12, 0.39], [0.001, 0.4]], 40), (v) => { v.z *= 0.78; }), coat, torso);
+    rig.add(new THREE.BoxGeometry(0.012, 0.72, 0.01), rig.mat(0x3a2e14, { roughness: 0.5 }), torso, V(0.025, 0.01, 0.168), { rot: [-0.05, 0, 0] });
+    for (let i = 0; i < 4; i++) rig.add(cyl(0.011, 0.011, 0.008, 10), rig.mat(0x1c1610, { roughness: 0.3, metalness: 0.4 }), torso, V(0.045, 0.27 - i * 0.15, 0.17 - i * 0.004), { rot: [Math.PI / 2, 0, 0] });
+    rig.add(sculpt(new THREE.TorusGeometry(0.1, 0.03, 10, 28), (v) => { v.y *= 0.6; }), coat, torso, V(0, 0.385, -0.005), { rot: [Math.PI / 2 + 0.12, 0, 0] });
+    rig.add(sphere(0.15, 20, 12, 0, Math.PI * 2, 0, Math.PI / 2), coat, torso, V(0, 0.35, -0.11), { scale: [0.95, 0.45, 0.7], rot: [-0.7, 0, 0] });
   } else if (opt.male) {
-    rig.add(lathe([[0.001, -0.18], [0.2, -0.18], [0.19, 0.1], [0.16, 0.3], [0.1, 0.38], [0.001, 0.4]]), 0x15161c, torso);
-    for (let i = 0; i < 4; i++) rig.add(sphere(0.013, 8, 6), rig.mat(0xd8b24a), torso, V(0, 0.3 - i * 0.12, 0.17), { outline: 0 });
-    rig.add(cyl(0.085, 0.1, 0.06), 0x15161c, torso, V(0, 0.39, 0));
+    const jacket = rig.mat(0x121318, { roughness: 0.65 });
+    sleeve = jacket;
+    rig.add(sculpt(lathe([[0.001, -0.16], [0.19, -0.16], [0.18, 0.08], [0.2, 0.3], [0.1, 0.4], [0.001, 0.41]]), (v) => { v.z *= 0.75; }), jacket, torso);
+    for (let i = 0; i < 4; i++) rig.add(cyl(0.01, 0.01, 0.008, 10), rig.mat(0x8a7230, { metalness: 0.8, roughness: 0.3 }), torso, V(0, 0.3 - i * 0.11, 0.142), { rot: [Math.PI / 2, 0, 0] });
   } else {
-    rig.add(lathe([[0.001, -0.1], [0.19, -0.1], [0.18, 0.1], [0.155, 0.3], [0.1, 0.38], [0.001, 0.4]]), 0xf1f0ea, torso);
-    // sailor collar + bow
-    rig.add(new THREE.BoxGeometry(0.3, 0.2, 0.02), rig.mat(0x1d2742), torso, V(0, 0.27, -0.14), { rot: [0.35, 0, 0] });
-    rig.add(sphere(0.04, 10, 8), rig.mat(0xc8283a), torso, V(0, 0.25, 0.15), { scale: [1.6, 0.8, 0.6] });
+    const blouse = rig.mat(0xb9b8b2, { roughness: 0.75 });
+    sleeve = blouse;
+    rig.add(sculpt(lathe([[0.001, -0.12], [0.175, -0.12], [0.165, 0.08], [0.19, 0.28], [0.1, 0.4], [0.001, 0.41]]), (v) => { v.z *= 0.74; }), blouse, torso);
+    rig.add(new THREE.BoxGeometry(0.3, 0.2, 0.012), rig.mat(0x1a1f2e, { roughness: 0.8 }), torso, V(0, 0.29, -0.13), { rot: [0.3, 0, 0] });
+    rig.add(new THREE.BoxGeometry(0.04, 0.12, 0.012), rig.mat(0x5e161c, { roughness: 0.6 }), torso, V(0, 0.27, 0.142), { rot: [-0.15, 0, 0] });
   }
 
-  // arms (pivot at shoulder so they can swing)
   const arms = [];
   for (const s of [-1, 1]) {
-    const arm = rig.group(torso, V(s * 0.19, 0.32, 0));
-    const sleeve = opt.coat ? coatMat : rig.mat(opt.male ? 0x15161c : 0xf1f0ea);
-    rig.add(capsule(0.048, 0.36), sleeve, arm, V(0, -0.22, 0));
-    rig.add(sphere(0.045, 12, 10), skin, arm, V(0, -0.47, 0.01));
-    arm.rotation.z = s * 0.12;
+    const arm = rig.group(torso, V(s * 0.185, 0.33, -0.01), [0, 0, s * 0.1]);
+    rig.add(limb(0.05, 0.042, 0.28), sleeve, arm);
+    const elbow = rig.group(arm, V(0, -0.28, 0), [-0.15, 0, 0]);
+    rig.add(limb(0.042, opt.coat ? 0.048 : 0.033, 0.25), sleeve, elbow);
+    rig.add(sculpt(sphere(0.035, 14, 10), (v) => { v.y *= 1.5; v.z *= 0.6; }), skin, elbow, V(0, -0.29, 0));
+    arm.userData.elbow = elbow;
     arms.push(arm);
   }
   if (opt.laptop) {
-    const lap = rig.add(new THREE.BoxGeometry(0.3, 0.02, 0.22), rig.mat(0x2a2d34), arms[0], V(0.02, -0.45, 0.1), { rot: [0.2, 0, 1.4] });
-    rig.add(new THREE.BoxGeometry(0.06, 0.003, 0.04), rig.mat(0x5dffb0, { emissive: 0x2a9963 }), lap, V(0.08, 0.012, 0.06), { outline: 0 });
+    const lap = rig.add(new THREE.BoxGeometry(0.32, 0.022, 0.23), rig.mat(0x1b1d22, { roughness: 0.35, metalness: 0.5 }), arms[0].userData.elbow, V(0.04, -0.26, 0.09), { rot: [0.25, 0, 1.45] });
+    rig.add(new THREE.BoxGeometry(0.05, 0.003, 0.03), rig.glow(0x5dffb0), lap, V(0.1, 0.012, 0.07));
   }
 
-  // head
   const neck = rig.group(torso, V(0, 0.4, 0));
-  rig.add(cyl(0.04, 0.045, 0.1), skin, neck, V(0, 0.03, 0), { outline: 0.008 });
-  const head = rig.group(neck, V(0, 0.18, 0.005));
-  rig.add(sphere(0.13, 24, 18), skin, head, V(0, 0, 0), { scale: [1, 1.04, 0.98] });
-  let eyes = [];
-  if (opt.closedEyes) {
-    for (const s of [-1, 1]) rig.add(new THREE.BoxGeometry(0.05, 0.007, 0.01), rig.flat(0x2a1a20), head, V(s * 0.047, -0.01, 0.123), { outline: 0, rot: [0, s * 0.3, s * 0.15] });
-  } else {
-    eyes = animeEyes(rig, head, { iris: opt.iris, size: opt.male ? 0.8 : 1, lashes: !opt.male });
-  }
-  const br = brows(rig, head, { color: opt.hair });
-  const mouth = rig.add(new THREE.BoxGeometry(0.028, 0.006, 0.01), rig.flat(0x7a2a34), head, V(0, -0.075, 0.122), { outline: 0 });
-  if (!opt.male) for (const s of [-1, 1]) rig.add(new THREE.CircleGeometry(0.022, 12), rig.flat(0xff8a9a, { transparent: true, opacity: 0.35 }), head, V(s * 0.07, -0.045, 0.118), { outline: 0, rot: [0, s * 0.45, 0] });
+  rig.add(cyl(0.038, 0.045, 0.11), skin, neck, V(0, 0.035, 0));
+  const head = rig.group(neck, V(0, 0.155, 0.01));
+  const hg = headGeometry({ gaunt: opt.male ? 0.3 : 0.15, wide: opt.male ? 0.5 : 0 });
+  const face = humanFace(rig, head, hg, { skin, eyes: !opt.closedEyes, iris: opt.iris || 0x241a16 });
 
-  // hair
-  const hair = rig.mat(opt.hair);
-  rig.add(sphere(0.142, 24, 16, 0, Math.PI * 2, 0, Math.PI * 0.5), hair, head, V(0, 0.012, -0.006), { rot: [-0.32, 0, 0] });
+  // hair: a cap, a curtain down the back, and a fringe with a ragged edge
+  const hair = rig.mat(opt.hair, { roughness: 0.32, side: THREE.DoubleSide });
+  rig.add(sculpt(sphere(0.112, 40, 24, 0, Math.PI * 2, 0, Math.PI * 0.56), (v) => { v.y *= 1.1; v.x *= 0.97; if (v.z > 0) v.y += 0.01 * (v.z / 0.1); }), hair, head, V(0, 0.008, -0.008), { rot: [-0.3, 0, 0] });
   if (opt.male) {
-    for (let i = 0; i < 5; i++) rig.add(cone(0.035, 0.09, 6), hair, head, V(-0.08 + i * 0.04, 0.085, 0.1), { rot: [2.6, 0, (i - 2) * 0.15], outline: 0.008 });
+    rig.add(sculpt(cyl(0.1, 0.095, 0.07, 32, true, Math.PI * 0.55, Math.PI * 0.9), (v) => { if (v.y < 0) v.y += (Math.random() - 0.5) * 0.01; }), hair, head, V(0, 0.05, 0.004));
   } else {
-    rig.add(sphere(0.145, 20, 14), hair, head, V(0, -0.015, -0.05), { scale: [1.02, 1.0, 0.9] });     // back volume
-    for (let i = 0; i < 7; i++) {                                                                      // bangs
-      const x = -0.1 + i * 0.033;
-      rig.add(cone(0.03, 0.07 + (i % 2) * 0.02, 6), hair, head, V(x, 0.088, 0.108 - Math.abs(x) * 0.3), { rot: [2.95, 0, x * 1.4], outline: 0.006 });
-    }
-    for (const s of [-1, 1]) {
-      const len = opt.ponytail ? 0.16 : 0.28;
-      rig.add(cone(0.05, len, 8), hair, head, V(s * 0.125, -0.05 - len * 0.25, 0.03), { rot: [Math.PI, 0, s * -0.12] });
-    }
-    if (opt.ponytail) {
-      rig.add(sphere(0.03, 8, 6), rig.mat(0xc8283a), head, V(0, 0.02, -0.15), { outline: 0.006 });
-      rig.add(cone(0.06, 0.32, 10), hair, head, V(0, -0.12, -0.19), { rot: [Math.PI + 0.25, 0, 0] });
-    } else {
-      const bob = new THREE.CylinderGeometry(0.15, 0.16, 0.2, 20, 1, true, Math.PI * 0.32, Math.PI * 1.36);
-      rig.add(bob, rig.mat(opt.hair, { side: THREE.DoubleSide }), head, V(0, -0.1, -0.015), { scale: [1, 1, 0.92] });     // bob, open at the face
-    }
+    const len = opt.ponytail ? 0.12 : 0.34;
+    rig.add(sculpt(cyl(0.108, 0.125, len, 40, true, Math.PI * 0.36, Math.PI * 1.28), (v) => {
+      if (v.y < 0) v.y += (Math.sin(Math.atan2(v.z, v.x) * 13) * 0.5 + 0.5) * 0.03 - 0.015;
+    }), hair, head, V(0, 0.02 - len / 2 + 0.03, -0.01));
+    // fringe: hangs to the brows, uneven
+    rig.add(sculpt(cyl(0.088, 0.112, 0.07, 40, true, -Math.PI * 0.42, Math.PI * 0.84), (v) => {
+      if (v.y < 0) v.y += Math.abs(Math.sin(Math.atan2(v.x, v.z) * 9)) * -0.018 + 0.012;
+    }), hair, head, V(0, 0.072, 0.004), { rot: [0.12, 0, 0] });
+    for (const s of [-1, 1]) rig.add(sculpt(new THREE.PlaneGeometry(0.03, 0.22, 1, 6), (v) => { v.z += (v.y * v.y) * 0.6; v.x += s * Math.max(0, -v.y) * 0.04; }), hair, head, V(s * 0.085, -0.06, 0.05), { rot: [0, s * 0.5, 0] });
+    if (opt.ponytail) rig.add(sculpt(cone(0.05, 0.36, 16, 6), (v) => { v.z += Math.pow(Math.max(0, -v.y + 0.18), 2) * 0.4; }), hair, head, V(0, -0.12, -0.15), { rot: [Math.PI + 0.3, 0, 0] });
   }
-  const shine = rig.add(new THREE.TorusGeometry(0.1, 0.008, 4, 20, Math.PI * 0.7), rig.flat(opt.hairShine), head, V(0, 0.09, 0.07), { outline: 0, rot: [-0.9, 0, Math.PI * 0.15] });
 
-  rig.parts = { torso, head, neck, arms, legs: [legL, legR], eyes, brows: br, mouth, shine };
+  rig.parts = { torso, head, neck, arms, legs, ...face };
   rig.height = 1.62;
   rig.faceY = 1.5;
 
   let blinkT = 0, nextBlink = 2, glance = 0, glanceTarget = 0, nextGlance = 3;
   rig.update = (t, dt, st) => {
-    const breathe = Math.sin(t * 2.1) * 0.012;
-    torso.scale.y = 1 + breathe * 0.6;
-    head.position.y = 0.18 + breathe * 0.4;
-    // blink
+    const breathe = Math.sin(t * 1.7) * 0.008;
+    torso.scale.set(1 + breathe * 0.4, 1 + breathe, 1 + breathe * 0.6);
     nextBlink -= dt;
-    if (nextBlink < 0) { blinkT = 0.14; nextBlink = 1.5 + Math.random() * 3; }
+    if (nextBlink < 0) { blinkT = 0.13; nextBlink = 2 + Math.random() * 4; }
     blinkT = Math.max(0, blinkT - dt);
-    // glance around like the old status-bar faces
     nextGlance -= dt;
-    if (nextGlance < 0) { glanceTarget = (Math.random() - 0.5) * 0.9; nextGlance = 1.2 + Math.random() * 2.5; if (Math.random() < 0.35) glanceTarget = 0; }
-    glance += (glanceTarget - glance) * Math.min(1, dt * 7);
-    head.rotation.y = glance;
-    head.rotation.z = Math.sin(t * 0.9) * 0.03;
+    if (nextGlance < 0) { glanceTarget = (Math.random() - 0.5) * 0.7; nextGlance = 1.5 + Math.random() * 3; if (Math.random() < 0.4) glanceTarget = 0; }
+    glance += (glanceTarget - glance) * Math.min(1, dt * 6);
     const hurt = st?.hurt || 0, low = st?.low ? 1 : 0, attack = st?.attack || 0, scared = st?.scared || 0;
-    blinkEyes(eyes, blinkT > 0 ? 1 : hurt * 0.75 + low * 0.25);
-    for (const bw of br) {
-      const s = bw.userData.side;
-      bw.rotation.z = s * (-0.05 + (hurt * 0.45 + low * 0.25 + scared * 0.35));
-      bw.position.y = 0.058 - hurt * 0.008 + scared * 0.01;
-    }
-    mouth.scale.set(1 + scared * 0.3, 1 + hurt * 3 + scared * 4, 1);
-    head.rotation.x = -hurt * 0.25 + low * 0.12 - attack * 0.1;
-    torso.rotation.x = attack * 0.25 - hurt * 0.12;
-    arms[1].rotation.x = -attack * 1.6 - scared * 1.15;
-    arms[0].rotation.x = -scared * 1.05;
-    arms[0].rotation.z = -0.12 + scared * 0.6; arms[1].rotation.z = 0.12 - scared * 0.6;
+    head.rotation.y = glance * (1 - hurt);
+    head.rotation.z = Math.sin(t * 0.7) * 0.02 + hurt * 0.15;
+    head.rotation.x = 0.1 - hurt * 0.2 + low * 0.18 - attack * 0.12 - scared * 0.1;
+    for (const e of face.eyes) e.iris.position.x = glance * 0.004;
+    const shut = blinkT > 0 ? 1 : Math.min(1, hurt * 0.9 + low * 0.3);
+    for (const lid of face.lids) lid.rotation.x = opt.closedEyes ? 1.4 : -0.55 + shut * 1.9 - scared * 0.3;
+    for (const bw of face.brows) { const s = bw.userData.side; bw.rotation.z = s * (-0.08 + hurt * 0.35 + low * 0.2 - scared * 0.3); bw.position.y = 0.031 - hurt * 0.004 + scared * 0.004; }
+    face.mouth.scale.set(1 - scared * 0.2, 1 + hurt * 4 + scared * 5, 1);
+    torso.rotation.x = attack * 0.2 - hurt * 0.1;
+    arms[1].rotation.x = -attack * 1.4 - scared * 1.2;
+    arms[0].rotation.x = -scared * 1.1;
+    arms[0].rotation.z = -0.1 + scared * 0.55; arms[1].rotation.z = 0.1 - scared * 0.55;
+    arms[0].userData.elbow.rotation.x = -0.15 - scared * 1.2; arms[1].userData.elbow.rotation.x = -0.15 - scared * 1.2 - attack * 0.4;
   };
   return rig;
 }
 
-// ---------------------------------------------------------------- Gibbles: the thing that counts
+// ---------------------------------------------------------------- Gibbles: a masked thing that counts
 export function makeGibbles(T) {
   const rig = new Rig(T, 'gibbles');
-  const b = rig.group(rig.body, V(0, 1.2, 0));
-  const skin = rig.mat(0x6a35a8, { emissive: 0x1a0830 });
-  rig.add(sphere(0.26, 28, 20), skin, b, V(0, 0, 0), { scale: [1, 0.92, 0.95], outline: 0.016 });
-  rig.add(sphere(0.17, 20, 14), rig.mat(0xb48ce0), b, V(0, -0.07, 0.13), { scale: [1, 0.9, 0.5], outline: 0 });
-  const horn = rig.mat(0xf1e6c8);
-  for (const s of [-1, 1]) {
-    const h = rig.group(b, V(s * 0.14, 0.18, 0));
-    rig.add(cone(0.05, 0.16, 10), horn, h, V(0, 0.07, 0), { rot: [0, 0, s * -0.5] });
-    rig.add(cone(0.028, 0.08, 8), horn, h, V(s * 0.06, 0.16, 0), { rot: [0, 0, s * -1.2] });
-  }
+  const b = rig.group(rig.body, V(0, 1.15, 0));
+  const cloth = rig.mat(0x0c0a0e, { roughness: 0.9, side: THREE.DoubleSide });
+  // a ragged black shroud that ends in tatters
+  rig.add(sculpt(new THREE.CylinderGeometry(0.14, 0.3, 0.75, 48, 8, true), (v) => {
+    const a = Math.atan2(v.z, v.x);
+    if (v.y < -0.2) v.y -= Math.abs(Math.sin(a * 7)) * 0.16 + Math.abs(Math.sin(a * 17)) * 0.05;
+    const r = Math.hypot(v.x, v.z) * (1 + Math.sin(a * 5 + v.y * 9) * 0.06);
+    v.x = Math.cos(a) * r; v.z = Math.sin(a) * r;
+  }), cloth, b, V(0, -0.3, 0));
+  rig.add(sphere(0.15, 24, 16), cloth, b, V(0, 0.08, -0.02), { scale: [1, 1.05, 0.95] });
+  // the mask: smooth porcelain, eye holes, a carved smile that is too wide
+  const maskMat = rig.mat(0xd6d0c4, { roughness: 0.25, metalness: 0.05 });
+  const mask = rig.group(b, V(0, 0.09, 0.07));
+  const mg = sculpt(sphere(0.13, 48, 32, 0, Math.PI, 0, Math.PI), (v) => {
+    v.y *= 1.25; v.x *= 0.85;
+    if (v.z > 0) {
+      for (const s of [-1, 1]) v.z -= 0.022 * gauss(v.x - s * 0.045, v.y - 0.03, 0.025);
+      v.z += 0.012 * gauss(v.x, v.y, 0.012);
+      v.z -= 0.012 * gauss(v.x * 0.25, v.y + 0.07, 0.01);
+    }
+  });
+  rig.add(mg, maskMat, mask);
   const eyes = [];
   for (const s of [-1, 1]) {
-    const e = rig.group(b, V(s * 0.09, 0.06, 0.22));
-    e.rotation.y = s * 0.35;
-    rig.add(sphere(0.062, 16, 12), rig.flat(0xfff3a0), e, V(0, 0, 0), { scale: [1, 1.1, 0.45], outline: 0.008 });
-    const pupil = rig.add(sphere(0.02, 10, 8), rig.flat(0x120814), e, V(0, 0, 0.022), { outline: 0, scale: [0.6, 2.2, 0.4] });
-    eyes.push({ g: e, pupil });
+    const z = surfaceZ(mg, s * 0.045, 0.03);
+    rig.add(sculpt(new THREE.CircleGeometry(0.026, 20), (v) => { v.y *= 0.6; v.y += (v.x * s) * 0.25; }), rig.glow(0x000000), mask, V(s * 0.045, 0.03, z + 0.007));
+    eyes.push(rig.add(sphere(0.006, 8, 6), rig.glow(0xffd54a), mask, V(s * 0.045, 0.03, z + 0.009)));
   }
-  const mouth = rig.group(b, V(0, -0.07, 0.235));
-  rig.add(sphere(0.12, 20, 10, 0, Math.PI * 2, Math.PI * 0.5, Math.PI * 0.5), rig.flat(0x2a0718), mouth, V(0, 0.01, -0.02), { outline: 0, scale: [1, 0.6, 0.35] });
-  for (let i = 0; i < 7; i++) {
-    const x = -0.09 + i * 0.03;
-    rig.add(cone(0.013, 0.035, 4), rig.flat(0xffffff), mouth, V(x, 0.0, 0.01 - Math.abs(x) * 0.3), { outline: 0, rot: [Math.PI, 0, 0] });
-  }
-  const wings = [];
-  const wingShape = new THREE.Shape();
-  wingShape.moveTo(0, 0); wingShape.lineTo(0.34, 0.2); wingShape.quadraticCurveTo(0.36, 0.05, 0.3, -0.04);
-  wingShape.quadraticCurveTo(0.24, 0.02, 0.2, -0.06); wingShape.quadraticCurveTo(0.14, 0.0, 0.1, -0.08); wingShape.lineTo(0, 0);
-  const wingGeo = new THREE.ShapeGeometry(wingShape);
-  const wingMat = rig.mat(0x3a1a64, { side: THREE.DoubleSide });
+  const smile = new THREE.Shape();
+  smile.moveTo(-0.075, -0.045); smile.quadraticCurveTo(0, -0.12, 0.075, -0.045); smile.quadraticCurveTo(0, -0.098, -0.075, -0.045);
+  const mz = surfaceZ(mg, 0, -0.075);
+  rig.add(new THREE.ShapeGeometry(smile, 16), rig.glow(0x2a0004), mask, V(0, 0, mz + 0.002));
+  for (let i = -3; i <= 3; i++) rig.add(new THREE.BoxGeometry(0.003, 0.016, 0.004), rig.glow(0x0a0002), mask, V(i * 0.018, -0.07 - (1 - Math.abs(i) / 4) * 0.018, mz + 0.004), { rot: [0, 0, i * 0.12] });
+  rig.add(new THREE.BoxGeometry(0.002, 0.07, 0.003), rig.glow(0x120c08), mask, V(0.03, 0.09, surfaceZ(mg, 0.03, 0.09) + 0.001), { rot: [0, 0, 0.5] });
+  // horns, long and back-swept, tapering to points
+  const horn = rig.mat(0x2a221c, { roughness: 0.4 });
   for (const s of [-1, 1]) {
-    const w = rig.group(b, V(s * 0.18, 0.06, -0.12));
-    const m = rig.add(wingGeo, wingMat, w, V(0, 0, 0), { outline: 0, scale: [s, 1, 1] });
-    wings.push(w);
+    const pts = []; for (let i = 0; i <= 10; i++) { const k = i / 10; pts.push(V(s * (0.07 + k * 0.08), 0.12 + k * 0.18, -0.02 - k * k * 0.16)); }
+    const curve = new THREE.CatmullRomCurve3(pts);
+    const tg = new THREE.TubeGeometry(curve, 16, 0.02, 8);
+    const p = tg.attributes.position, v = new THREE.Vector3();
+    for (let i = 0; i < p.count; i++) { const k = Math.floor(i / 9) / 16; const c = curve.getPoint(Math.min(1, k)); v.fromBufferAttribute(p, i).sub(c).multiplyScalar(1 - k * 0.85).add(c); p.setXYZ(i, v.x, v.y, v.z); }
+    tg.computeVertexNormals();
+    rig.add(tg, horn, b);
   }
-  const tailCurve = new THREE.CatmullRomCurve3([V(0, -0.15, -0.2), V(0, -0.3, -0.35), V(0.1, -0.25, -0.5), V(0.15, -0.1, -0.55)]);
-  rig.add(new THREE.TubeGeometry(tailCurve, 16, 0.022, 6), skin, b, V(0, 0, 0), { outline: 0.008 });
-  rig.add(cone(0.05, 0.1, 4), skin, b, V(0.17, -0.04, -0.55), { rot: [0, 0, -0.6], outline: 0.008 });
-  for (const s of [-1, 1]) rig.add(sphere(0.05, 10, 8), skin, b, V(s * 0.1, -0.24, 0.05), { scale: [1, 0.7, 1.2] });
+  // long arms ending in black claws
+  const skin = rig.mat(0x1a1520, { roughness: 0.5 });
+  const arms = [];
+  for (const s of [-1, 1]) {
+    const sh = rig.group(b, V(s * 0.16, -0.02, 0), [0.4, 0, s * 0.5]);
+    rig.add(limb(0.025, 0.018, 0.3), skin, sh);
+    const el = rig.group(sh, V(0, -0.3, 0), [-0.9, 0, 0]);
+    rig.add(limb(0.018, 0.012, 0.28), skin, el);
+    for (let f = 0; f < 3; f++) rig.add(cone(0.006, 0.09, 6), rig.mat(0x0a080c, { roughness: 0.3 }), el, V((f - 1) * 0.012, -0.32, 0), { rot: [Math.PI, 0, (f - 1) * 0.2] });
+    sh.userData.el = el;
+    arms.push(sh);
+  }
 
-  rig.parts = { b, eyes, mouth, wings };
-  rig.height = 1.5; rig.faceY = 1.25;
-  let blink = 0, next = 2;
+  rig.parts = { b, mask, eyes, arms };
+  rig.height = 1.5; rig.faceY = 1.24;
+  let off = 0, next = 3;
   rig.update = (t, dt, st) => {
-    b.position.y = 1.2 + Math.sin(t * 2.6) * 0.04;
-    b.rotation.z = Math.sin(t * 1.3) * 0.06;
-    b.rotation.y = Math.sin(t * 0.7) * 0.25;
-    for (const [i, w] of wings.entries()) w.rotation.y = (i ? -1 : 1) * (0.3 + Math.sin(t * 14) * 0.5);
-    next -= dt; if (next < 0) { blink = 0.12; next = 2 + Math.random() * 3; }
-    blink = Math.max(0, blink - dt);
     const hurt = st?.hurt || 0, attack = st?.attack || 0;
-    for (const e of eyes) { e.g.scale.y = blink > 0 ? 0.1 : 1 - hurt * 0.6; e.pupil.position.x = Math.sin(t * 0.8) * 0.012; }
-    mouth.scale.set(1 + attack * 0.3, 1 + attack * 1.2 - hurt * 0.5, 1);
-    b.scale.setScalar(1 + attack * 0.12);
+    b.position.y = 1.15 + Math.sin(t * 1.3) * 0.035;
+    b.rotation.y = Math.sin(t * 0.4) * 0.2;
+    mask.rotation.z = Math.sin(t * 0.6) * 0.1 + hurt * Math.sin(t * 60) * 0.1;
+    mask.rotation.x = attack * 0.3 - Math.sin(t * 0.8) * 0.05;
+    next -= dt; if (next < 0) { off = 0.15; next = 2 + Math.random() * 4; }
+    off = Math.max(0, off - dt);
+    for (const e of eyes) e.visible = off <= 0 && hurt < 0.6;
+    arms.forEach((a, i) => { a.rotation.x = 0.4 + Math.sin(t * 1.1 + i) * 0.15 - attack * 1.2; a.userData.el.rotation.x = -0.9 - attack * 0.6 + Math.sin(t * 1.7 + i) * 0.1; });
   };
   return rig;
 }
@@ -329,54 +379,46 @@ export function makeGibbles(T) {
 // ---------------------------------------------------------------- Sparkles: Naomi's cat, in the bag
 export function makeSparkles(T) {
   const rig = new Rig(T, 'sparkles');
-  const bag = rig.group(rig.body, V(0, 0.55, 0));
-  const canvasMat = rig.mat(0x3e4f6b);
-  rig.add(new THREE.BoxGeometry(0.5, 0.36, 0.26), canvasMat, bag, V(0, 0, 0), { outline: 0.012 });
-  rig.add(new THREE.BoxGeometry(0.52, 0.05, 0.28), rig.mat(0x2d3a50), bag, V(0, 0.17, 0), { outline: 0.008 });
-  for (const s of [-1, 1]) rig.add(new THREE.TorusGeometry(0.12, 0.014, 6, 16, Math.PI), rig.mat(0x2d3a50), bag, V(s * 0.15, 0.19, 0), { outline: 0.006 });
+  const bag = rig.group(rig.body, V(0, 0.5, 0));
+  const canvas = rig.mat(0x1d2230, { roughness: 0.95 });
+  rig.add(sculpt(new THREE.BoxGeometry(0.52, 0.38, 0.26, 8, 6, 4), (v) => { v.x *= 1 - Math.abs(v.y) * 0.1; v.z *= 1 + (v.y + 0.19) * 0.25; v.x += Math.sin(v.y * 30) * 0.004; }), canvas, bag);
+  for (const s of [-1, 1]) rig.add(new THREE.TorusGeometry(0.13, 0.012, 6, 18, Math.PI), rig.mat(0x121620, { roughness: 0.8 }), bag, V(s * 0.14, 0.19, 0));
+  const fur = rig.mat(0x0d0c0e, { roughness: 0.55 });
   const cat = rig.group(bag, V(0, 0.2, 0.02));
-  const fur = rig.mat(0xf4efe6);
-  const head = rig.group(cat, V(0, 0.1, 0));
-  rig.add(sphere(0.14, 22, 16), fur, head, V(0, 0, 0), { scale: [1.15, 0.95, 1], outline: 0.012 });
+  const head = rig.group(cat, V(0, 0.08, 0));
+  rig.add(sculpt(sphere(0.1, 40, 28), (v) => {
+    v.x *= 1.12; v.y *= 0.92;
+    if (v.z > 0) { v.z += 0.025 * gauss(v.x, v.y + 0.035, 0.035); for (const s of [-1, 1]) v.z -= 0.012 * gauss(v.x - s * 0.04, v.y - 0.01, 0.02); }
+  }), fur, head);
+  const ears = [];
   for (const s of [-1, 1]) {
-    const ear = rig.group(head, V(s * 0.1, 0.1, -0.01));
-    ear.rotation.z = s * -0.35;
-    rig.add(cone(0.055, 0.11, 4), fur, ear, V(0, 0.04, 0), { outline: 0.008 });
-    rig.add(cone(0.032, 0.07, 4), rig.mat(0xffa6b8), ear, V(0, 0.035, 0.018), { outline: 0 });
+    const ear = rig.group(head, V(s * 0.065, 0.075, -0.005), [0, 0, s * -0.35]);
+    rig.add(sculpt(cone(0.04, 0.09, 4), (v) => { v.z *= 0.35; }), fur, ear, V(0, 0.035, 0), { rot: [0, Math.PI / 4, 0] });
     ear.userData.side = s;
+    ears.push(ear);
   }
-  const ears = head.children.filter((c) => c.userData.side);
   const eyes = [];
   for (const s of [-1, 1]) {
-    const e = rig.group(head, V(s * 0.06, 0.01, 0.115));
-    e.rotation.y = s * 0.35;
-    rig.add(sphere(0.036, 14, 10), rig.flat(0x56c9a8), e, V(0, 0, 0), { scale: [1, 1.15, 0.4], outline: 0.006 });
-    rig.add(sphere(0.018, 10, 8), rig.flat(0x10120f), e, V(0, 0, 0.01), { scale: [0.6, 1.5, 0.4], outline: 0 });
-    rig.add(sphere(0.008, 6, 6), rig.flat(0xffffff), e, V(s * 0.01, 0.014, 0.016), { outline: 0 });
-    eyes.push({ g: e });
+    const e = rig.group(head, V(s * 0.04, 0.012, 0.083), [0, s * 0.3, 0]);
+    rig.add(sphere(0.019, 16, 12), rig.mat(0x6a9a2a, { roughness: 0.1, emissive: 0x1a3a08, emissiveIntensity: 0.6 }), e, V(0, 0, 0), { scale: [1.15, 0.9, 0.5] });
+    e.userData.pupil = rig.add(new THREE.BoxGeometry(0.005, 0.03, 0.003), rig.glow(0x000000), e, V(0, 0, 0.009));
+    eyes.push(e);
   }
-  rig.add(sphere(0.014, 8, 6), rig.flat(0xff8fa8), head, V(0, -0.035, 0.138), { outline: 0, scale: [1.3, 0.8, 0.8] });
-  for (const s of [-1, 1]) for (const k of [-1, 1]) {
-    rig.add(new THREE.BoxGeometry(0.1, 0.003, 0.003), rig.flat(0x777777), head, V(s * 0.1, -0.045 + k * 0.012, 0.11), { outline: 0, rot: [0, 0, k * s * 0.15] });
-  }
-  for (const s of [-1, 1]) rig.add(sphere(0.045, 10, 8), fur, cat, V(s * 0.12, -0.02, 0.12), { scale: [1, 0.7, 1.3], outline: 0.008 });
-  // the sparkle on her forehead that gives her the name
-  rig.add(new THREE.OctahedronGeometry(0.02), rig.flat(0xffe27a), head, V(0, 0.07, 0.12), { outline: 0, scale: [0.6, 1.4, 0.3] });
+  rig.add(sphere(0.007, 8, 6), rig.mat(0x1a1214), head, V(0, -0.02, 0.105));
+  for (const s of [-1, 1]) rig.add(sculpt(sphere(0.03, 12, 8), (v) => { v.z *= 1.6; v.y *= 0.6; }), fur, cat, V(s * 0.1, -0.03, 0.11));
 
   rig.parts = { bag, cat, head, eyes, ears };
-  rig.height = 1.0; rig.faceY = 0.85;
-  let blink = 0, next = 1.5, twitch = 0;
+  rig.height = 1.0; rig.faceY = 0.78;
+  let blink = 0, next = 2, twitch = 0;
   rig.update = (t, dt, st) => {
-    cat.position.y = 0.2 + Math.sin(t * 1.7) * 0.01;
-    head.rotation.z = Math.sin(t * 0.8) * 0.12;
-    head.rotation.y = Math.sin(t * 0.45) * 0.3;
-    next -= dt; if (next < 0) { blink = 0.12; next = 1.5 + Math.random() * 3; if (Math.random() < .5) twitch = 0.25; }
-    blink = Math.max(0, blink - dt); twitch = Math.max(0, twitch - dt);
     const hurt = st?.hurt || 0, attack = st?.attack || 0;
-    for (const e of eyes) e.g.scale.y = blink > 0 ? 0.1 : 1 - hurt * 0.7;
-    ears.forEach((e) => { e.rotation.z = e.userData.side * (-0.35 - hurt * 0.8) + (twitch > 0 ? Math.sin(t * 60) * 0.2 : 0); });
-    cat.position.z = 0.02 + attack * 0.12;
-    cat.position.y += attack * 0.08;
+    head.rotation.z = Math.sin(t * 0.5) * 0.08;
+    head.rotation.y = Math.sin(t * 0.33) * 0.35;
+    next -= dt; if (next < 0) { blink = 0.12; next = 2 + Math.random() * 4; if (Math.random() < 0.5) twitch = 0.2; }
+    blink = Math.max(0, blink - dt); twitch = Math.max(0, twitch - dt);
+    for (const e of eyes) { e.scale.y = blink > 0 ? 0.1 : 1 - hurt * 0.7; e.userData.pupil.scale.x = 1 + attack * 2; }
+    for (const e of ears) e.rotation.z = e.userData.side * (-0.35 - hurt * 0.9 - attack * 0.7) + (twitch > 0 ? Math.sin(t * 60) * 0.15 : 0);
+    cat.position.z = 0.02 + attack * 0.1; cat.position.y = 0.2 + attack * 0.06;
   };
   return rig;
 }
@@ -384,69 +426,62 @@ export function makeSparkles(T) {
 // ---------------------------------------------------------------- Bowl of Calamari
 export function makeCalamari(T) {
   const rig = new Rig(T, 'calamari');
-  const root = rig.group(rig.body, V(0, 0.55, 0));
-  const ceramic = rig.mat(0xf2efe8);
-  rig.add(lathe([[0.001, -0.28], [0.18, -0.3], [0.2, -0.26], [0.38, -0.12], [0.5, 0.08], [0.53, 0.14], [0.5, 0.14], [0.36, -0.06], [0.001, -0.18]], 32), ceramic, root, V(0, 0, 0), { outline: 0.016 });
-  rig.add(new THREE.TorusGeometry(0.47, 0.022, 6, 40), rig.mat(0x2a56b8), root, V(0, 0.06, 0), { rot: [Math.PI / 2, 0, 0], outline: 0 });
-  rig.add(new THREE.TorusGeometry(0.42, 0.012, 6, 40), rig.mat(0xc8283a), root, V(0, -0.0, 0), { rot: [Math.PI / 2, 0, 0], outline: 0, scale: [1, 1, 1] });
-  rig.add(new THREE.CircleGeometry(0.47, 32), rig.mat(0xd9862e, { emissive: 0x4a1a00 }), root, V(0, 0.1, 0), { rot: [-Math.PI / 2, 0, 0], outline: 0 });
-  for (let i = 0; i < 3; i++) rig.add(new THREE.TorusGeometry(0.05, 0.02, 6, 12), rig.mat(0x7ab84a), root, V(-0.25 + i * 0.12, 0.11, 0.22 - i * 0.05), { rot: [-Math.PI / 2, 0, 0], outline: 0 });
-  rig.add(new THREE.CylinderGeometry(0.06, 0.06, 0.012, 16), rig.mat(0xf6f0ee), root, V(0.24, 0.11, -0.12), { outline: 0.006 });
-  // chopsticks
-  for (const s of [0, 1]) rig.add(cyl(0.008, 0.014, 0.8, 6), rig.mat(0xb5803a), root, V(-0.32 + s * 0.06, 0.38, -0.2), { rot: [0.25, 0, 0.45 + s * 0.08], outline: 0.006 });
-
-  const flesh = rig.mat(0xe98fb0, { emissive: 0x2a0410 });
-  const sucker = rig.mat(0xffd0de);
-  // mantle (the squid's head) rising out of the broth
-  const head = rig.group(root, V(0, 0.38, 0));
-  rig.add(lathe([[0.001, -0.2], [0.17, -0.18], [0.2, 0.05], [0.16, 0.28], [0.06, 0.42], [0.001, 0.45]], 24), flesh, head, V(0, 0, 0), { outline: 0.014 });
-  for (const s of [-1, 1]) rig.add(new THREE.CircleGeometry(0.16, 3), rig.mat(0xe17aa0, { side: THREE.DoubleSide }), head, V(s * 0.12, 0.32, 0), { rot: [0, s * Math.PI / 2, s * 0.6], outline: 0 });
+  const root = rig.group(rig.body, V(0, 0.5, 0));
+  const glaze = rig.mat(0x1e2a2c, { roughness: 0.15, metalness: 0.1 });
+  rig.add(lathe([[0.001, -0.28], [0.18, -0.3], [0.2, -0.26], [0.38, -0.12], [0.5, 0.08], [0.53, 0.14], [0.5, 0.15], [0.36, -0.05], [0.001, -0.17]], 48), glaze, root);
+  rig.add(new THREE.TorusGeometry(0.515, 0.012, 6, 48), rig.mat(0x6a1a14, { roughness: 0.3 }), root, V(0, 0.13, 0), { rot: [Math.PI / 2, 0, 0] });
+  // broth: black and glossy, faintly lit from below
+  rig.add(new THREE.CircleGeometry(0.47, 40), rig.mat(0x140804, { roughness: 0.05, emissive: 0x2a0800, emissiveIntensity: 0.6 }), root, V(0, 0.1, 0), { rot: [-Math.PI / 2, 0, 0] });
+  for (const s of [0, 1]) rig.add(cyl(0.006, 0.011, 0.75, 6), rig.mat(0x3a2a1a, { roughness: 0.6 }), root, V(-0.3 + s * 0.05, 0.36, -0.22), { rot: [0.25, 0, 0.5 + s * 0.08] });
+  const flesh = rig.mat(0xb7a4a0, { roughness: 0.22, emissive: 0x100406 });
+  const sucker = rig.mat(0x6e4a4c, { roughness: 0.3 });
+  // the mantle: long and pale, with a cluster of black eyes and a ring of teeth
+  const head = rig.group(root, V(0, 0.3, 0));
+  rig.add(sculpt(lathe([[0.001, -0.2], [0.16, -0.17], [0.19, 0.05], [0.15, 0.32], [0.07, 0.52], [0.001, 0.58]], 40), (v) => {
+    v.x += Math.sin(v.y * 22) * 0.004; if (v.z > 0 && v.y < 0.02 && v.y > -0.15) v.z -= 0.03 * gauss(v.x, v.y + 0.07, 0.06);
+  }), flesh, head);
+  for (const s of [-1, 1]) rig.add(sculpt(new THREE.CircleGeometry(0.18, 20, 0, Math.PI), (v) => { v.z = v.x * v.x * 0.8; }), rig.mat(0x9a8682, { roughness: 0.3, side: THREE.DoubleSide }), head, V(s * 0.1, 0.42, 0), { rot: [0, s * Math.PI / 2, s * -0.4] });
   const eyes = [];
-  for (const s of [-1, 1]) {
-    const e = rig.group(head, V(s * 0.09, -0.02, 0.16));
-    e.rotation.y = s * 0.4;
-    rig.add(sphere(0.07, 16, 12), rig.flat(0xfffbe8), e, V(0, 0, 0), { scale: [1, 1.15, 0.6], outline: 0.008 });
-    const p = rig.add(sphere(0.035, 12, 10), rig.flat(0x0c0a10), e, V(0, -0.01, 0.035), { outline: 0, scale: [1, 1, 0.5] });
-    rig.add(sphere(0.012, 6, 6), rig.flat(0xffffff), e, V(0.015, 0.02, 0.05), { outline: 0 });
-    rig.add(new THREE.BoxGeometry(0.11, 0.02, 0.02), rig.flat(0x5a1028), e, V(0, 0.075, 0.03), { rot: [0, 0, s * 0.45], outline: 0 });
-    eyes.push({ g: e, p });
+  const eyeMat = rig.mat(0x020203, { roughness: 0.02 });
+  for (const [x, y, r] of [[-0.07, 0.1, 0.03], [0.07, 0.1, 0.03], [-0.11, 0.17, 0.018], [0.11, 0.17, 0.018], [0, 0.2, 0.022], [-0.04, 0.23, 0.012], [0.05, 0.24, 0.013], [-0.13, 0.07, 0.014], [0.13, 0.06, 0.015]]) {
+    const z = Math.sqrt(Math.max(0, 0.16 * 0.16 - x * x)) * 0.98;
+    eyes.push(rig.add(sphere(r, 12, 10), eyeMat, head, V(x, y, z)));
   }
-
-  // tentacles: chains of spheres, waved every frame
+  const mouth = rig.group(head, V(0, -0.07, 0.14));
+  rig.add(new THREE.CircleGeometry(0.045, 20), rig.glow(0x120204), mouth, V(0, 0, 0));
+  for (let i = 0; i < 14; i++) { const a = i / 14 * Math.PI * 2; rig.add(cone(0.006, 0.025, 4), rig.mat(0xcfc6b0, { roughness: 0.3 }), mouth, V(Math.cos(a) * 0.04, Math.sin(a) * 0.04, 0.004), { rot: [0, 0, a + Math.PI / 2] }); }
   const tentacles = [];
-  const N = 8, SEG = 11;
-  for (let i = 0; i < N; i++) {
-    const a = (i / N) * Math.PI * 2 + 0.2;
+  for (let i = 0; i < 8; i++) {
+    const a = (i / 8) * Math.PI * 2 + 0.2;
     const segs = [];
-    for (let k = 0; k < SEG; k++) {
-      const r = 0.06 * (1 - k / SEG * 0.75);
-      const m = rig.add(sphere(r, 10, 8), flesh, root, V(0, 0, 0), { outline: 0.008 });
-      if (k % 2 === 1) rig.add(sphere(r * 0.38, 6, 6), sucker, m, V(0, -r * 0.6, r * 0.6), { outline: 0 });
+    for (let k = 0; k < 14; k++) {
+      const r = 0.055 * (1 - k / 14 * 0.82);
+      const m = rig.add(sphere(r, 12, 8), flesh, root, V(0, 0, 0));
+      if (k % 2 === 1) rig.add(sphere(r * 0.35, 6, 5), sucker, m, V(0, -r * 0.65, r * 0.55));
       segs.push(m);
     }
     tentacles.push({ a, segs, phase: Math.random() * 6 });
   }
   rig.parts = { root, head, eyes, tentacles };
-  rig.height = 1.4; rig.faceY = 0.95;
-  const tmp = new THREE.Vector3();
+  rig.height = 1.45; rig.faceY = 0.95;
   rig.update = (t, dt, st) => {
     const hurt = st?.hurt || 0, attack = st?.attack || 0;
-    root.position.y = 0.55 + Math.sin(t * 1.8) * 0.05;
-    root.rotation.z = Math.sin(t * 1.1) * 0.05 + hurt * Math.sin(t * 50) * 0.08;
-    head.position.y = 0.38 + Math.sin(t * 2.2) * 0.03 + attack * 0.15;
-    head.rotation.x = -attack * 0.4;
-    head.scale.set(1 + Math.sin(t * 3) * 0.03, 1 - Math.sin(t * 3) * 0.03, 1);
-    for (const e of eyes) { e.g.scale.y = 1 - hurt * 0.8; e.p.position.x = Math.sin(t * 0.7) * 0.012; }
+    root.position.y = 0.5 + Math.sin(t * 1.4) * 0.04;
+    root.rotation.z = Math.sin(t * 0.9) * 0.04 + hurt * Math.sin(t * 50) * 0.06;
+    head.position.y = 0.3 + Math.sin(t * 1.8) * 0.025 + attack * 0.15;
+    head.rotation.x = -attack * 0.45 + Math.sin(t * 0.7) * 0.05;
+    const pulse = Math.sin(t * 2.6);
+    head.scale.set(1 + pulse * 0.025, 1 - pulse * 0.02, 1 + pulse * 0.025);
+    mouth.scale.setScalar(1 + attack * 0.8 + Math.max(0, pulse) * 0.1);
+    eyes.forEach((e, i) => e.scale.setScalar(Math.sin(t * 3 + i * 1.7) > 0.97 ? 0.2 : 1));
     for (const ten of tentacles) {
-      let x = Math.cos(ten.a) * 0.2, z = Math.sin(ten.a) * 0.2, y = 0.12;
-      let dir = Math.atan2(z, x), pitch = 0.9;
+      let x = Math.cos(ten.a) * 0.2, z = Math.sin(ten.a) * 0.2, y = 0.12, pitch = 0.95;
+      const dir = Math.atan2(z, x);
       for (let k = 0; k < ten.segs.length; k++) {
-        const w = Math.sin(t * 2.4 + ten.phase + k * 0.55) * 0.35 * (k / ten.segs.length + 0.3);
-        pitch -= 0.17 - attack * 0.08;
-        const step = 0.07 * (1 - k / ten.segs.length * 0.4) * (1 + attack * 0.5);
-        x += Math.cos(dir + w) * Math.cos(pitch) * step;
-        z += Math.sin(dir + w) * Math.cos(pitch) * step;
-        y += Math.sin(pitch) * step;
+        const w = Math.sin(t * 1.9 + ten.phase + k * 0.45) * 0.4 * (k / ten.segs.length + 0.25);
+        pitch -= 0.14 - attack * 0.06;
+        const step = 0.065 * (1 - k / ten.segs.length * 0.4) * (1 + attack * 0.5);
+        x += Math.cos(dir + w) * Math.cos(pitch) * step; z += Math.sin(dir + w) * Math.cos(pitch) * step; y += Math.sin(pitch) * step;
         ten.segs[k].position.set(x, y, z);
       }
     }
@@ -454,68 +489,92 @@ export function makeCalamari(T) {
   return rig;
 }
 
-// ---------------------------------------------------------------- Naked Gnome
+// ---------------------------------------------------------------- Naked Gnome: starved, grey, wearing only a hat and a beard
 export function makeGnome(T) {
   const rig = new Rig(T, 'gnome');
   const g = rig.group(rig.body, V(0, 0, 0));
-  const skin = rig.mat(0xf4b8a0);
+  g.scale.setScalar(1.35);
+  const skin = rig.mat(0x6d7270, { roughness: 0.35 });
   for (const s of [-1, 1]) {
-    rig.add(capsule(0.06, 0.1), skin, g, V(s * 0.09, 0.14, 0));
-    rig.add(sphere(0.075, 12, 10), rig.mat(0x5a3a24), g, V(s * 0.09, 0.05, 0.04), { scale: [1, 0.6, 1.5] });
+    const hip = rig.group(g, V(s * 0.08, 0.42, 0), [0.25, 0, s * 0.08]);
+    rig.add(limb(0.04, 0.025, 0.24), skin, hip);
+    const knee = rig.group(hip, V(0, -0.24, 0), [-0.6, 0, 0]);
+    rig.add(limb(0.025, 0.02, 0.24), skin, knee);
+    rig.add(sculpt(sphere(0.03, 10, 8), (v) => { v.z *= 2.6; v.y *= 0.4; }), skin, knee, V(0, -0.25, 0.04));
   }
-  const torso = rig.group(g, V(0, 0.45, 0));
-  rig.add(sphere(0.25, 24, 18), skin, torso, V(0, 0, 0), { scale: [1, 1.05, 0.95], outline: 0.014 });
-  rig.add(sphere(0.022, 8, 6), rig.mat(0xd08a78), torso, V(0, -0.02, 0.235), { outline: 0 });
+  // hunched, ribs showing
+  const torso = rig.group(g, V(0, 0.45, 0), [0.5, 0, 0]);
+  rig.add(sculpt(sphere(0.13, 32, 24), (v) => {
+    v.y *= 1.5; v.x *= 0.9;
+    if (v.z > 0 && v.y > -0.02) v.z += Math.max(0, Math.sin(v.y * 95)) * 0.007;
+    if (v.y < -0.05) v.z += 0.02 * (-v.y);
+  }), skin, torso, V(0, 0.14, 0));
   const arms = [];
   for (const s of [-1, 1]) {
-    const a = rig.group(torso, V(s * 0.23, 0.08, 0));
-    rig.add(capsule(0.05, 0.16), skin, a, V(s * 0.05, -0.1, 0), { rot: [0, 0, s * 0.5] });
-    rig.add(sphere(0.055, 10, 8), skin, a, V(s * 0.11, -0.2, 0.02));
-    arms.push(a);
+    const sh = rig.group(torso, V(s * 0.11, 0.3, 0), [0.3, 0, s * 0.3]);
+    rig.add(limb(0.025, 0.018, 0.3), skin, sh);
+    const el = rig.group(sh, V(0, -0.3, 0), [-0.4, 0, 0]);
+    rig.add(limb(0.018, 0.014, 0.3), skin, el);
+    for (let f = 0; f < 4; f++) rig.add(limb(0.006, 0.003, 0.11, 5), rig.mat(0x2e302f, { roughness: 0.4 }), el, V((f - 1.5) * 0.01, -0.3, 0), { rot: [0.2, 0, (f - 1.5) * 0.12] });
+    sh.userData.el = el;
+    arms.push(sh);
   }
-  // lantern
-  const lantern = rig.group(arms[1], V(0.13, -0.32, 0.04));
-  rig.add(cyl(0.05, 0.05, 0.1, 6), rig.mat(0xffe08a, { emissive: 0xffa630, emissiveIntensity: 1.2 }), lantern, V(0, 0, 0), { outline: 0.006 });
-  rig.add(cone(0.065, 0.05, 6), rig.mat(0x2a2a2a), lantern, V(0, 0.075, 0), { outline: 0.006 });
-  rig.add(new THREE.TorusGeometry(0.03, 0.006, 4, 10), rig.mat(0x2a2a2a), lantern, V(0, 0.12, 0), { outline: 0 });
+  // lantern with a sick green flame
+  const lantern = rig.group(arms[1].userData.el, V(0, -0.45, 0.03));
+  rig.add(cyl(0.04, 0.045, 0.1, 6), rig.mat(0x1a1c18, { roughness: 0.4, metalness: 0.6, transparent: true, opacity: 0.6 }), lantern);
+  const flame = rig.add(sphere(0.022, 10, 8), rig.glow(0x9aff6a), lantern, V(0, 0, 0), { scale: [1, 1.6, 1] });
+  rig.add(new THREE.TorusGeometry(0.03, 0.004, 4, 10), rig.mat(0x1a1c18, { metalness: 0.7, roughness: 0.4 }), lantern, V(0, 0.09, 0));
+  const glowLight = new THREE.PointLight(0x7aff4a, 1.2, 2.5, 1.6);
+  lantern.add(glowLight);
 
-  const head = rig.group(torso, V(0, 0.3, 0.02));
-  rig.add(sphere(0.15, 20, 16), skin, head, V(0, 0, 0), { outline: 0.012 });
-  rig.add(sphere(0.06, 14, 10), rig.mat(0xe86a6a), head, V(0, -0.01, 0.15), { outline: 0.008 });     // nose
-  for (const s of [-1, 1]) rig.add(new THREE.CircleGeometry(0.03, 10), rig.flat(0xff6a7a, { transparent: true, opacity: 0.4 }), head, V(s * 0.08, -0.03, 0.13), { outline: 0, rot: [0, s * 0.5, 0] });
+  // head: long, narrow, hooked nose, a mouth that doesn't close
+  const head = rig.group(torso, V(0, 0.36, 0.06), [-0.5, 0, 0]);
+  const hg = sculpt(sphere(0.085, 48, 36), (v) => {
+    v.y *= 1.25; v.x *= 0.85;
+    if (v.y < 0) v.x *= 1 - (-v.y / 0.1) * 0.3;
+    if (v.z > 0) {
+      for (const s of [-1, 1]) v.z -= 0.018 * gauss(v.x - s * 0.03, v.y - 0.02, 0.017);
+      const nose = gauss(v.x, 0, 0.012) * Math.max(0, Math.min(1, (0.025 - v.y) / 0.06));
+      v.z += nose * 0.06; v.y -= nose * 0.02;
+      v.z -= 0.015 * gauss(v.x * 0.4, v.y + 0.06, 0.012);
+    }
+  });
+  rig.add(hg, skin, head);
   const eyes = [];
   for (const s of [-1, 1]) {
-    const e = rig.add(sphere(0.024, 10, 8), rig.flat(0x120d10), head, V(s * 0.06, 0.045, 0.135), { outline: 0, scale: [1, 1.3, 0.6] });
-    rig.add(sphere(0.006, 6, 6), rig.flat(0xffffff), e, V(0.006, 0.008, 0.015), { outline: 0 });
-    const brow = rig.add(new THREE.BoxGeometry(0.07, 0.025, 0.03), rig.mat(0xf6f6f2), head, V(s * 0.06, 0.085, 0.13), { outline: 0.006, rot: [0, 0, s * -0.35] });
-    eyes.push({ e, brow });
+    const z = surfaceZ(hg, s * 0.03, 0.02);
+    rig.add(sphere(0.012, 10, 8), rig.glow(0x000000), head, V(s * 0.03, 0.02, z - 0.006));
+    eyes.push(rig.add(sphere(0.0035, 6, 6), rig.glow(0xff3020), head, V(s * 0.03, 0.02, z + 0.004)));
   }
-  // beard, long enough to keep him decent
-  const beardMat = rig.mat(0xf6f4ee);
-  rig.add(sphere(0.17, 18, 14), beardMat, head, V(0, -0.12, 0.08), { scale: [1, 0.9, 0.7], outline: 0.012 });
-  rig.add(cone(0.21, 0.46, 16), beardMat, head, V(0, -0.36, 0.17), { rot: [Math.PI - 0.22, 0, 0], scale: [1, 1, 0.6], outline: 0.012 });
-  for (const s of [-1, 1]) rig.add(sphere(0.06, 10, 8), beardMat, head, V(s * 0.06, -0.05, 0.15), { scale: [1.3, 0.6, 0.6], rot: [0, 0, s * -0.3], outline: 0.006 });
-  // hat
-  const hat = rig.group(head, V(0, 0.105, -0.015));
-  const red = rig.mat(0xd8343a);
-  rig.add(cone(0.17, 0.32, 18), red, hat, V(0, 0.16, 0), { outline: 0.012, rot: [-0.15, 0, 0] });
-  const tip = rig.group(hat, V(0, 0.3, -0.05));
-  rig.add(cone(0.07, 0.22, 12), red, tip, V(0, 0.08, -0.04), { outline: 0.01, rot: [-0.9, 0, 0] });
-  rig.add(new THREE.TorusGeometry(0.15, 0.03, 8, 20), rig.mat(0xb0262c), hat, V(0, 0.01, 0), { rot: [Math.PI / 2 + 0.15, 0, 0], outline: 0.008 });
+  rig.add(new THREE.BoxGeometry(0.05, 0.012, 0.01), rig.glow(0x050000), head, V(0, -0.062, surfaceZ(hg, 0, -0.062) - 0.003));
+  // beard: grey, stringy, hanging past the waist
+  const beardMat = rig.mat(0x8a8780, { roughness: 0.85 });
+  for (let i = 0; i < 22; i++) {
+    const a = (i / 21 - 0.5) * 1.6, len = 0.25 + Math.random() * 0.25;
+    rig.add(sculpt(cone(0.012 + Math.random() * 0.01, len, 5, 6), (v) => { v.z += Math.pow(Math.max(0, -v.y + len / 2), 2) * 0.6; }), beardMat, head, V(Math.sin(a) * 0.05, -0.07 - len / 2, 0.04 + Math.cos(a) * 0.03), { rot: [Math.PI + 0.25, 0, a * 0.2] });
+  }
+  // hat: tall, faded, the tip broken over
+  const hat = rig.group(head, V(0, 0.07, -0.01));
+  const red = rig.mat(0x4a1210, { roughness: 0.9 });
+  rig.add(sculpt(cone(0.11, 0.3, 24, 6), (v) => { v.x += Math.sin(v.y * 20) * 0.004; v.z += Math.cos(v.y * 17) * 0.004; }), red, hat, V(0, 0.15, -0.02), { rot: [-0.2, 0, 0] });
+  const tip = rig.group(hat, V(0, 0.28, -0.08));
+  rig.add(cone(0.045, 0.2, 12), red, tip, V(0, 0.06, -0.06), { rot: [-1.6, 0, 0.2] });
 
-  rig.parts = { g, torso, head, arms, eyes, tip };
-  rig.height = 1.2; rig.faceY = 0.78;
+  rig.parts = { g, torso, head, arms, eyes, tip, flame };
+  rig.height = 1.5; rig.faceY = 1.12;
   rig.update = (t, dt, st) => {
     const hurt = st?.hurt || 0, attack = st?.attack || 0;
-    const hop = Math.abs(Math.sin(t * 3.2)) * 0.04;
-    g.position.y = hop;
-    torso.scale.set(1 + hop * 0.6, 1 - hop * 0.6, 1);
-    head.rotation.z = Math.sin(t * 1.6) * 0.1;
-    tip.rotation.x = Math.sin(t * 2.2) * 0.3;
-    arms[1].rotation.z = 0.3 + Math.sin(t * 3.2) * 0.15 - attack * 1.5;
-    arms[0].rotation.z = -0.3 - Math.sin(t * 3.2) * 0.15;
-    for (const e of eyes) { e.e.scale.y = 1.3 * (1 - hurt * 0.8); e.brow.position.y = 0.085 - attack * 0.015 + hurt * 0.01; }
-    torso.rotation.x = attack * 0.35 - hurt * 0.2;
+    const sway = Math.sin(t * 1.3);
+    g.rotation.z = sway * 0.04;
+    torso.rotation.x = 0.5 + Math.sin(t * 2.0) * 0.03 + attack * 0.4 - hurt * 0.3;
+    head.rotation.x = -0.5 + Math.sin(t * 0.9) * 0.08 - attack * 0.2;
+    head.rotation.z = Math.sin(t * 0.6) * 0.15 + (Math.sin(t * 7.3) > 0.98 ? 0.4 : 0);           // twitch
+    tip.rotation.x = Math.sin(t * 1.8) * 0.15;
+    arms[0].rotation.x = 0.3 + sway * 0.1 - attack * 1.4;
+    arms[1].rotation.x = 0.3 - sway * 0.1;
+    flame.scale.set(1 + Math.sin(t * 13) * 0.15, 1.6 + Math.sin(t * 17) * 0.3, 1);
+    glowLight.intensity = 1.0 + Math.sin(t * 13) * 0.25;
+    for (const e of eyes) e.visible = hurt < 0.5;
   };
   return rig;
 }
@@ -524,75 +583,83 @@ export function makeGnome(T) {
 export function makeMime(T) {
   const rig = new Rig(T, 'mime');
   const g = rig.group(rig.body, V(0, 0, 0));
-  const black = rig.mat(0x16161c);
-  const white = rig.mat(0xf6f3ee);
+  const black = rig.mat(0x0b0b0e, { roughness: 0.55 });
+  const glove = rig.mat(0xb8b2a6, { roughness: 0.7 });
   for (const s of [-1, 1]) {
-    rig.add(capsule(0.065, 0.95), black, g, V(s * 0.1, 0.55, 0));
-    rig.add(new THREE.BoxGeometry(0.13, 0.08, 0.28), black, g, V(s * 0.1, 0.04, 0.05));
+    const hip = rig.group(g, V(s * 0.1, 1.1, 0), [0, 0, s * 0.04]);
+    rig.add(limb(0.07, 0.045, 0.58), black, hip);
+    const knee = rig.group(hip, V(0, -0.58, 0), [0.05, 0, 0]);
+    rig.add(limb(0.045, 0.03, 0.5), black, knee);
+    rig.add(sculpt(sphere(0.05, 12, 8), (v) => { v.z *= 2.6; v.y *= 0.45; }), black, knee, V(0, -0.52, 0.06));
   }
-  const torso = rig.group(g, V(0, 1.15, 0));
-  const stripeTex = T.stripes.clone(); stripeTex.repeat.set(6, 4); stripeTex.needsUpdate = true;
-  rig.add(lathe([[0.001, -0.18], [0.19, -0.18], [0.21, 0.1], [0.24, 0.4], [0.14, 0.52], [0.001, 0.54]], 24), rig.mat(0xffffff, { map: stripeTex }), torso);
-  for (const s of [-1, 1]) rig.add(new THREE.BoxGeometry(0.035, 0.62, 0.02), rig.mat(0xc8283a), torso, V(s * 0.1, 0.15, 0.2), { rot: [-0.1, 0, 0], outline: 0.005 });
-  rig.add(new THREE.TorusGeometry(0.13, 0.05, 8, 18), white, torso, V(0, 0.54, 0), { rot: [Math.PI / 2, 0, 0], scale: [1, 1, 0.6] });
+  const torso = rig.group(g, V(0, 1.18, 0));
+  const stripeTex = T.stripes.clone(); stripeTex.repeat.set(1, 5); stripeTex.needsUpdate = true;
+  rig.add(sculpt(lathe([[0.001, -0.16], [0.17, -0.16], [0.16, 0.12], [0.22, 0.42], [0.12, 0.55], [0.001, 0.56]], 32), (v) => { v.z *= 0.72; }), rig.mat(0x9a948a, { map: stripeTex, roughness: 0.8 }), torso);
+  for (const s of [-1, 1]) rig.add(new THREE.BoxGeometry(0.03, 0.62, 0.01), rig.mat(0x3a0a0e, { roughness: 0.6 }), torso, V(s * 0.09, 0.16, 0.13), { rot: [-0.12, 0, 0] });
   const arms = [];
   for (const s of [-1, 1]) {
-    const sh = rig.group(torso, V(s * 0.25, 0.42, 0));
+    const sh = rig.group(torso, V(s * 0.21, 0.46, 0));
     const upper = rig.group(sh);
-    rig.add(capsule(0.05, 0.32), black, upper, V(0, -0.2, 0));
-    const fore = rig.group(upper, V(0, -0.4, 0));
-    rig.add(capsule(0.045, 0.28), black, fore, V(0, -0.17, 0));
-    const hand = rig.group(fore, V(0, -0.38, 0));
-    rig.add(sphere(0.08, 14, 10), white, hand, V(0, 0, 0), { scale: [1, 1.2, 0.45] });
-    for (let f = 0; f < 4; f++) rig.add(capsule(0.016, 0.07), white, hand, V(-0.045 + f * 0.03, 0.1, 0), { outline: 0.006 });
-    rig.add(capsule(0.016, 0.05), white, hand, V(s * -0.075, 0.03, 0), { rot: [0, 0, s * 0.8], outline: 0.006 });
+    rig.add(limb(0.045, 0.035, 0.42), black, upper);
+    const fore = rig.group(upper, V(0, -0.42, 0));
+    rig.add(limb(0.035, 0.028, 0.4), black, fore);
+    const hand = rig.group(fore, V(0, -0.42, 0));
+    rig.add(sculpt(sphere(0.06, 16, 12), (v) => { v.z *= 0.35; v.y *= 1.2; }), glove, hand);
+    for (let f = 0; f < 4; f++) rig.add(limb(0.011, 0.008, 0.11, 6), glove, hand, V(-0.033 + f * 0.022, 0.06, 0), { rot: [0, 0, Math.PI + (f - 1.5) * 0.08] });
     arms.push({ sh, upper, fore, hand });
   }
-  const head = rig.group(torso, V(0, 0.76, 0));
-  rig.add(sphere(0.15, 24, 18), rig.mat(0xe9e6e0, { emissive: 0x111111 }), head, V(0, 0, 0), { scale: [0.92, 1.18, 0.95], outline: 0.012 });
+  // head: long, white, cracked paint, a black slit for a mouth that widens
+  const head = rig.group(torso, V(0, 0.73, 0.01));
+  const hg = sculpt(sphere(0.1, 56, 40), (v) => {
+    v.y *= 1.4; v.x *= 0.78;
+    if (v.y < 0) v.x *= 1 - (-v.y / 0.14) * 0.35;
+    if (v.z > 0) {
+      for (const s of [-1, 1]) v.z -= 0.02 * gauss(v.x - s * 0.032, v.y - 0.02, 0.022);
+      v.z += 0.01 * gauss(v.x, v.y + 0.02, 0.01);
+    }
+  });
+  rig.add(hg, rig.mat(0xe6e2da, { roughness: 0.3, emissive: 0x0a0a0a }), head);
   const eyes = [];
   for (const s of [-1, 1]) {
-    const e = rig.add(new THREE.OctahedronGeometry(0.04), rig.flat(0x0a0a0e), head, V(s * 0.055, 0.03, 0.128), { outline: 0, scale: [0.55, 1.4, 0.2], rot: [0, s * 0.3, 0] });
-    rig.add(new THREE.OctahedronGeometry(0.03), rig.flat(0x0a0a0e), head, V(s * 0.06, -0.035, 0.127), { outline: 0, scale: [0.25, 1.2, 0.2], rot: [0, s * 0.3, 0] });   // painted tear
-    eyes.push(e);
+    const z = surfaceZ(hg, s * 0.032, 0.02);
+    rig.add(sculpt(new THREE.CircleGeometry(0.02, 16), (v) => { v.y *= 1.4; }), rig.glow(0x000000), head, V(s * 0.032, 0.02, z + 0.001), { rot: [0, s * 0.35, 0] });
+    eyes.push(rig.add(new THREE.BoxGeometry(0.004, 0.07, 0.002), rig.glow(0x050505), head, V(s * 0.034, -0.03, surfaceZ(hg, s * 0.034, -0.03) + 0.001), { rot: [0, s * 0.35, 0] }));
   }
-  const mouth = rig.group(head, V(0, -0.1, 0.12));
-  rig.add(sphere(0.035, 12, 8), rig.flat(0xc8102a), mouth, V(0, 0, 0), { outline: 0, scale: [1.3, 0.5, 0.4] });
-  const grin = rig.add(new THREE.TorusGeometry(0.06, 0.008, 4, 16, Math.PI), rig.flat(0x1a0004), head, V(0, -0.06, 0.13), { outline: 0, rot: [0, 0, Math.PI] });
-  grin.visible = false;
-  rig.add(sphere(0.165, 20, 10, 0, Math.PI * 2, 0, Math.PI * 0.45), black, head, V(0.03, 0.09, -0.01), { scale: [1.25, 0.5, 1.15], rot: [0, 0, -0.25] });     // beret
-  rig.add(cyl(0.008, 0.008, 0.04, 6), black, head, V(0.05, 0.2, 0), { outline: 0 });
+  const mz = surfaceZ(hg, 0, -0.075);
+  const mouth = rig.add(new THREE.BoxGeometry(0.06, 0.004, 0.004), rig.glow(0x1a0004), head, V(0, -0.075, mz + 0.001));
+  const grin = new THREE.Shape(); grin.moveTo(-0.07, -0.05); grin.quadraticCurveTo(0, -0.12, 0.07, -0.05); grin.quadraticCurveTo(0, -0.09, -0.07, -0.05);
+  const grinM = rig.add(new THREE.ShapeGeometry(grin, 16), rig.glow(0x120003), head, V(0, -0.005, mz + 0.001));
+  grinM.visible = false;
+  for (const [x, y, r] of [[0.04, 0.09, 0.6], [-0.05, -0.04, -0.4], [0.02, 0.05, 1.2]]) rig.add(new THREE.BoxGeometry(0.0015, 0.05, 0.002), rig.glow(0x3a3630), head, V(x, y, surfaceZ(hg, x, y) + 0.0008), { rot: [0, x * 4, r] });
+  rig.add(sculpt(sphere(0.13, 24, 10, 0, Math.PI * 2, 0, Math.PI * 0.45), (v) => { v.y *= 0.45; }), black, head, V(0.025, 0.1, -0.01), { rot: [0, 0, -0.25] });
 
   // the glass that isn't there
   const glass = new THREE.Mesh(new THREE.PlaneGeometry(1.6, 1.6), new THREE.MeshBasicMaterial({
     color: 0x9fe8ff, alphaMap: T.glow, transparent: true, opacity: 0.03, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide,
   }));
-  glass.position.set(0, 1.55, 0.62);
-  glass.scale.set(0.8, 0.7, 1);
+  glass.position.set(0, 1.65, 0.7); glass.scale.set(0.8, 0.7, 1);
   rig.body.add(glass);
 
-  rig.parts = { g, torso, head, arms, eyes, mouth, grin, glass };
-  rig.height = 2.2; rig.faceY = 2.0;
+  rig.parts = { g, torso, head, arms, eyes, mouth, grin: grinM, glass };
+  rig.height = 2.25; rig.faceY = 1.95;
   rig.update = (t, dt, st) => {
     const hurt = st?.hurt || 0, attack = st?.attack || 0, enraged = st?.low ? 1 : 0;
-    const sway = Math.sin(t * 1.4);
-    torso.rotation.z = sway * 0.05;
-    torso.position.y = 1.15 + Math.abs(Math.sin(t * 1.4)) * 0.03;
-    head.rotation.z = Math.sin(t * 0.7) * 0.15 + hurt * 0.4;
-    head.rotation.y = Math.sin(t * 0.5) * 0.2;
-    // palms flat on the invisible pane, sliding to find the edge
-    const slide = Math.sin(t * 1.1);
+    const sway = Math.sin(t * 1.1);
+    torso.rotation.z = sway * 0.04;
+    torso.position.y = 1.18 + Math.abs(sway) * 0.02;
+    head.rotation.z = Math.sin(t * 0.5) * 0.25 + hurt * 0.4;                // the head tilts too far
+    head.rotation.y = Math.sin(t * 0.37) * 0.15;
+    const slide = Math.sin(t * 0.9);
     arms.forEach((a, i) => {
       const s = i ? 1 : -1;
-      a.upper.rotation.x = -1.25 - attack * 0.5;
-      a.upper.rotation.z = s * (0.25 + (i ? slide : -slide) * 0.12);
-      a.fore.rotation.x = -0.35 + attack * 0.3;
-      a.hand.rotation.x = 1.55;
+      a.upper.rotation.x = -1.2 - attack * 0.5;
+      a.upper.rotation.z = s * (0.22 + (i ? slide : -slide) * 0.1);
+      a.fore.rotation.x = -0.4 + attack * 0.3;
+      a.hand.rotation.x = 1.6;
     });
-    rig.parts.glass.material.opacity = 0.015 + Math.abs(slide) * 0.03 + attack * 0.06 + hurt * 0.05;
-    rig.parts.glass.position.z = 0.62 + attack * 0.3;
-    for (const e of eyes) e.scale.y = 1.4 * (1 - hurt * 0.7);
-    rig.parts.mouth.visible = !enraged; rig.parts.grin.visible = !!enraged;
+    glass.material.opacity = 0.012 + Math.abs(slide) * 0.025 + attack * 0.05;
+    glass.position.z = 0.7 + attack * 0.3;
+    mouth.visible = !enraged; grinM.visible = !!enraged;
     torso.rotation.x = attack * 0.3;
   };
   return rig;
@@ -600,9 +667,9 @@ export function makeMime(T) {
 
 export const ROSTER = {
   touma: (T) => makeStudent(T, { name: 'touma', coat: true, laptop: true }),
-  anna: (T) => makeStudent(T, { name: 'anna', hair: 0x5a3622, hairShine: 0x8a5a3a, iris: 0x4a3020, ponytail: true }),
-  body_f: (T) => makeStudent(T, { name: 'body', hair: 0x2a2018, closedEyes: true }),
-  body_m: (T) => makeStudent(T, { name: 'body', male: true, hair: 0x14110f, closedEyes: true }),
+  anna: (T) => makeStudent(T, { name: 'anna', hair: 0x2a1a12, iris: 0x3a2618, ponytail: true, skin: 0xcaa896 }),
+  body_f: (T) => makeStudent(T, { name: 'body', hair: 0x14100c, closedEyes: true, skin: 0xa89a92 }),
+  body_m: (T) => makeStudent(T, { name: 'body', male: true, hair: 0x0c0a08, closedEyes: true, skin: 0xa0928a }),
   gibbles: makeGibbles,
   sparkles: makeSparkles,
   calamari: makeCalamari,

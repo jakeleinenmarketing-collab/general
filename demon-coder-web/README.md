@@ -26,7 +26,8 @@ Test shortcuts (add to the URL): `?skip` skips the intro, `?at=x,y,dir` starts a
 
 ## How it's built
 
-- **No art files.** Textures are painted onto canvases at load (`src/textures.js`), and characters are built from spheres, cones and capsules (`src/characters.js`). Everything is cel shaded with ink outlines and lit by the same lights as the corridor.
+- **No art files.** Textures are painted onto canvases at load at 2x resolution, with normal maps generated from the paint (`src/textures.js`). Characters are sculpted in code: primitives pushed vertex by vertex into faces, sockets, ribs and pleats (`src/characters.js`). Everything uses physically based materials lit by the same lights as the corridor, with a cold rim light on characters.
+- **Set dressing** (`src/props.js`). Baseboards and rails, door frames with sliding doors and class plates, light fixtures, a cable tray and pipes, green exit signs, red fire alarm lamps, shoe lockers with shoes in them, festival chains and a torn banner, boxes, chairs, a fallen extinguisher, stopped clocks and puddles that mirror the lights.
 - **Live portraits.** The faces on the laptop are the real 3D party models, rendered every frame, so they blink, glance around, flinch when hit and slump at low HP.
 - **Retro look.** The game renders at 640x360 and is scaled up with crisp pixels. On top: bloom for halation, a green-amber grade with crushed blacks, a heavy vignette, grain, and a 5-bit ordered dither for a late-90s console finish.
 - **Atmosphere that moves** (`src/atmosphere.js`). The windows are real openings onto a storm sky with clouds crossing a large moon, a town skyline and falling rain, all drawn by shaders. Rain beads and runs down the glass. Moonlight is a real shadow-casting light, so the window frames throw shadows across the floor, and lightning snaps those shadows hard. Light shafts, dust and ground mist drift. Tubes flicker, and the building's power browns out now and then.
@@ -44,10 +45,11 @@ Test shortcuts (add to the URL): `?skip` skips the intro, `?at=x,y,dir` starts a
 | `src/hud.js` | laptop HUD, portraits, automap, dialogue, notes |
 | `src/fx.js` | particles and lightning bolts |
 | `src/atmosphere.js` | sky, rain on glass, moonlight and shadows, shafts, dust, mist |
+| `src/props.js` | trim, doors, ceiling hardware, signs, lockers, debris, puddles |
 | `tools/preview.html` | character lineup for checking models (`?n=touma&face=1`) |
 
 Three.js r186 is vendored in `vendor/` (MIT, see `vendor/THREE-LICENSE`), so nothing is downloaded at runtime.
 
 ## What's placeholder
 
-Note text, Anna's line and the intro lines come from the 9/27 story session and aren't final. Character designs are loose interpretations of the originals, as asked: clean and readable over faithful.
+Note text, Anna's line and the intro lines come from the 9/27 story session and aren't final. Character designs are loose interpretations of the originals, pushed toward a serious, unsettling tone.

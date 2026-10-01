@@ -7,6 +7,7 @@ import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { makeTextures } from './textures.js';
 import { buildAtmosphere } from './atmosphere.js';
+import { buildProps } from './props.js';
 import { buildLevel, MAP, START, DIRS, CELL, at, isFloorCh, cellCenter, zoneOf, INTERACT } from './level.js';
 import { ROSTER } from './characters.js';
 import { Hud } from './hud.js';
@@ -99,7 +100,14 @@ camera.add(lantern);
 
 const L = buildLevel(scene, T);
 game.level = L;
+buildProps(scene, T, L);
 const atmo = buildAtmosphere(scene, T, L);
+// reflections: one capture of the hall, kept dim so the dark stays dark
+{
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  scene.environment = pmrem.fromScene(scene, 0.03, 0.1, 60, { position: new THREE.Vector3(24, 1.6, 14) }).texture;
+  scene.environmentIntensity = 0.5;
+}
 game.atmo = atmo;
 atmo.onStrike = (big) => setTimeout(() => sound.thunder(big), big ? 500 + Math.random() * 500 : 1400 + Math.random() * 900);
 const fx = new Particles(scene, T.glow);

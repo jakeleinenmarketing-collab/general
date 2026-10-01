@@ -43,9 +43,9 @@ export class Hud {
       const rim = new THREE.DirectionalLight(0x8fd8ff, 1.6); rim.position.set(-2, 1, -2); scene.add(rim);
       const cam = new THREE.PerspectiveCamera(24, 112 / 60, 0.05, 10);
       const fy = rig.faceY;
-      const dist = m.id === 'touma' ? 1.05 : m.id === 'gibbles' ? 1.7 : 1.3;
+      const dist = m.id === 'touma' ? 0.62 : m.id === 'gibbles' ? 1.05 : 0.75;
       cam.position.set(0.05, fy + 0.02, dist);
-      cam.lookAt(0, fy - (m.id === 'touma' ? 0.08 : 0.06), 0);
+      cam.lookAt(0, fy - (m.id === 'touma' ? 0.05 : 0.03), 0);
       m.portrait = { scene, rig, cam, hurt: 0, attack: 0 };
       this.setHP(m);
     }
