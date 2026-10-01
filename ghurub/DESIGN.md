@@ -26,6 +26,9 @@ These are your messages from the Gemini session, kept verbatim in order (only ob
 8. **Kuzuryu across time.** "It would be interesting if someone who is still in the future is also in the past. Maybe Kuzuryu, who is a crime boss of some sort, in with the elites but only to a certain degree, position solidified thanks to an unknown contribution he made in 2007... [the future] is estimated to be 1500–2000 years from 2007 (the date that the protagonist will go to, the farthest they can possibly go, which is only about 6–8 months before ground zero of the demons/angels world-ending situation)."
 9. **Kuzuryu is small-time.** "Kuzuryu in the future is definitely a petty criminal, knows enough still and is harshly regarded by the elites but his crafty nature keeps him semi-relevant in the future. Not by much. And reputation is that he is not to be messed with but he is not as scary as some others that exist in this timeline."
 10. **Scope of Act I.** "Write out all of the details so we can make this first part a game, up until going into [the] train station city."
+11. **Devices, 2007 and the factions.** "The devices are not new, but rather either retrofitted from parts in the future or leftover from 2007. In the past, potentially one of the levels we go into a factory where they are building them. The tech is not perfected and maybe not many of them even work. But since 2007 is months away from doom, it will be a revelation to see a bunch of the devices. A few people in 2007 will have functioning ones. Most of the game will take place in 2007, and certain areas will have demons or angels floating around as the elites (elites on both sides) are preparing for war, but out of their greed. Even those who worship God are not in it for clean reasons. Probably thinking two rival corporate factions. Those who worship demons are the ones who make the devices, the angels' side are probably not likely to help create such technology, though one of the holy elites has one. This is not set in stone."
+12. **How Kuzuryu survives.** "Kuzuryu makes a pact with a high demon who keeps him in a stasis field or pod (combined effort of an evil scientist, who I want to model after Neil deGrasse Tyson, and demons). We will see Kuzuryu in 2007. He will disappear and at some point we will find the pod. The details of his survival in the future are not known; most people figure him to be a regular human born in the regular future."
+13. **Name and hub.** "Ghurub is close enough." "Shinjuku makes more sense."
 
 ---
 
@@ -41,6 +44,7 @@ These are your messages from the Gemini session, kept verbatim in order (only ob
 | **Controlling demons** | Only possible with a rare device like Ghurub. Seeing a human bind demons shocks both demons and people. |
 | **The war** | Two human sects fought in the trenches. Both were told they were fighting over a resource cache. It was really over the **location of a time machine**. An elite group, operating in secret, was running things from the shadows. |
 | **Time travel** | The farthest back the machine can go is **2007**, about **6–8 months before Ground Zero** (the demon/angel event that ended the world). |
+| **Where the game happens** | Act I is in the future. **Most of the game is in 2007**, where rival corporate elites (one demon-worshipping, one God-worshipping, both greedy) are preparing for war, and demons and angels already show up in some areas. |
 | **Aesthetic** | Y2K retro-futurism plus dark post-apocalypse: brushed silver, rubber keys, thick LCD glass, low-res cyan backlights. Future tech is scavenged and modified 2000s tech, because 2007 was the last peak of civilization. |
 
 ---
@@ -54,7 +58,7 @@ These are your messages from the Gemini session, kept verbatim in order (only ob
 - **Housing:** Matte titanium silver, scratched, with the paint chipped at the corners to show dark carbon fiber or industrial plastic underneath.
 - **Screen:** Thick, reflective LCD glass with a high-contrast **neon-cyan** backlight that flickers faintly while it processes. No modern seamless OLED look.
 - **Inputs:** A tiny QWERTY keyboard with clicky rubber keys. Worn side buttons, one crudely hand-labeled **SUMMON** (or **EXECUTE**) by a previous owner.
-- **Origin (twist):** It looks like 2007 tech because it *was* built in 2007, by the elites. The future armies are running scavenged relics.
+- **Origin (twist):** It looks like 2007 tech because it *is* 2007 tech. No one in the future can build these. Every unit is either a **2007 original that survived** or a **retrofit** pieced together from salvaged parts. They are rare, and many don't work properly. See section 5.6 for where they were made.
 
 ### 4.2 Screens
 
@@ -66,7 +70,7 @@ These are your messages from the Gemini session, kept verbatim in order (only ob
 
 ### 4.3 The AI
 
-- **Name:** *Ghurub* (غروب) is Arabic for "sunset", the literal sunset of humanity where the game opens. It also echoes **Burroughs**, the AI in *SMT IV*. (See section 8, item 1: it's an echo, not an exact anagram.)
+- **Name:** *Ghurub* (غروب) is Arabic for "sunset", the literal sunset of humanity where the game opens. It also echoes **Burroughs**, the AI in *SMT IV*. It's a loose play on the name rather than a strict anagram, which is close enough.
 - **Personality:** Modeled on **Arthur** from *Strange Journey*.
   - Purely logical, analytical and unwavering. No ego, fear, anger or pity.
   - Calls the protagonist **"Operator."** Respectful, never flattering.
@@ -104,13 +108,43 @@ These are your messages from the Gemini session, kept verbatim in order (only ob
 
 | | **2007** | **The future** |
 | --- | --- | --- |
-| **What he is** | Mid-level enforcer and loan shark in the Shibuya backstreets. Runs illegal tech smuggling and underground casinos. About 34 years old. | **A petty criminal.** Black-market fixer who runs a gambling den out of a rusted, neon-lit train car in the station hub. Old, scarred, cheap cybernetics, always looking over his shoulder. |
+| **What he is** | Mid-level enforcer and loan shark in the Shinjuku backstreets (Kabukichō fits). Runs illegal tech smuggling and underground casinos. About 34 years old. | **A petty criminal.** Black-market fixer who runs a gambling den out of a rusted, neon-lit train car in the station hub. Old, scarred, cheap cybernetics, always looking over his shoulder. |
 | **Standing** | Hungry. Wants a way up. | Harshly regarded by the elites, who see him as a parasite. Craftiness keeps him *semi*-relevant, though not by much. Known as someone you don't mess with, but nowhere near as scary as the real powers of this era. |
-| **The link** | 6–8 months before Ground Zero, the elites hire him for dirty logistics: clearing underground spaces for their bunkers and smuggling prototype tech (including the first Ghurub chassis). He **skims data and steals a master system override key** without understanding what it is. | That stolen key is a **dead-man's switch** on the elites' systems. It's why they've never wiped him out, and why he knows how to get into the time-machine vault. |
-| **Style** | Won't fight you head on. He'll rig a trap or sell you out if the price is right. | Same, with 2,000 years of practice. |
+| **The link** | 6–8 months before Ground Zero, the elites (most likely the demon-side corporation, since they build the devices) hire him for dirty logistics: clearing underground spaces for their bunkers and smuggling prototype tech, including early Ghurub units. He **skims data and steals a master system override key** without understanding what it is. | That stolen key is a **dead-man's switch** on the elites' systems. It's why they've never wiped him out, and why he knows how to get into the time-machine vault. |
+| **How he survives** | Makes a **pact with a high demon**. The demon and an evil scientist (section 5.7) seal him in a **stasis pod**. Partway through the 2007 story **he disappears**, and later the player **finds the pod**. | Nobody knows. Everyone assumes he's an ordinary man born in this era. He never corrects them. |
+| **Style** | Won't fight you head on. He'll rig a trap or sell you out if the price is right. | The same. He's still a 2007 street hustler, just out of his own time. |
+
+**What Kuzuryu's survival means for the player.** In Act I he's just a shady fixer. In 2007 the player meets a man with the same face. Ghurub notices that before anyone else does (7.1), so the player knows something nobody in the future does. When he vanishes in 2007 and the pod turns up, the mystery is explained.
 
 **His future voice (draft):**
 > "Well, look what crawled out of the trenches. A pristine silver unit. I haven't seen one of those since... well, never mind when. You think you're going to use that to fix this dump of a world? Look around you, kid. The big shots up top — the angels, the demons, the elite squads — they've been fighting over the timeline for centuries. Me? I just survive. You want into the vault? Fine. But you pay upfront. I don't do charity, especially not for heroes."
+
+### 5.6 The 2007 factions (draft, not locked)
+
+**Most of the game takes place in 2007,** 6–8 months before Ground Zero. Tokyo looks normal, but the elites on both sides are already preparing for war, and in some areas demons or angels can already be seen drifting around.
+
+**Both sides are greedy.** Neither faction is the good one. Even the people who worship God are in it for power and money. Both are **rival corporations**.
+
+| | **Demon-worshipping corporation** | **God-worshipping corporation** |
+| --- | --- | --- |
+| **Patrons** | Demons | Angels |
+| **Devices** | **They build them.** They run the factory and fund the research. | They refuse to build that kind of technology on principle (or for show). **One of their holy elites owns a device anyway.** That's a hypocrisy the story can use. |
+| **Motive** | Greed | Greed dressed up as faith |
+| **Where they come from** | Possibly the ancestors of one of the two sects fighting in the future trench | Possibly the ancestors of the other |
+
+*(The last row is a suggestion. If the two future sects descend from these two companies, the opening battle is the same rivalry 2,000 years on.)*
+
+**The devices in 2007:**
+- The tech **isn't perfected yet.** Many units don't work, or work badly.
+- **A few people own working ones.** Each of them is a possible rival summoner, boss or ally.
+- **A factory level:** at some point the player gets inside the plant where they're made. Coming from a future where every unit is a rare scavenged relic, seeing **rows of them on an assembly line** should land as a revelation. Ghurub could react to seeing its own model being built.
+
+### 5.7 The evil scientist (2007)
+
+- Works with the high demon to build the **stasis pod** that carries Kuzuryu through the apocalypse. Probably on the demon side's payroll, or the brain behind the devices themselves.
+- **Inspiration:** Neil deGrasse Tyson. A charismatic celebrity science communicator, warm and funny on TV and in public, rotten underneath.
+- **Use the archetype, not the man.** Give him an original name and his own look and voice. Don't use Tyson's name, face or catchphrases. A real living person shown as a villain who makes demon pacts is a legal risk (likeness and defamation) and could get the game pulled from stores. The archetype on its own is distinctive enough that players will catch the reference.
+- **Name: TBD.**
 
 ---
 
@@ -162,7 +196,7 @@ The unit hums. The LCD flickers neon cyan. Blocks of pixel code scroll past. A l
 
 > **GHURUB:** "Scanning for anomalous temporal signatures... none within a five-kilometer radius. The entity's data was incomplete. We require intelligence from a human population."
 >
-> "I have isolated a low-frequency radio signal three kilometers north-east, matching coordinates for an underground transit hub. Probability of a human settlement: 87.2%. We should proceed."
+> "I have isolated a low-frequency radio signal three kilometers north-east, matching coordinates for the underground concourse of Shinjuku Station. Probability of a human settlement: 87.2%. We should proceed."
 
 ### Scene 3: Running the gauntlet (tutorial)
 
@@ -196,19 +230,19 @@ At the lip of the trench, before the player climbs out:
 
 > **ELITE SCOUT:** "You're reckless... running through the nests like that. But I get it. You're hunting it too." *(coughs)* "A Ghurub unit... it doesn't matter now. The mission failed. Command lied to us. It was never a resource cache. It was a temporal capsule. They buried it deep under the old city."
 >
-> "If you want in... go to the station underground. Find a man called Kuzuryu. Slippery bastard. Petty, black-market trash... but he's the only one left who knows how to open the vault before the demons overrun the lower levels. Go. Before you run out of time."
+> "If you want in... go to the Shinjuku Underground. Find a man called Kuzuryu. Slippery bastard. Petty, black-market trash... but he's the only one left who knows how to open the vault before the demons overrun the lower levels. Go. Before you run out of time."
 
 *(Whether the scout dies, flees or surrenders is TBD. A surviving scout could come back later.)*
 
-### Scene 5: The station gates (end of Act I)
+### Scene 5: The Shinjuku Station gates (end of Act I)
 
-**Setting.** The sand-choked concrete ruins of the station entrance. Demons patrol the scorched surface. The protagonist slips past (or fights) and goes down crumbling tiled stairs into the dark.
+**Setting.** The sand-choked concrete ruins of the Shinjuku Station entrance. Demons patrol the scorched surface. The protagonist slips past (or fights) and goes down crumbling tiled stairs into the dark.
 
 **The gate.** Huge barricades welded from old train parts block the lower tracks. Armed guards stand behind blinding spotlights.
 
 **Below.** A city underground: refugees in subway cars converted into bars, markets and shelters, under flickering neon. People stare at him. Nobody comes in from *that* direction, that fast, and lives.
 
-> **GHURUB:** "We have arrived at the transit hub. Beginning background scans for the individual designated 'Kuzuryu.'" ✎
+> **GHURUB:** "We have arrived at the Shinjuku transit hub. Beginning background scans for the individual designated 'Kuzuryu.'" ✎
 >
 > "Cross-referencing the scout's testimony with local radio traffic: subject is described as untrustworthy, harshly regarded by the elite factions, and persistently alive. Expected combat threat: low. Expected negotiation threat: high. Recommendation: proceed with financial and logistical caution. We must secure the vault coordinates."
 
@@ -219,9 +253,13 @@ At the lip of the trench, before the player climbs out:
 ## 7. Lines saved for later
 
 ### 7.1 Ghurub on Kuzuryu, 2007 ✎
-> **GHURUB:** "Biometric scan complete. Matching facial architecture against my future records... Match found: Kuzuryu. Current status: human, age 34, low-tier syndicate asset. Future status: black-market fixer, Shibuya Underground, estimated age 1,800+."
+Nobody in the future knows Kuzuryu is from 2007, so Ghurub can't look it up. It works it out from its own logs of meeting him.
+
+> **GHURUB:** "Biometric scan complete. Comparing facial architecture and voiceprint against my operator logs... Match: the individual designated Kuzuryu, Shinjuku Underground. Confidence: 98.6%."
 >
-> "Warning, Operator. This subject's causal importance is spiking. The territory and underground routes he is acquiring this quarter map almost exactly onto the hub we departed from. Within ninety days his operations will intersect the elites' bunker deployment. We must monitor him without disrupting his survival. He is building our future."
+> "Current subject: human, age approximately 34, low-tier syndicate asset. The Kuzuryu we met was the same man, at an apparent age of roughly 50. Under normal biology this match is impossible."
+>
+> "Hypothesis: the subject reaches our era by means other than natural lifespan. Recommendation: we keep him under observation and do not disrupt his survival. If he does not reach the future, we may never reach the vault."
 
 ### 7.2 Ghurub on God, mid-game or later (not Act I)
 Ghurub can start to *hypothesize* once it has data. For example:
@@ -231,25 +269,25 @@ Ghurub can start to *hypothesize* once it has data. For example:
 
 ## 8. Contradictions and open questions
 
-These are issues in the Gemini drafts. Each has a recommendation; the ✎ lines in section 6 already use it.
+### Settled
+- **Ghurub / Burroughs:** it's not a strict anagram, but it's close enough.
+- **Hub:** **Shinjuku Station.** Kuzuryu's 2007 turf moved to the Shinjuku backstreets so they still line up.
+- **The devices:** 2007 originals or future retrofits. Built in 2007 by the demon-side corporation. Unreliable, and few of them work (5.6).
+- **Kuzuryu's survival:** a high-demon pact plus a stasis pod built by the evil scientist. He disappears in 2007, the player finds the pod later, and future people think he's a normal man (5.5).
+- **The protagonist picks up the device** where the angel and demon dropped it. The previous operator's records are still on it.
+- **"Welcome back" → "Welcome."** **"Plasma firearm" → "draw your firearm."** **Future Kuzuryu = black-market fixer.** Ghurub profiles him at the gate from hearsay and saves the real scan for when they meet.
+- **The angel's "be warned" line** is restored in a shortened form (Scene 1). Cut it if you'd rather save that idea.
 
-1. **"Ghurub is an exact anagram of Burroughs" is false.** *Burroughs* has nine letters and *Ghurub* has six. The name works as a sound-alike nod plus the Arabic "sunset" meaning. Just don't call it an anagram in any material.
-2. **Hub name: Shibuya or Shinjuku?** Every draft scene says **Shibuya**, but your last message said "Shinjuku train station city." Kuzuryu's 2007 turf is also written as Shibuya. Pick one. If the hub is Shinjuku, his 2007 turf should probably move too, since the scan line depends on the hub matching his territory.
-3. **Where does the device come from?** In the premise, the angel and demon are fighting over it. Gemini's draft also had the protagonist "strip it from a dead soldier," which contradicts that. **Recommendation:** he picks it up where the angel and demon dropped it. The previous operator's records can still be on it (that's where the 0.04% figure comes from).
-4. **The angel's warning got dropped.** Your premise ends with "even in the past... there will be those with power and this relic is not the only thing he can rely on." Gemini's script cut it. You also said the angel talks too much. **Recommendation:** keep a short version (done in Scene 1), because it sets up 2007's power players and hints at abilities beyond the device. Cut it if you'd rather save that idea for later.
-5. **"Welcome back, operator"** contradicts registering a *new* operator. Changed to "Welcome, Operator."
-6. **"Plasma firearm"** contradicts the standard-issue handgun. Changed to "draw your firearm." Upgrading later is fine.
-7. **Kuzuryu's future status.** Gemini's 2007 scan line called him a "Syndicate Leader." You said he's a petty criminal. Changed to "black-market fixer."
-8. **How is Kuzuryu alive 1,500–2,000 years later?** This is the biggest open story question. Some options:
-   - The override key or tech he stole keeps him alive (cryo-sleep in a bunker, body swaps, cybernetics).
-   - A demon pact, which fits a criminal who cuts corners.
-   - He's a descendant or clone using the name. That's weaker, since you want the same man.
-   - He's a time traveler himself, which would tie into the vault.
-9. **Ghurub "scanned" Kuzuryu before meeting him.** The draft had Ghurub give a full psych profile at the gate. Changed so it profiles him from the scout's testimony and radio chatter, and saves the real biometric scan for when they meet.
-10. **Is "Ghurub" the AI or the device line?** The scout says "You have a Ghurub unit too?", which makes Ghurub a model of device, with several in existence. Then is the AI the same in every unit? **Recommendation:** "Ghurub unit" is the hardware line. Each unit runs the same base AI, but this one has its old operator's memories. That leaves room for rival Ghurubs.
-11. **Which sect is the protagonist from, and which is the scout from?** Both sects were lied to. Is the elite group a third party above both? Undecided.
-12. **Ghurub's "SUMMON" or "EXECUTE" button label:** pick one.
-13. **Protagonist's name, the demon in Scene 1, the scout's demon, and the Act I recruitables:** all TBD.
+### Open
+1. **When does Kuzuryu come out of the pod, and who opens it?** He's active in the future, so the pod was opened at some point. Did the demon wake him on purpose? Do the future elites know? Does the stolen override key travel with him, or is it waiting somewhere?
+2. **What can the player do once they find the pod in 2007?** If destroying it or opening it early erases future Kuzuryu, that paradox is a great choice moment (and maybe a route split).
+3. **Is the protagonist's Ghurub unit on the factory floor in 2007?** Seeing its own serial number on the line would be a strong scene for Ghurub.
+4. **Which future sect comes from which 2007 corporation,** and which one is the protagonist from? The scout?
+5. **Who in 2007 owns a working device?** The holy elite is one. The others are candidates for rival summoners.
+6. **Is "Ghurub" the AI's name or the hardware line?** The scout says "a Ghurub unit." Recommendation: Ghurub is the product line and every unit runs the same base AI. Then the holy elite's device might *also* talk like Ghurub, which could be eerie.
+7. **What the angel's line "this relic is not the only thing he can rely on" points to.** Does the protagonist gain powers of his own, Digital Devil Saga–style?
+8. **Ghurub's button label:** "SUMMON" or "EXECUTE".
+9. **Names to come up with:** the protagonist, the scout, the evil scientist, both corporations, the high demon Kuzuryu makes his pact with, the demon in Scene 1, the scout's demon, and the Act I recruitables.
 
 ---
 
