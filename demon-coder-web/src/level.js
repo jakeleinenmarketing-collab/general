@@ -100,14 +100,14 @@ function deskParts() {
 
 // ------------------------------------------------------------------ build
 export function buildLevel(scene, T) {
-  const L = { lights: [], flicker: [], notes: [], shutter: null, windows: null, bodies: [], arena: {} };
-  const lam = (opts) => new THREE.MeshLambertMaterial(opts);
+  const L = { lights: [], flicker: [], notes: [], shutter: null, bodies: [], arena: {}, windowFaces: [], floorCells: [] };
+  const lam = (opts) => new THREE.MeshLambertMaterial({ shadowSide: THREE.DoubleSide, ...opts });
 
   const mats = {
     lino: lam({ map: T.lino }), wood: lam({ map: T.wood }), ceiling: lam({ map: T.ceiling }),
     wall: lam({ map: T.wall }), board: lam({ map: T.board }), blackboard: lam({ map: T.blackboard }),
     lockers: lam({ map: T.lockers }),
-    window: lam({ map: T.window, emissiveMap: T.windowGlow, emissive: 0xffffff, emissiveIntensity: 0.7 }),
+    window: lam({ map: T.window, alphaMap: T.windowAlpha, alphaTest: 0.5 }),
   };
   const batches = {};
   const batch = (k) => (batches[k] ||= new QuadBatch());
@@ -118,6 +118,7 @@ export function buildLevel(scene, T) {
     if (!isFloorCh(c)) continue;
     const x0 = x * CELL, z0 = y * CELL;
     const floorKey = c === ',' ? 'wood' : 'lino';
+    L.floorCells.push(new THREE.Vector3(x0 + CELL / 2, 0, z0 + CELL / 2));
     batch(floorKey).quad(new THREE.Vector3(x0, 0, z0 + CELL), new THREE.Vector3(CELL, 0, 0), new THREE.Vector3(0, 0, -CELL), up);
     batch('ceiling').quad(new THREE.Vector3(x0, WALL_H, z0), new THREE.Vector3(CELL, 0, 0), new THREE.Vector3(0, 0, CELL), new THREE.Vector3(0, -1, 0), [0, 0, 2, 2]);
     // walls on each solid side, facing into this cell
@@ -135,11 +136,11 @@ export function buildLevel(scene, T) {
       if (x === 11 && y === 6 && s.n[1] === -1) key = 'board';
       let uv;
       if (key === 'blackboard') { let rs = x; while (at(rs - 1, y - 1) === 'B') rs--; const i = x - rs; uv = [i / 3, 0, (i + 1) / 3, 1]; }
+      if (key === 'window') L.windowFaces.push({ o: new THREE.Vector3(s.o[0] + s.u[0], 0, s.o[1] + s.u[1]), u: new THREE.Vector3(-s.u[0], 0, -s.u[1]).normalize(), n: new THREE.Vector3(s.nn[0], 0, s.nn[1]) });
       batch(key).quad(new THREE.Vector3(s.o[0] + s.u[0], 0, s.o[1] + s.u[1]), new THREE.Vector3(-s.u[0], 0, -s.u[1]), new THREE.Vector3(0, WALL_H, 0), new THREE.Vector3(s.nn[0], 0, s.nn[1]), uv);
     }
   }
-  for (const [k, b] of Object.entries(batches)) scene.add(b.mesh(mats[k]));
-  L.windows = mats.window;
+  for (const [k, b] of Object.entries(batches)) { const m = b.mesh(mats[k]); m.castShadow = m.receiveShadow = true; scene.add(m); }
 
   // ---------------------------------------------------------------- lights
   const panelGeo = new THREE.BoxGeometry(1.2, 0.06, 0.3);
@@ -148,7 +149,7 @@ export function buildLevel(scene, T) {
   const addPanel = (x, z, flicker) => {
     const m = new THREE.Mesh(panelGeo, flicker ? panelOn.clone() : panelOn);
     m.position.set(x, WALL_H - 0.03, z);
-    scene.add(m);
+    scene.add(m); (L.panels ||= []).push(m);
     if (flicker) L.flicker.push({ mesh: m, on: panelOn, off: panelOff, t: 0, light: null });
     return m;
   };
@@ -166,17 +167,17 @@ export function buildLevel(scene, T) {
     if (flick) { const f = L.flicker.find((p) => Math.abs(p.mesh.position.x - x) < 1.5 && Math.abs(p.mesh.position.z - z) < 1.5); if (f) f.light = l; }
     return l;
   };
-  pl(4.5, 14, 0xfff1d6, 9, 11);
-  pl(10, 14, 0xfff1d6, 7, 10);
-  pl(26, 14, 0xd8e8ff, 6, 10, true);
-  pl(38, 14, 0xfff1d6, 7, 10, true);
-  pl(46, 14, 0xfff1d6, 4, 8);
-  pl(10, 22, 0xffe2b8, 8, 10);
-  pl(36, 21, 0xd9fff0, 8, 10);
-  pl(8, 5, 0x9fb4d8, 4, 12);
-  pl(21, 5, 0xfff1d6, 5, 12, true);
-  pl(40, 5, 0x9fb4d8, 3, 12);
+  // fluorescent tubes gone green with age; most of the building is left dark
+  pl(4, 14, 0xc8f0d0, 3.2, 8);
+  pl(28, 14, 0xc8e8ff, 3.0, 8, true);
+  pl(40, 14, 0xc8f0d0, 3.0, 8, true);
+  pl(46, 14, 0xd8ffd8, 1.6, 6);
+  pl(10, 22, 0xffd8a0, 3.4, 8);
+  pl(36, 21, 0xb8ffe0, 3.4, 8);
+  pl(21, 5, 0xc8f0d0, 2.4, 9, true);
   L.arena.light = pl(54, 12, 0xff3b30, 0, 14);
+  // tubes with no working light behind them stay dead
+  for (const m of L.panels) if (!L.lights.some((l) => l.intensity > 0 && Math.hypot(l.position.x - m.position.x, l.position.z - m.position.z) < 1.6)) m.material = panelOff;
 
   // ---------------------------------------------------------------- shutter
   const shutterTex = T.shutter.clone(); shutterTex.wrapS = THREE.RepeatWrapping; shutterTex.repeat.set(2, 1); shutterTex.needsUpdate = true;
@@ -210,6 +211,7 @@ export function buildLevel(scene, T) {
     m4.compose(p, q.setFromEuler(e), new THREE.Vector3(1, 1, 1));
     iw.setMatrixAt(i, m4); im.setMatrixAt(i, m4);
   });
+  iw.castShadow = im.castShadow = true; iw.receiveShadow = im.receiveShadow = true;
   scene.add(iw, im);
 
   // the desk nobody sits at: flowers in a vase

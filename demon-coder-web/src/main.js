@@ -6,6 +6,7 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { makeTextures } from './textures.js';
+import { buildAtmosphere } from './atmosphere.js';
 import { buildLevel, MAP, START, DIRS, CELL, at, isFloorCh, cellCenter, zoneOf, INTERACT } from './level.js';
 import { ROSTER } from './characters.js';
 import { Hud } from './hud.js';
@@ -65,8 +66,10 @@ const renderer = new THREE.WebGLRenderer({ canvas, antialias: false });
 renderer.setPixelRatio(1);
 renderer.setSize(VIEW_W, VIEW_H, false);
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.15;
+renderer.toneMappingExposure = 1.05;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFShadowMap;
 
 function fit() {
   const s = Math.min(innerWidth / 16, innerHeight / 9);
@@ -76,8 +79,8 @@ function fit() {
 addEventListener('resize', fit); fit();
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x04060a);
-scene.fog = new THREE.FogExp2(0x05070c, 0.075);
+scene.background = new THREE.Color(0x010202);
+scene.fog = new THREE.FogExp2(0x010203, 0.105);
 const T = makeTextures();
 game.T = T; game.scene = scene;
 
@@ -87,14 +90,18 @@ camera.setViewOffset(VIEW_W, VIEW_H * 1.24, 0, VIEW_H * 0.24, VIEW_W, VIEW_H);
 game.camera = camera;
 scene.add(camera);
 
-const hemi = new THREE.HemisphereLight(0x8aa0c8, 0x2a2420, 0.9);
+const hemi = new THREE.HemisphereLight(0x4a5a66, 0x0c0a0a, 0.22);
 scene.add(hemi);
-const lantern = new THREE.PointLight(0xffd9a8, 6, 9, 1.0);
-lantern.position.set(0, 0.2, 0.4);
+// the only light Naomi carries is her laptop screen, held low and in front
+const lantern = new THREE.PointLight(0x9ff0ff, 3.6, 7, 1.1);
+lantern.position.set(0.15, -0.75, -0.35);
 camera.add(lantern);
 
 const L = buildLevel(scene, T);
 game.level = L;
+const atmo = buildAtmosphere(scene, T, L);
+game.atmo = atmo;
+atmo.onStrike = (big) => setTimeout(() => sound.thunder(big), big ? 500 + Math.random() * 500 : 1400 + Math.random() * 900);
 const fx = new Particles(scene, T.glow);
 game.fx = fx;
 
@@ -104,33 +111,59 @@ scene.add(burstLight);
 game.burst = (pos, color, intensity) => { burstLight.position.copy(pos); burstLight.color.set(color); burstLight.intensity = intensity; };
 
 // ------------------------------------------------------------------ post
+// Render, bloom for halation, tone map, then a display-space finish: crushed blacks, a green-amber grade,
+// ordered dither, grain, and two effects the game drives (the battle swirl and demon static).
 const composer = new EffectComposer(renderer);
 composer.setPixelRatio(1);
 composer.setSize(VIEW_W, VIEW_H);
 composer.addPass(new RenderPass(scene, camera));
-const bloom = new UnrealBloomPass(new THREE.Vector2(VIEW_W, VIEW_H), 0.5, 0.5, 0.9);
+const bloom = new UnrealBloomPass(new THREE.Vector2(VIEW_W, VIEW_H), 0.5, 0.6, 0.72);
 composer.addPass(bloom);
+composer.addPass(new OutputPass());
 const grade = new ShaderPass({
-  uniforms: { tDiffuse: { value: null }, time: { value: 0 }, hurt: { value: 0 } },
+  uniforms: { tDiffuse: { value: null }, time: { value: 0 }, hurt: { value: 0 }, warp: { value: 0 }, danger: { value: 0 }, flash: { value: 0 } },
   vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
   fragmentShader: `
-    uniform sampler2D tDiffuse; uniform float time; uniform float hurt; varying vec2 vUv;
-    float h(vec2 p){ return fract(sin(dot(p, vec2(12.9898, 78.233)) + time * 7.0) * 43758.5453); }
+    uniform sampler2D tDiffuse; uniform float time, hurt, warp, danger, flash; varying vec2 vUv;
+    float h(vec2 p){ return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
+    float bayer(vec2 p){ int x = int(mod(p.x, 4.0)), y = int(mod(p.y, 4.0)); int i = x + y * 4;
+      int b[16] = int[16](0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5); return float(b[i]) / 16.0 - 0.5; }
     void main(){
       vec2 uv = vUv;
       vec2 d = uv - 0.5;
-      float ab = 0.0016 + hurt * 0.006;
+      // battle swirl: the corridor twists into the dark
+      float r = length(d * vec2(1.78, 1.0));
+      float ang = warp * warp * 9.0 * (1.0 - smoothstep(0.0, 0.9, r));
+      d = mat2(cos(ang), -sin(ang), sin(ang), cos(ang)) * d * (1.0 + warp * 0.6);
+      uv = 0.5 + d;
+      // demon static: torn scanlines that thicken as an encounter gets close
+      float row = floor(uv.y * 120.0);
+      float tear = step(1.0 - danger * 0.09, h(vec2(row, floor(time * 14.0))));
+      uv.x += (h(vec2(row * 1.7, floor(time * 30.0))) - 0.5) * 0.05 * tear * danger;
+      float ab = 0.0012 + length(d) * 0.004 + hurt * 0.006 + danger * tear * 0.01;
       vec3 c = vec3(texture2D(tDiffuse, uv + d * ab).r, texture2D(tDiffuse, uv).g, texture2D(tDiffuse, uv - d * ab).b);
-      c = mix(c, c * vec3(0.92, 1.0, 1.06) + vec3(0.0, 0.006, 0.012), 0.6);   // cool shadows
-      float v = smoothstep(0.85, 0.25, length(d * vec2(1.1, 1.0)));
-      c *= mix(0.55, 1.0, v);
-      c += (h(uv * 640.0) - 0.5) * 0.012 * (0.4 + dot(c, vec3(0.33)));
-      c = mix(c, vec3(c.r * 1.4, c.g * 0.5, c.b * 0.5), hurt * 0.5);
+      // grade: lift nothing, crush the floor, pull color toward sick green in the darks and amber in the lights
+      c = max(c - 0.03, 0.0) * 1.08;
+      float l = dot(c, vec3(0.299, 0.587, 0.114));
+      c = mix(vec3(l), c, 0.68);
+      c *= mix(vec3(0.78, 1.0, 0.92), vec3(1.07, 1.0, 0.86), smoothstep(0.05, 0.55, l));
+      c = mix(c, c * c * (3.0 - 2.0 * c), 0.35);
+      // vignette, heavy
+      float v = smoothstep(0.95, 0.2, length((vUv - 0.5) * vec2(1.25, 1.05)));
+      c *= mix(0.18, 1.0, v);
+      c *= 1.0 - warp;
+      c = mix(c, vec3(l * 1.3, l * 0.25, l * 0.25), hurt * 0.45);
+      c += vec3(0.02, 0.0, 0.03) * tear * danger;
+      // film grain and a faint line structure
+      c += (h(gl_FragCoord.xy + fract(time * 13.0) * 100.0) - 0.5) * 0.045 * (0.35 + l);
+      c *= 0.94 + 0.06 * step(0.5, fract(gl_FragCoord.y * 0.5));
+      // quantize to a 5-bit-per-channel palette with ordered dither
+      c = floor(c * 31.0 + 0.5 + bayer(gl_FragCoord.xy) * 0.9) / 31.0;
       gl_FragColor = vec4(c, 1.0);
     }`,
 });
 composer.addPass(grade);
-composer.addPass(new OutputPass());
+game.grade = grade;
 
 // ------------------------------------------------------------------ party + hud
 game.party = PARTY.map((p) => ({ ...p, hpNow: p.hp }));
@@ -240,7 +273,7 @@ async function openShutter() {
     }, 16);
   });
   game.flags.shutterOpen = true;
-  L.arena.light.intensity = 6;
+  L.arena.light.intensity = 2.6;
   L.arena.anna.root.visible = true;
   mime.root.visible = true;
   for (const it of INTERACT) if (it.note === 'page' && it.sprite) it.sprite.visible = false;
@@ -376,7 +409,7 @@ async function intro() {
 }
 
 // ------------------------------------------------------------------ loop
-let last = performance.now(), lightningAt = 8;
+let last = performance.now(), brownout = 25, power = 1;
 const clock0 = performance.now();
 function frameLoop(now) {
   const dt = Math.min(0.05, (now - last) / 1000); last = now;
@@ -384,6 +417,8 @@ function frameLoop(now) {
   player.pitch += (player.pitchTarget - player.pitch) * Math.min(1, dt * 5);
   if (player.anim) player.anim(now);
   else placeCamera();
+  camera.rotation.z = Math.sin(t * 0.6) * 0.004;
+  camera.position.y += Math.sin(t * 1.2) * 0.006;
   // shake
   if (game.shake > 0) {
     camera.position.x += (Math.random() - .5) * game.shake; camera.position.y += (Math.random() - .5) * game.shake;
@@ -397,18 +432,25 @@ function frameLoop(now) {
       const on = f.mesh.material !== f.off;
       f.mesh.material = on ? f.off : f.on;
       f.t = on ? 0.03 + Math.random() * 0.25 : 0.05 + Math.random() * (Math.random() < 0.3 ? 2.5 : 0.3);
-      if (f.light) { f.light.userData.base ??= f.light.intensity; f.light.intensity = on ? f.light.userData.base * 0.15 : f.light.userData.base; }
+      if (f.light) f.light.userData.flickOff = on;
     }
   }
-  // lightning through the windows
-  lightningAt -= dt;
-  if (lightningAt <= 0) {
-    lightningAt = 14 + Math.random() * 18;
-    const flashes = [0, 120, 260];
-    flashes.forEach((ms) => setTimeout(() => { L.windows.emissiveIntensity = 7; hemi.intensity = 2.2; }, ms));
-    flashes.forEach((ms) => setTimeout(() => { L.windows.emissiveIntensity = 0.7; hemi.intensity = 0.9; }, ms + 60));
-    setTimeout(() => sound.thunder(), 700);
-  }
+  // weather: clouds over the moon, lightning, mist
+  const flash = atmo.update(t, dt);
+  hemi.intensity = 0.22 + flash * 1.4;
+  // the building's power is failing; now and then every tube browns out at once
+  brownout -= dt;
+  if (brownout <= 0) { brownout = 35 + Math.random() * 40; power = 0; sound.brownout(); }
+  power = Math.min(1, power + dt * (power < 0.12 ? 0.05 : 0.9));
+  for (const l of L.lights) { l.userData.base ??= l.intensity; if (l !== L.arena.light) l.intensity = l.userData.base * (0.06 + 0.94 * power) * (l.userData.flickOff ? 0.15 : 1); }
+  // the laptop screen breathes a little
+  lantern.intensity = 3.6 * (0.92 + Math.sin(t * 3.1) * 0.04 + (Math.random() < 0.01 ? -0.4 : 0));
+  // demon static: builds with every step past the grace period, outside the safe rooms
+  const z = zoneOf(player.x, player.y);
+  const dangerTarget = (z === 'NURSE' || z === 'ENTRANCE' || game.onFrame) ? 0 : THREE.MathUtils.clamp((game.stepsSinceFight - ENCOUNTERS.graceSteps + 3) / 9, 0, 1);
+  game.danger = (game.danger || 0) + (dangerTarget - (game.danger || 0)) * Math.min(1, dt * 2);
+  grade.uniforms.danger.value = game.danger * (0.5 + 0.5 * Math.sin(t * 7.0) ** 2);
+  hud.setSignal(game.danger);
   for (const it of INTERACT) if (it.sprite?.visible) { it.sprite.position.y = it.sprite.userData.base + Math.sin(t * 2 + it.x) * 0.04; it.sprite.material.opacity = game.read.has(it.note) ? 0.25 : 0.7 + Math.sin(t * 3) * 0.3; }
   // arena
   if (L.arena.anna.root.visible && game.annaPose !== 'still') L.arena.anna.update(t, dt, { scared: 1 });
@@ -435,10 +477,11 @@ requestAnimationFrame(frameLoop);
     const [x, y, d] = params.get('at').split(',').map(Number);
     player.x = x; player.y = y; player.dir = d; player.pos.copy(cellCenter(x, y).setY(EYE)); player.yaw = -d * Math.PI / 2; hud.markVisited(x, y);
   }
-  if (params.has('open')) { game.flags.shutterOpen = true; L.shutter.position.y += 2.8; L.arena.light.intensity = 6; L.arena.anna.root.visible = true; mime.root.visible = true; }
+  if (params.has('open')) { game.flags.shutterOpen = true; L.shutter.position.y += 2.8; L.arena.light.intensity = 2.6; L.arena.anna.root.visible = true; mime.root.visible = true; }
   if (!params.has('skip')) await intro();
   else document.getElementById('card').style.display = 'none';
   startAmbience();
+  game.fight = (group) => runBattle(game, group);     // test hook
   window.ready = true;
   if (params.has('battle')) {
     game.busy = true;

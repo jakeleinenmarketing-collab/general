@@ -1,12 +1,17 @@
 // Turn-based battles fought in the corridor itself: enemies stand in the world, the menu lives on the laptop.
 import * as THREE from 'three';
-import { ROSTER } from './characters.js';
+import { ROSTER, RIM } from './characters.js';
 import { ENEMIES, SKILLS } from './data.js';
 import { sound, playMusic, stopMusic } from './audio.js';
 import { bolt } from './fx.js';
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const rnd = (a, b) => a + Math.random() * (b - a);
+const anim = (ms, fn) => new Promise((res) => {
+  const t0 = performance.now();
+  const step = () => { const k = Math.min(1, (performance.now() - t0) / ms); fn(k); if (k < 1) requestAnimationFrame(step); else res(); };
+  step();
+});
 
 // Press-turn: a weakness or crit only spends half a turn, a miss or resist spends two.
 function consume(icons, result) {
@@ -31,6 +36,12 @@ export async function runBattle(game, group, opts = {}) {
   const fwd = new THREE.Vector3(-Math.sin(yaw), 0, -Math.cos(yaw));
   const right = new THREE.Vector3(Math.cos(yaw), 0, -Math.sin(yaw));
   const eye = game.player.pos.clone();
+  const grade = game.grade.uniforms;
+  const isBoss = group.some((k) => ENEMIES[k].boss);
+
+  // the corridor twists away into the dark
+  sound.warp();
+  await anim(520, (k) => (grade.warp.value = k));
 
   // ---------------------------------------------------------------- spawn
   const enemies = group.map((kind, i) => {
@@ -43,7 +54,7 @@ export async function runBattle(game, group, opts = {}) {
       rig.root.position.copy(eye).addScaledVector(fwd, dist).addScaledVector(right, lateral);
       rig.root.position.y = 0;
       rig.root.rotation.y = yaw;
-      rig.root.scale.setScalar(0.001);
+      rig.dissolve.value = 1.05;
       scene.add(rig.root);
     }
     e.home = rig.root.position.clone();
@@ -86,21 +97,24 @@ export async function runBattle(game, group, opts = {}) {
   game.player.pitchTarget = enemies.some((e) => e.boss) ? -0.02 : -0.16;
   playMusic(enemies.some((e) => e.boss) ? 'boss' : 'battle');
 
+  // stage light on the demons, and a red light behind them
+  const center = enemies.reduce((v, e) => v.add(e.home), new THREE.Vector3()).divideScalar(enemies.length);
+  const key = new THREE.SpotLight(0xd8e6ff, isBoss ? 9 : 8, 14, 0.55, 0.7, 1.4);
+  key.position.copy(eye).addScaledVector(fwd, 0.6).setY(2.9);
+  key.target.position.copy(center).setY(0.8);
+  const back = new THREE.PointLight(isBoss ? 0xff1a2a : 0xb02060, 8, 7, 1.5);
+  back.position.copy(center).addScaledVector(fwd, 1.4).setY(1.6);
+  scene.add(key, key.target, back);
+  const rimWas = RIM.value.clone();
+  RIM.value.set(isBoss ? 0x6a1820 : 0x3a2650);
+
   // ---------------------------------------------------------------- appear
-  if (!opts.rigs) {
-    sound.appear();
-    hud.flash('#ffffff', 500, 0.6);
-    for (const e of enemies) fx.emit(e.home.clone().setY(0.8), { n: 40, color: 0xb36bff, speed: 2.5, life: 0.9, size: 0.3, up: 0.5 });
-    const t0 = performance.now();
-    await new Promise((res) => {
-      tickers.push(function grow() {
-        const k = Math.min(1, (performance.now() - t0) / 700);
-        const s = k < 1 ? 1 + Math.sin(k * Math.PI) * 0.25 - (1 - k) : 1;
-        for (const e of enemies) e.rig.root.scale.setScalar(Math.max(0.001, k === 1 ? 1 : s * k));
-        if (k === 1) { tickers.splice(tickers.indexOf(grow), 1); res(); }
-      });
-    });
-  }
+  sound.appear();
+  for (const e of enemies) fx.emit(e.home.clone().setY(0.8), { n: 50, color: 0xff4fd0, speed: 2.2, life: 1.1, size: 0.25, up: 0.8 });
+  await anim(1100, (k) => {
+    grade.warp.value = Math.max(0, 1 - k * 1.8);
+    if (!opts.rigs) for (const e of enemies) e.rig.dissolve.value = 1.05 * (1 - k);
+  });
   hud.log(enemies.length === 1 ? `${enemies[0].name} appears.` : `${enemies.length} demons appear.`);
   await sleep(900);
 
@@ -165,13 +179,8 @@ export async function runBattle(game, group, opts = {}) {
     const c = e.rig.root.position.clone().setY(e.rig.height * 0.5);
     fx.emit(c, { n: 60, color: 0xff6a9a, speed: 3, life: 1.1, size: 0.3, grav: -1, spread: 1 });
     fx.emit(c, { n: 14, color: 0xffffff, speed: 1.5, life: 1.4, size: 0.12, up: 1.2 });
-    const t0 = performance.now();
-    await new Promise((res) => tickers.push(function d() {
-      const k = Math.min(1, (performance.now() - t0) / 600);
-      e.rig.root.scale.set(1 + k * 0.6, Math.max(0.001, 1 - k), 1 + k * 0.6);
-      e.rig.setFlash(0.6, 0xffd0e0);
-      if (k === 1) { tickers.splice(tickers.indexOf(d), 1); e.rig.root.visible = false; res(); }
-    }));
+    await anim(900, (k) => { e.rig.dissolve.value = k * 1.05; e.rig.setFlash(0.4 * (1 - k), 0xffd0e0); });
+    e.rig.root.visible = false;
   }
 
   async function partyAct(m, act) {
@@ -298,6 +307,8 @@ export async function runBattle(game, group, opts = {}) {
 
   // ---------------------------------------------------------------- wrap up
   stopMusic();
+  scene.remove(key, key.target, back);
+  RIM.value.copy(rimWas);
   for (const m of party) m.guard = false;
   if (outcome === 'win') { sound.win(); hud.log('The hall goes quiet.'); hud.toast('VICTORY', 1400); await sleep(1300); }
   for (const e of enemies) if (!opts.keep) scene.remove(e.rig.root);

@@ -127,40 +127,37 @@ export function makeTextures() {
     T.board = finish(c);
   }
 
-  { // window: frame + dark glass (glass glow lives in the emissive map)
-    const make = (emissive) => {
-      const [c, g] = canvas(256, 384);
-      if (emissive) { g.fillStyle = '#000'; g.fillRect(0, 0, 256, 384); }
-      else wallBase(g, 256, 384);
-      const x0 = 18, y0 = 54, x1 = 238, y1 = 250;
-      const sky = g.createLinearGradient(0, y0, 0, y1);
-      if (emissive) { sky.addColorStop(0, '#1b2f52'); sky.addColorStop(1, '#0a1426'); }
-      else { sky.addColorStop(0, '#13213a'); sky.addColorStop(1, '#070c16'); }
-      g.fillStyle = sky; g.fillRect(x0, y0, x1 - x0, y1 - y0);
-      if (!emissive) {      // distant town lights and hills
-        g.fillStyle = '#050810';
-        g.beginPath(); g.moveTo(x0, 210);
-        for (let x = x0; x <= x1; x += 12) g.lineTo(x, 200 - Math.sin(x * 0.05) * 12 - rand() * 6);
-        g.lineTo(x1, y1); g.lineTo(x0, y1); g.fill();
-      }
-      for (let i = 0; i < 26; i++) {
-        g.fillStyle = emissive ? `rgba(255,200,120,${rr(.4, .9)})` : '#ffcf8a';
-        g.fillRect(rr(x0 + 4, x1 - 4), rr(205, 240), 2, 2);
-      }
-      g.strokeStyle = emissive ? 'rgba(120,160,220,.35)' : 'rgba(140,170,210,.25)';
-      for (let i = 0; i < 60; i++) {   // rain on glass
-        const x = rr(x0, x1), y = rr(y0, y1 - 20);
-        g.lineWidth = 1; g.beginPath(); g.moveTo(x, y); g.lineTo(x + rr(-2, 2), y + rr(6, 20)); g.stroke();
-      }
-      g.fillStyle = emissive ? '#000' : '#8c948f';     // frames
-      g.fillRect(x0 - 6, y0 - 6, x1 - x0 + 12, 8); g.fillRect(x0 - 6, y1 - 2, x1 - x0 + 12, 10);
-      g.fillRect(x0 - 6, y0 - 6, 8, y1 - y0 + 12); g.fillRect(x1 - 2, y0 - 6, 8, y1 - y0 + 12);
-      g.fillRect(126, y0, 6, y1 - y0); g.fillRect(x0, 150, x1 - x0, 5);
-      if (!emissive) { g.fillStyle = '#5b625e'; g.fillRect(x0 - 6, y1 + 6, x1 - x0 + 12, 6); }
-      return finish(c);
-    };
-    T.window = make(false);
-    T.windowGlow = make(true);
+  { // window wall: lit frame and sill, with an alpha map that cuts the panes out
+    const [c, g] = canvas(256, 384);
+    wallBase(g, 256, 384);
+    const x0 = 18, y0 = 54, x1 = 238, y1 = 250;
+    g.fillStyle = '#20251f'; g.fillRect(x0, y0, x1 - x0, y1 - y0);
+    g.fillStyle = '#7d847f';
+    g.fillRect(x0 - 8, y0 - 8, x1 - x0 + 16, 10); g.fillRect(x0 - 8, y1 - 2, x1 - x0 + 16, 12);
+    g.fillRect(x0 - 8, y0 - 8, 10, y1 - y0 + 16); g.fillRect(x1 - 2, y0 - 8, 10, y1 - y0 + 16);
+    g.fillRect(125, y0, 8, y1 - y0); g.fillRect(x0, 149, x1 - x0, 6);
+    g.fillStyle = 'rgba(0,0,0,.35)'; g.fillRect(x0 - 8, y1 + 8, x1 - x0 + 16, 3);
+    g.fillStyle = '#4c524e'; g.fillRect(x0 - 12, y1 + 10, x1 - x0 + 24, 8);   // sill
+    noise(g, 256, 384, 800, 0.06);
+    T.window = finish(c);
+    const [a, ga] = canvas(256, 384);
+    ga.fillStyle = '#fff'; ga.fillRect(0, 0, 256, 384);
+    ga.fillStyle = '#000';
+    ga.fillRect(x0 + 2, y0 + 2, 125 - x0 - 2, 149 - y0 - 2); ga.fillRect(133, y0 + 2, x1 - 135, 149 - y0 - 2);
+    ga.fillRect(x0 + 2, 155, 125 - x0 - 2, y1 - 157); ga.fillRect(133, 155, x1 - 135, y1 - 157);
+    T.windowAlpha = finish(a, { srgb: false });
+    T.windowRect = { u0: x0 / 256, u1: x1 / 256, v0: 1 - y1 / 384, v1: 1 - y0 / 384 };
+  }
+
+  { // soft cloud puff for ground mist
+    const [c, g] = canvas(128, 128);
+    for (let i = 0; i < 26; i++) {
+      const x = rr(30, 98), y = rr(40, 88), r = rr(14, 34);
+      const gr = g.createRadialGradient(x, y, 0, x, y, r);
+      gr.addColorStop(0, 'rgba(255,255,255,.22)'); gr.addColorStop(1, 'rgba(255,255,255,0)');
+      g.fillStyle = gr; g.fillRect(0, 0, 128, 128);
+    }
+    T.cloud = finish(c);
   }
 
   { // blackboard, three cells wide
@@ -251,7 +248,7 @@ export function makeTextures() {
   }
 
   { // toon ramp: three hard bands
-    const data = new Uint8Array([96, 96, 96, 255, 178, 178, 178, 255, 255, 255, 255, 255]);
+    const data = new Uint8Array([62, 66, 84, 255, 165, 165, 172, 255, 255, 255, 255, 255]);
     const t = new THREE.DataTexture(data, 3, 1, THREE.RGBAFormat);
     t.minFilter = t.magFilter = THREE.NearestFilter; t.generateMipmaps = false; t.needsUpdate = true;
     T.ramp = t;

@@ -57,7 +57,15 @@ export const sound = {
     noise({ dur: 0.9, freq: 400, q: 1, gain: 0.25, sweep: 3000, attack: 0.7 });
   },
   die() { noise({ dur: 1.0, freq: 3000, q: 0.5, gain: 0.25, sweep: 200 }); tone({ freq: 400, slide: 60, dur: 0.9, type: 'triangle', gain: 0.2 }); },
-  thunder() { noise({ dur: 2.6, freq: 120, type: 'lowpass', gain: 0.8, attack: 0.02 }); noise({ dur: 0.4, freq: 900, type: 'lowpass', gain: 0.4 }); },
+  thunder(big = true) {
+    noise({ dur: big ? 3.4 : 2.4, freq: big ? 140 : 90, type: 'lowpass', gain: big ? 0.9 : 0.5, attack: big ? 0.02 : 0.4 });
+    if (big) { noise({ dur: 0.5, freq: 1200, type: 'lowpass', gain: 0.45 }); noise({ dur: 2.0, freq: 60, type: 'lowpass', gain: 0.5, when: 0.4, attack: 0.3 }); }
+  },
+  brownout() { tone({ freq: 100, slide: 40, dur: 1.4, type: 'sawtooth', gain: 0.06 }); noise({ dur: 0.15, freq: 3000, q: 4, gain: 0.08 }); noise({ dur: 0.1, freq: 2500, q: 4, gain: 0.06, when: 2.6 }); },
+  warp() {
+    noise({ dur: 0.9, freq: 300, q: 3, gain: 0.35, sweep: 4000, attack: 0.4 });
+    [55, 58.3, 82.4].forEach((f) => tone({ freq: f, slide: f * 0.5, dur: 1.0, type: 'sawtooth', gain: 0.12, attack: 0.05 }));
+  },
   shutter() { for (let i = 0; i < 16; i++) noise({ dur: 0.12, freq: 600 + Math.random() * 300, q: 6, gain: 0.25, when: i * 0.1 }); tone({ freq: 55, dur: 1.8, type: 'sawtooth', gain: 0.12 }); },
   white() { noise({ dur: 2.5, freq: 6000, q: 0.2, gain: 0.35, attack: 0.3, type: 'highpass' }); tone({ freq: 60, slide: 30, dur: 2.5, type: 'sine', gain: 0.5 }); },
   win() { [392, 523, 659, 784].forEach((f, i) => tone({ freq: f, dur: 0.35, type: 'square', gain: 0.06, when: i * 0.1 })); },

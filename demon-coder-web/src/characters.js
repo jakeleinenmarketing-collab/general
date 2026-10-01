@@ -5,22 +5,35 @@ import * as THREE from 'three';
 const V = (x, y, z) => new THREE.Vector3(x, y, z);
 const INK = 0x0b0a10;
 
-const outlineMats = new Map();
-function outlineMat(thickness) {
-  const key = thickness.toFixed(4);
-  if (outlineMats.has(key)) return outlineMats.get(key);
-  const m = new THREE.MeshBasicMaterial({ color: INK, side: THREE.BackSide });
-  m.onBeforeCompile = (s) => {
-    s.uniforms.thickness = { value: thickness };
-    s.vertexShader = 'uniform float thickness;\n' + s.vertexShader.replace(
-      '#include <begin_vertex>', 'vec3 transformed = position + normalize(normal) * thickness;');
+// Cold rim light on every lit surface; battle code may tint it.
+export const RIM = { value: new THREE.Color(0.20, 0.30, 0.42) };
+
+// Shared shader patch: a burn-in/burn-out dissolve for every material, rim light for lit ones,
+// and the inverted-hull push for outlines.
+const DIS_GLSL = `uniform float dissolve; varying vec3 vDis;
+float dh(vec3 p){ return fract(sin(dot(p, vec3(127.1, 311.7, 74.7))) * 43758.5453); }
+float dn3(vec3 p){ vec3 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f);
+  return mix(mix(mix(dh(i), dh(i + vec3(1,0,0)), f.x), mix(dh(i + vec3(0,1,0)), dh(i + vec3(1,1,0)), f.x), f.y),
+             mix(mix(dh(i + vec3(0,0,1)), dh(i + vec3(1,0,1)), f.x), mix(dh(i + vec3(0,1,1)), dh(i + vec3(1,1,1)), f.x), f.y), f.z); }
+`;
+function patch(m, rig, { lit = false, thickness = 0 } = {}) {
+  m.onBeforeCompile = (sh) => {
+    sh.uniforms.dissolve = rig.dissolve;
+    if (lit) sh.uniforms.rimColor = RIM;
+    if (thickness) sh.uniforms.thickness = { value: thickness };
+    sh.vertexShader = 'varying vec3 vDis;\n' + (thickness ? 'uniform float thickness;\n' : '') + sh.vertexShader.replace('#include <begin_vertex>',
+      (thickness ? 'vec3 transformed = position + normalize(normal) * thickness;' : '#include <begin_vertex>') +
+      '\nvDis = (modelMatrix * vec4(transformed, 1.0)).xyz;');
+    sh.fragmentShader = DIS_GLSL + (lit ? 'uniform vec3 rimColor;\n' : '') + sh.fragmentShader
+      .replace('#include <clipping_planes_fragment>', '#include <clipping_planes_fragment>\nfloat dnv = dn3(vDis * 9.0) * 0.7 + dn3(vDis * 23.0) * 0.3;\nif (dnv < dissolve) discard;')
+      .replace('#include <opaque_fragment>',
+        (lit ? 'outgoingLight += rimColor * pow(1.0 - clamp(abs(dot(normalize(normal), normalize(vViewPosition))), 0.0, 1.0), 2.5);\n' : '') +
+        'if (dissolve > 0.0) outgoingLight += vec3(1.0, 0.3, 0.85) * 3.0 * (1.0 - smoothstep(dissolve, dissolve + 0.07, dnv));\n#include <opaque_fragment>');
   };
-  m.customProgramCacheKey = () => 'outline' + key;
-  outlineMats.set(key, m);
-  return m;
+  m.customProgramCacheKey = () => (lit ? 'rigL' : 'rigF') + (thickness ? 'O' : '');
 }
 
-// One Rig per character instance, so hit flashes never bleed into another model.
+// One Rig per character instance, so hit flashes and dissolves never bleed into another model.
 class Rig {
   constructor(T, name) {
     this.T = T; this.name = name;
@@ -28,25 +41,39 @@ class Rig {
     this.body = new THREE.Group();
     this.root.add(this.body);
     this.mats = [];
+    this.outlines = new Map();
+    this.dissolve = { value: 0 };
     this.flashAmt = 0; this.flashColor = new THREE.Color(1, 1, 1);
   }
   mat(color, opts = {}) {
     const m = new THREE.MeshToonMaterial({ color, gradientMap: this.T.ramp, ...opts });
     m.userData.baseEmissive = m.emissive.clone();
     m.userData.baseIntensity = m.emissiveIntensity;
+    patch(m, this, { lit: true });
     this.mats.push(m);
     return m;
   }
   flat(color, opts = {}) {
     const m = new THREE.MeshBasicMaterial({ color, ...opts });
+    patch(m, this);
     return m;
   }
-  add(geo, mat, parent, pos, { outline = 0.012, scale, rot } = {}) {
+  outline(thickness) {
+    const key = thickness.toFixed(4);
+    if (!this.outlines.has(key)) {
+      const m = new THREE.MeshBasicMaterial({ color: INK, side: THREE.BackSide });
+      patch(m, this, { thickness });
+      this.outlines.set(key, m);
+    }
+    return this.outlines.get(key);
+  }
+  add(geo, mat, parent, pos, { outline = 0.014, scale, rot } = {}) {
     const mesh = new THREE.Mesh(geo, typeof mat === 'number' ? this.mat(mat) : mat);
     if (pos) mesh.position.copy(pos);
     if (scale) mesh.scale.set(...(Array.isArray(scale) ? scale : [scale, scale, scale]));
     if (rot) mesh.rotation.set(...rot);
-    if (outline > 0) mesh.add(new THREE.Mesh(geo, outlineMat(outline)));
+    mesh.castShadow = !mesh.material.transparent;
+    if (outline > 0) mesh.add(new THREE.Mesh(geo, this.outline(outline * 1.2)));
     (parent || this.body).add(mesh);
     return mesh;
   }
@@ -63,12 +90,6 @@ class Rig {
       m.emissive.copy(m.userData.baseEmissive).lerp(this.flashColor, amt);
       m.emissiveIntensity = m.userData.baseIntensity + amt * 1.4;
     }
-  }
-  setOpacity(a) {
-    this.root.traverse((o) => {
-      if (!o.material) return;
-      o.material.transparent = a < 1; o.material.opacity = a;
-    });
   }
 }
 

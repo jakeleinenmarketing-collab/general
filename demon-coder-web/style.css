@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=VT323&family=Shippori+Mincho:wght@500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=VT323&family=Shippori+Mincho:wght@500&family=Saira+Condensed:wght@400;600;700&display=swap');
 
 :root {
   --ink: #e9f5e2;
@@ -8,6 +8,8 @@
   --good: #5dffb0;
   --screen: #07110d;
   --mono: 'VT323', 'Consolas', 'Menlo', 'DejaVu Sans Mono', monospace;
+  --cond: 'Saira Condensed', 'Arial Narrow', 'Roboto Condensed', sans-serif;
+  --line: rgba(196, 214, 206, .55);
 }
 
 * { box-sizing: border-box; }
@@ -183,3 +185,32 @@ html, body { margin: 0; height: 100%; background: #000; overflow: hidden; }
 .ebar .b i { display: block; height: 100%; background: linear-gradient(#ff7a7a, #c8102a); transition: width .4s; }
 .ebar.sel .n { color: var(--hot); }
 .ebar.sel .b { box-shadow: 0 0 0 1px var(--hot), 0 0 10px var(--hot); }
+
+/* ---------- SMT-style overlays: black panels, hairlines, condensed type ---------- */
+#log {
+  font-family: var(--cond); font-weight: 600; font-size: 30px; letter-spacing: 1px; color: #e8efe9;
+  background: linear-gradient(90deg, transparent, rgba(0,0,0,.88) 12%, rgba(0,0,0,.88) 88%, transparent);
+  border: 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); box-shadow: none;
+  padding: 4px 70px; min-width: 520px;
+}
+#dialogue {
+  font-family: var(--cond); font-size: 32px; line-height: 36px; letter-spacing: .5px;
+  background: linear-gradient(180deg, rgba(4,6,8,.94), rgba(0,0,0,.96));
+  border: 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+  box-shadow: 0 0 0 1px #000, 0 20px 40px rgba(0,0,0,.8);
+}
+#dialogue .who { font-family: var(--cond); font-weight: 700; font-size: 22px; letter-spacing: 6px; color: #9fd8c8; }
+.ebar .n { font-family: var(--cond); font-weight: 600; font-size: 26px; letter-spacing: 2px; }
+.ebar .b { height: 5px; width: 170px; background: rgba(0,0,0,.7); border: 0; box-shadow: 0 0 0 1px var(--line); }
+#toast { font-family: var(--cond); font-weight: 700; font-style: italic; font-size: 54px; letter-spacing: 10px; color: #fff; text-shadow: 0 0 18px #ff1a3a, 0 0 4px #ff1a3a, 3px 3px 0 #000; }
+.floater { font-family: var(--cond); font-weight: 700; font-size: 54px; }
+.floater .tag { font-size: 22px; letter-spacing: 5px; }
+#card h1 { font-family: var(--cond); font-weight: 700; letter-spacing: 22px; text-shadow: 0 0 30px #c0102a, 0 0 6px #ff3048; }
+#card { background: radial-gradient(ellipse at center, rgba(10,0,4,.82), rgba(0,0,0,.96)); font-family: var(--cond); letter-spacing: 2px; }
+#prompt { font-family: var(--cond); font-weight: 600; letter-spacing: 3px; }
+#souls { font-family: var(--cond); font-weight: 600; }
+
+/* press-turn icons, top right and big, like the old games */
+#turns { position: fixed; top: 64px; right: 30px; height: auto; gap: 10px; }
+#turns .t { width: 26px; height: 26px; border: 2px solid #ffe9a0; background: radial-gradient(circle, #fff6c8, #f2b318 60%, #7a4a00); box-shadow: 0 0 14px rgba(255,200,40,.9); }
+#turns .t.enemy { border-color: #ffb0b8; background: radial-gradient(circle, #ffd0d4, #e01830 60%, #500008); box-shadow: 0 0 14px rgba(255,30,60,.9); }

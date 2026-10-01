@@ -133,6 +133,7 @@ export class Hud {
   markVisited(x, y) {
     for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) this.visited.add((x + dx) + ',' + (y + dy));
   }
+  setSignal(v) { this.signal = v; }
   drawMap(px, py, dir, read) {
     const g = this.mapCtx, s = 6, ox = 10, oy = 18;
     g.clearRect(0, 0, 200, 132);
@@ -151,6 +152,15 @@ export class Hud {
     g.save(); g.translate(ox + px * s + s / 2, oy + py * s + s / 2); g.rotate(dir * Math.PI / 2);
     g.fillStyle = '#ff4d5e'; g.beginPath(); g.moveTo(0, -4); g.lineTo(3.5, 3.5); g.lineTo(-3.5, 3.5); g.fill(); g.restore();
     g.fillStyle = '#6f8f7c'; g.font = '14px monospace'; g.fillText('1F  KAGEMORI HIGH', 10, 12);
+    // demon signal, the closer an encounter the more bars light
+    const sig = this.signal || 0;
+    g.fillText('SIGNAL', 10, 128);
+    for (let i = 0; i < 8; i++) {
+      const on = sig * 8 > i + 0.2;
+      g.fillStyle = on ? (i > 5 ? '#ff4d5e' : i > 3 ? '#ffd84a' : '#5dffb0') : '#16301f';
+      if (on && sig > 0.7 && Math.random() < 0.3) g.fillStyle = '#16301f';
+      g.fillRect(64 + i * 15, 118, 11, 10);
+    }
   }
 
   // ------------------------------------------------------------ floaters

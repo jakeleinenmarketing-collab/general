@@ -28,7 +28,10 @@ Test shortcuts (add to the URL): `?skip` skips the intro, `?at=x,y,dir` starts a
 
 - **No art files.** Textures are painted onto canvases at load (`src/textures.js`), and characters are built from spheres, cones and capsules (`src/characters.js`). Everything is cel shaded with ink outlines and lit by the same lights as the corridor.
 - **Live portraits.** The faces on the laptop are the real 3D party models, rendered every frame, so they blink, glance around, flinch when hit and slump at low HP.
-- **Retro look.** The game renders at 640x360 and is scaled up with crisp pixels, with bloom, a vignette and a light grain on top.
+- **Retro look.** The game renders at 640x360 and is scaled up with crisp pixels. On top: bloom for halation, a green-amber grade with crushed blacks, a heavy vignette, grain, and a 5-bit ordered dither for a late-90s console finish.
+- **Atmosphere that moves** (`src/atmosphere.js`). The windows are real openings onto a storm sky with clouds crossing a large moon, a town skyline and falling rain, all drawn by shaders. Rain beads and runs down the glass. Moonlight is a real shadow-casting light, so the window frames throw shadows across the floor, and lightning snaps those shadows hard. Light shafts, dust and ground mist drift. Tubes flicker, and the building's power browns out now and then.
+- **Demon signal.** Static tears across the screen and the laptop's SIGNAL meter climbs as a random encounter gets close.
+- **Battles.** The corridor swirls into the dark, demons burn in and out with a glowing edge, and a stage light picks them out against a red backlight.
 - **No audio files.** Rain, hum, footsteps, hits and both battle themes are synthesized in `src/audio.js`.
 - **Data in one place.** Stats, enemies, encounters, notes and the intro script are in `src/data.js`. The map is the `MAP` strings at the top of `src/level.js`.
 
@@ -40,6 +43,7 @@ Test shortcuts (add to the URL): `?skip` skips the intro, `?at=x,y,dir` starts a
 | `src/battle.js` | press-turn battles in the corridor itself |
 | `src/hud.js` | laptop HUD, portraits, automap, dialogue, notes |
 | `src/fx.js` | particles and lightning bolts |
+| `src/atmosphere.js` | sky, rain on glass, moonlight and shadows, shafts, dust, mist |
 | `tools/preview.html` | character lineup for checking models (`?n=touma&face=1`) |
 
 Three.js r186 is vendored in `vendor/` (MIT, see `vendor/THREE-LICENSE`), so nothing is downloaded at runtime.

@@ -12,6 +12,8 @@ Jake directs; Claude builds. Jake has no game dev background, so explain choices
 - Characters: primitives only, `MeshToonMaterial` with `T.ramp`, ink outlines via `rig.add(..., { outline })`. Clean and attractive over faithful to Jake's original drawings.
 - Every model gets its own `Rig` so hit flashes don't leak between characters.
 - World: Lambert materials, canvas textures, 640x360 render. Don't add image or audio files unless Jake asks.
+- Look target is SMT Nocturne: dark first. Light comes from a few sources (moonlight through windows, a handful of working tubes, the laptop). Check new rooms in screenshots for a grey veil; blacks should stay black.
+- Characters use `rig.dissolve` for burn in/out and share `RIM` for rim light; battle code tints `RIM`.
 - No em or en dashes in anything Jake reads (UI text, notes, docs).
 
 ## Content
