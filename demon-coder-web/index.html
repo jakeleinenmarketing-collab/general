@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Demon;Coder Web Test</title>
+<link rel="stylesheet" href="style.css">
+<script type="importmap">
+{
+  "imports": {
+    "three": "./vendor/three.module.js",
+    "three/addons/": "./vendor/addons/"
+  }
+}
+</script>
+</head>
+<body>
+<div id="frame">
+  <canvas id="view"></canvas>
+  <div id="hud">
+    <div id="flash"></div>
+    <div id="souls"><span class="label">SOULS</span><span id="soul-count">20000</span></div>
+    <div id="toast"></div>
+    <div id="log"></div>
+    <div id="prompt"></div>
+    <div id="floaters"></div>
+
+    <div id="laptop">
+      <div class="bezel">
+        <div class="cam-dot"></div>
+        <div class="screen">
+          <div class="scan"></div>
+          <div class="left">
+            <div class="titlebar"><span>SUMMON.EXE</span><span id="turns"></span><span id="loc">1F</span></div>
+            <canvas id="automap" width="200" height="132"></canvas>
+            <div id="menu"></div>
+          </div>
+          <div class="right" id="party"></div>
+        </div>
+      </div>
+      <div class="hinge"></div>
+    </div>
+
+    <div id="dialogue"><div class="who"></div><div class="text"></div><div class="more">&#9660;</div></div>
+    <div id="note"><div class="paper"></div><div class="close">[SPACE] put it down</div></div>
+    <div id="dos"><pre id="dos-text"></pre></div>
+    <div id="card"></div>
+  </div>
+</div>
+<script type="module" src="src/main.js"></script>
+</body>
+</html>

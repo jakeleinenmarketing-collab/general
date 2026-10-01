@@ -1,0 +1,24 @@
+<!doctype html><html><head><meta charset="utf-8">
+<script type="importmap">{"imports":{"three":"../vendor/three.module.js","three/addons/":"../vendor/addons/"}}</script>
+<style>body{margin:0;background:#000}canvas{display:block}</style></head><body>
+<script type="module">
+import * as THREE from 'three';
+import { makeTextures } from '../src/textures.js';
+import { ROSTER } from '../src/characters.js';
+const q = new URLSearchParams(location.search);
+const T = makeTextures();
+const r = new THREE.WebGLRenderer({ antialias: true }); r.setSize(1280, 720); document.body.appendChild(r.domElement);
+const scene = new THREE.Scene(); scene.background = new THREE.Color(0x1d2a33);
+scene.add(new THREE.HemisphereLight(0xbfd8ff, 0x302820, 1.2));
+const d = new THREE.DirectionalLight(0xfff2dd, 2.2); d.position.set(2, 4, 5); scene.add(d);
+const names = (q.get('n') || 'touma,gibbles,sparkles,calamari,gnome,mime,anna').split(',');
+const rigs = names.map((n, i) => { const rig = ROSTER[n](T); rig.root.position.x = (i - (names.length - 1) / 2) * 1.25; scene.add(rig.root); return rig; });
+const cam = new THREE.PerspectiveCamera(30, 16 / 9, 0.1, 100);
+const zoom = q.get('z') ? +q.get('z') : 1;
+cam.position.set(0, 1.2, 11 / zoom); cam.lookAt(0, 1.0, 0);
+if (q.get('face')) { cam.position.set(rigs[0].root.position.x, rigs[0].faceY, 1.0); cam.lookAt(rigs[0].root.position.x, rigs[0].faceY - 0.05, 0); }
+let t = +(q.get('t') || 1);
+for (const rig of rigs) rig.update(t, 0.016, { hurt: +(q.get('hurt') || 0), attack: +(q.get('atk') || 0) });
+r.render(scene, cam);
+window.done = true;
+</script></body></html>
