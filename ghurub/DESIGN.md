@@ -29,6 +29,7 @@ These are your messages from the Gemini session, kept verbatim in order (only ob
 11. **Devices, 2007 and the factions.** "The devices are not new, but rather either retrofitted from parts in the future or leftover from 2007. In the past, potentially one of the levels we go into a factory where they are building them. The tech is not perfected and maybe not many of them even work. But since 2007 is months away from doom, it will be a revelation to see a bunch of the devices. A few people in 2007 will have functioning ones. Most of the game will take place in 2007, and certain areas will have demons or angels floating around as the elites (elites on both sides) are preparing for war, but out of their greed. Even those who worship God are not in it for clean reasons. Probably thinking two rival corporate factions. Those who worship demons are the ones who make the devices, the angels' side are probably not likely to help create such technology, though one of the holy elites has one. This is not set in stone."
 12. **How Kuzuryu survives.** "Kuzuryu makes a pact with a high demon who keeps him in a stasis field or pod (combined effort of an evil scientist, who I want to model after Neil deGrasse Tyson, and demons). We will see Kuzuryu in 2007. He will disappear and at some point we will find the pod. The details of his survival in the future are not known; most people figure him to be a regular human born in the regular future."
 13. **Name and hub.** "Ghurub is close enough." "Shinjuku makes more sense."
+14. **Antagonist, the pod, the factory, the sects.** "[The person who reopens Kuzuryu's pod is] probably the main antagonist of the game, maybe a person revered as a hero among humanity on both sides in the future who also is in the past. He however survived by fusing himself with a demon. The antagonist's goons may reopen Kuzuryu's pod out of legend but they find out he is useless though and the stories of his greatness are more myth than legend." "Ghurub unit sitting in factory line in 2007 would be super cool." "Yes, they can destroy [the pod], and we should give them a reason to in the future. Potentially we see Kuzuryu with slaves or treating people bad in Shinjuku Station on the floor he controls. It should be a nice moment to end him." "That would be great if the future sects descend from the two corporations but it should be kind of obscure. Like not overt."
 
 ---
 
@@ -110,11 +111,19 @@ These are your messages from the Gemini session, kept verbatim in order (only ob
 | --- | --- | --- |
 | **What he is** | Mid-level enforcer and loan shark in the Shinjuku backstreets (Kabukichō fits). Runs illegal tech smuggling and underground casinos. About 34 years old. | **A petty criminal.** Black-market fixer who runs a gambling den out of a rusted, neon-lit train car in the station hub. Old, scarred, cheap cybernetics, always looking over his shoulder. |
 | **Standing** | Hungry. Wants a way up. | Harshly regarded by the elites, who see him as a parasite. Craftiness keeps him *semi*-relevant, though not by much. Known as someone you don't mess with, but nowhere near as scary as the real powers of this era. |
+| **Cruelty** | A loan shark who breaks fingers. | Small to the elites, but **a tyrant on the one floor of Shinjuku Station he controls.** He keeps **slaves** and treats the people under him terribly. The player sees this firsthand in the hub, before going back in time. This is the player's reason to destroy the pod later. |
 | **The link** | 6–8 months before Ground Zero, the elites (most likely the demon-side corporation, since they build the devices) hire him for dirty logistics: clearing underground spaces for their bunkers and smuggling prototype tech, including early Ghurub units. He **skims data and steals a master system override key** without understanding what it is. | That stolen key is a **dead-man's switch** on the elites' systems. It's why they've never wiped him out, and why he knows how to get into the time-machine vault. |
-| **How he survives** | Makes a **pact with a high demon**. The demon and an evil scientist (section 5.7) seal him in a **stasis pod**. Partway through the 2007 story **he disappears**, and later the player **finds the pod**. | Nobody knows. Everyone assumes he's an ordinary man born in this era. He never corrects them. |
+| **How he survives** | Makes a **pact with a high demon**. The demon and an evil scientist (section 5.7) seal him in a **stasis pod**. Partway through the 2007 story **he disappears**, and later the player **finds the pod**. | **The antagonist's goons opened the pod.** Among the antagonist's people there's a **legend** of a great man from the old world sleeping in a pod under the city. They dug it up hoping for a powerful ally and got a small-time hustler. The legend was mostly myth, so they threw him away. He crawled to Shinjuku and started over. **Ordinary people don't know any of this.** They assume he was born in this era, and nobody connects the fixer in the train car to the legend. |
 | **Style** | Won't fight you head on. He'll rig a trap or sell you out if the price is right. | The same. He's still a 2007 street hustler, just out of his own time. |
 
 **What Kuzuryu's survival means for the player.** In Act I he's just a shady fixer. In 2007 the player meets a man with the same face. Ghurub notices that before anyone else does (7.1), so the player knows something nobody in the future does. When he vanishes in 2007 and the pod turns up, the mystery is explained.
+
+**Destroying the pod (player choice).**
+- **Setup:** in the future, the player has seen Kuzuryu's slave floor in Shinjuku Station and has had to deal with him to reach the vault anyway. It leaves a bad taste.
+- **Payoff:** in 2007 the player finds him asleep in the pod and can **end him.** It should feel earned and satisfying.
+- **The paradox:** the player needed future Kuzuryu to reach the vault. **Recommendation:** the protagonist and Ghurub left the original timeline, so destroying the pod doesn't undo their own past. It changes the future they're *heading toward*: in that future, nobody owns that floor. Ghurub explains it in one cold line:
+  > **GHURUB:** "Our causal history is already recorded, Operator. Terminating the subject removes him from the timeline we are constructing, not the one we left. The individuals on his floor will not be born into his custody."
+- **Optional:** sparing him could pay off later (his override key; see 5.9). That would make it a real choice rather than an obvious one.
 
 **His future voice (draft):**
 > "Well, look what crawled out of the trenches. A pristine silver unit. I haven't seen one of those since... well, never mind when. You think you're going to use that to fix this dump of a world? Look around you, kid. The big shots up top — the angels, the demons, the elite squads — they've been fighting over the timeline for centuries. Me? I just survive. You want into the vault? Fine. But you pay upfront. I don't do charity, especially not for heroes."
@@ -130,14 +139,19 @@ These are your messages from the Gemini session, kept verbatim in order (only ob
 | **Patrons** | Demons | Angels |
 | **Devices** | **They build them.** They run the factory and fund the research. | They refuse to build that kind of technology on principle (or for show). **One of their holy elites owns a device anyway.** That's a hypocrisy the story can use. |
 | **Motive** | Greed | Greed dressed up as faith |
-| **Where they come from** | Possibly the ancestors of one of the two sects fighting in the future trench | Possibly the ancestors of the other |
+| **What they become** | The ancestors of one future sect | The ancestors of the other |
 
-*(The last row is a suggestion. If the two future sects descend from these two companies, the opening battle is the same rivalry 2,000 years on.)*
+**Keep the sect lineage obscure.** The game never says it outright. Attentive players piece it together from details like these:
+- **Worn logos:** a future sect's banner or armor crest is a corporate logo sanded down by centuries and redrawn as a holy symbol.
+- **Names drift:** a sect's name is a corrupted form of the company name or a product name.
+- **Scripture that's really policy:** a future sect recites "holy" texts that turn out to be the 2007 company's mission statement, safety notices or employee handbook.
+- **Same places:** a future sect's sacred site is the ruin of that company's 2007 headquarters.
+- **Ghurub stays quiet:** Ghurub can log a "statistical correlation" between the two without ever stating a conclusion.
 
 **The devices in 2007:**
 - The tech **isn't perfected yet.** Many units don't work, or work badly.
 - **A few people own working ones.** Each of them is a possible rival summoner, boss or ally.
-- **A factory level:** at some point the player gets inside the plant where they're made. Coming from a future where every unit is a rare scavenged relic, seeing **rows of them on an assembly line** should land as a revelation. Ghurub could react to seeing its own model being built.
+- **A factory level:** at some point the player gets inside the plant where they're made. Coming from a future where every unit is a rare scavenged relic, seeing **rows of them on an assembly line** should land as a revelation. See 5.9.
 
 ### 5.7 The evil scientist (2007)
 
@@ -145,6 +159,36 @@ These are your messages from the Gemini session, kept verbatim in order (only ob
 - **Inspiration:** Neil deGrasse Tyson. A charismatic celebrity science communicator, warm and funny on TV and in public, rotten underneath.
 - **Use the archetype, not the man.** Give him an original name and his own look and voice. Don't use Tyson's name, face or catchphrases. A real living person shown as a villain who makes demon pacts is a legal risk (likeness and defamation) and could get the game pulled from stores. The archetype on its own is distinctive enough that players will catch the reference.
 - **Name: TBD.**
+- He could be the person who seals Kuzuryu in and the one who designed Ghurub (5.9). That keeps the 2007 cast tight.
+
+### 5.8 The main antagonist
+
+- **In the future:** revered as **a hero by humanity on both sides.** Both sects, who agree on nothing else, honor him.
+- **In 2007:** he's also alive and active. **Who he is in 2007: TBD.**
+- **How he lasted 2,000 years:** he **fused himself with a demon.** Unlike Kuzuryu, who slept through it, he lived through every century. That's how he became a legend.
+- **His people:** his followers or goons are the ones who dig up Kuzuryu's pod, chasing a myth.
+- **Why it works:** Kuzuryu is the cheap version of the same trick (a deal, a pod, and luck). The antagonist is the real thing (a fusion, and two millennia of planning). One is a punchline and the other is a god-king.
+
+**Ideas for his 2007 identity** (pick one or none):
+- **The holy elite with the device.** The one God-side elite who secretly owns demon tech is also the one who fuses with a demon. Sacred to both sides in the future because he was a founder on one side and a secret partner of the other.
+- **The evil scientist.** The celebrity scientist becomes the savior of the future. Very on-theme, but it's a lot to put on one character.
+- **Someone the player helps.** An ally in 2007 who betrays the player late, the way SMT handles its Law and Chaos heroes. Seeing a statue of him in Act I without knowing who he is would make the reveal hit hard.
+- **The man behind the time machine.** If he's planned for 2,000 years, maybe the war over the time machine in the opening was his doing.
+
+### 5.9 Your Ghurub on the 2007 factory line
+
+The player walks the assembly line and Ghurub finds **its own serial number** on a unit being built. Ideas for what to do with it:
+
+1. **Ghurub's missing first memory.** Ghurub's earliest logs have always been corrupted. Near its younger self, it recovers them: who designed it, what it was really built for, and maybe a hidden directive it didn't know it had. That's a midgame reveal, and the AI the player relies on is suddenly a question mark.
+2. **Talk to the blank unit.** The 2007 Ghurub boots up fresh: same voice, no memories, and it calls the protagonist "Unregistered user." The player's Ghurub, talking to its own empty self, is the one moment where its cold logic might crack slightly.
+3. **The override key is for every unit, including yours.** The master override key Kuzuryu steals is the factory's master key for all Ghurub units. That's why the future elites fear him, and it means **he could have shut your Ghurub off at any point in the future.** It also gives the player a reason to want the key, and maybe a reason to spare him (see 5.5).
+4. **Sabotage or protect the line.** Destroying the factory could stop the elites' war machine, but your unit is on that line. Ghurub calculates the odds and **recommends destroying it anyway, including itself**, because the mission comes first, like Arthur. Then the player chooses.
+5. **The bootstrap loop.** The "SUMMON" label that "a previous owner" scratched onto the side of your unit? The protagonist scratches it there himself, in 2007, on the unit on the line. He was the previous owner all along, or at least he made that mark. It's a small detail that will blow players' minds.
+6. **Why your unit is a reject.** Most 2007 units don't work. Yours could be a QA reject that **Kuzuryu smuggled out** (he moves the devices for the elites). That explains how it survived the apocalypse and ties three threads together: Kuzuryu, the factory and Ghurub.
+7. **Gameplay payoff.** The factory has upgrade modules, firmware or a fusion program the future never recovered. Leaving it means Ghurub gains new abilities (demon fusion, a better analysis screen, etc.).
+8. **Boss.** A bound test demon in a containment chamber, used for QA, which breaks loose. Or the scientist himself.
+
+**Recommendation:** use 1, 3, 5 and 6 together. They're one connected chain: your unit is a reject, Kuzuryu smuggles it out, the override key controls it, the label was yours, and the recovered memory reveals who built it and why. Use 4 as the level's climax.
 
 ---
 
@@ -278,16 +322,22 @@ Ghurub can start to *hypothesize* once it has data. For example:
 - **"Welcome back" → "Welcome."** **"Plasma firearm" → "draw your firearm."** **Future Kuzuryu = black-market fixer.** Ghurub profiles him at the gate from hearsay and saves the real scan for when they meet.
 - **The angel's "be warned" line** is restored in a shortened form (Scene 1). Cut it if you'd rather save that idea.
 
+- **Kuzuryu's pod** is reopened by the antagonist's goons chasing a legend. He turns out to be a nobody and is thrown away (5.5).
+- **The player can destroy the pod.** The reason: his slave floor in future Shinjuku (5.5).
+- **The protagonist's Ghurub unit is on the 2007 factory line** (5.9).
+- **The future sects descend from the 2007 corporations,** but it's only hinted, never stated (5.6).
+
 ### Open
-1. **When does Kuzuryu come out of the pod, and who opens it?** He's active in the future, so the pod was opened at some point. Did the demon wake him on purpose? Do the future elites know? Does the stolen override key travel with him, or is it waiting somewhere?
-2. **What can the player do once they find the pod in 2007?** If destroying it or opening it early erases future Kuzuryu, that paradox is a great choice moment (and maybe a route split).
-3. **Is the protagonist's Ghurub unit on the factory floor in 2007?** Seeing its own serial number on the line would be a strong scene for Ghurub.
+1. **Who is the antagonist in 2007?** Options in 5.8. His name, and the demon he fused with.
+2. **The pod paradox:** go with the "they're outside their own timeline" rule (5.5), or something else?
+3. **Should sparing Kuzuryu be worth something** (the override key)? Or is ending him simply the right call?
 4. **Which future sect comes from which 2007 corporation,** and which one is the protagonist from? The scout?
-5. **Who in 2007 owns a working device?** The holy elite is one. The others are candidates for rival summoners.
-6. **Is "Ghurub" the AI's name or the hardware line?** The scout says "a Ghurub unit." Recommendation: Ghurub is the product line and every unit runs the same base AI. Then the holy elite's device might *also* talk like Ghurub, which could be eerie.
-7. **What the angel's line "this relic is not the only thing he can rely on" points to.** Does the protagonist gain powers of his own, Digital Devil Saga–style?
-8. **Ghurub's button label:** "SUMMON" or "EXECUTE".
-9. **Names to come up with:** the protagonist, the scout, the evil scientist, both corporations, the high demon Kuzuryu makes his pact with, the demon in Scene 1, the scout's demon, and the Act I recruitables.
+5. **Where the slave-floor scene goes.** Act I ends at the Shinjuku gates, so this is early Act II, before the time jump. It's also probably where the player has to deal with Kuzuryu to reach the vault.
+6. **Who in 2007 owns a working device?** The holy elite is one. The others are candidates for rival summoners.
+7. **Is "Ghurub" the AI's name or the hardware line?** The scout says "a Ghurub unit." Recommendation: Ghurub is the product line and every unit runs the same base AI. Then the holy elite's device might *also* talk like Ghurub, which could be eerie.
+8. **What the angel's line "this relic is not the only thing he can rely on" points to.** Does the protagonist gain powers of his own, Digital Devil Saga–style?
+9. **Ghurub's button label:** "SUMMON" or "EXECUTE".
+10. **Names to come up with:** the protagonist, the scout, the evil scientist, both corporations, the high demon Kuzuryu makes his pact with, the antagonist, the demon in Scene 1, the scout's demon, and the Act I recruitables.
 
 ---
 
