@@ -1,0 +1,10 @@
+<!doctype html><html><head><meta charset="utf-8">
+<script type="importmap">{"imports":{"three":"../vendor/three.module.js"}}</script>
+<style>body{margin:0;background:#151a1c;display:flex;gap:10px;flex-wrap:wrap;padding:10px}img{background:#2a3134}</style></head><body>
+<script type="module">
+import { SVG } from '../src/sprites.js';
+const add = (svg, w) => { const i = new Image(); i.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg); i.width = w; document.body.appendChild(i); };
+for (const e of ['neutral', 'hurt', 'attack', 'blink']) add(SVG.naomi(e), 300);
+for (const p of ['idle', 'attack', 'hurt']) add(SVG.mime(p), 180);
+setTimeout(() => (window.done = true), 500);
+</script></body></html>

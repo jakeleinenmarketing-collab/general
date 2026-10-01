@@ -10,6 +10,7 @@ Jake directs; Claude builds. Jake has no game dev background, so explain choices
 
 ## Style rules
 - Characters: sculpted primitives (`sculpt()`, `headGeometry()`), `MeshStandardMaterial` via `rig.mat()`, no outlines. Tone is serious and unsettling, never cute: realistic human proportions, small eyes, no blush; demons should be wrong to look at. Jake's drawings are inspiration only.
+- Drawn art (`src/sprites.js`): characters as hand-authored SVG with ink lines and two-tone cel shading, rasterized at load. This is the direction Jake prefers (Soul Hackers / Strange Journey). The Mime and Naomi's portrait use it; `?3d` shows the old 3D models. Demons are flat cards in the corridor via `makeSpriteDemon`, with idle/attack/hurt frames.
 - Every model gets its own `Rig` so hit flashes don't leak between characters.
 - World: `MeshStandardMaterial` with canvas textures and generated normal maps, a dim captured environment for reflections, 640x360 render. Props go in `src/props.js`, merged with `Bundle` so each kind is one draw call. Don't add image or audio files unless Jake asks.
 - GTAOPass was tried and broke the image (everything black, transparent effects lost); don't re-add it without testing.

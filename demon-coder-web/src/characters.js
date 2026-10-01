@@ -1,6 +1,7 @@
 // Characters are built from sculpted primitives at load time and lit like everything else in the world.
 // Humans are proportioned like people; demons are meant to be wrong to look at.
 import * as THREE from 'three';
+import { loadSpriteFrames } from './sprites.js';
 
 const V = (x, y, z) => new THREE.Vector3(x, y, z);
 
@@ -665,6 +666,33 @@ export function makeMime(T) {
   return rig;
 }
 
+// ---------------------------------------------------------------- drawn demons: a flat illustration standing in the corridor
+// The art is lit by the scene (and self-lit a little through its own colors) so it sits in the hallway instead of on top of it.
+export function makeSpriteDemon(T, id, { height, faceY }) {
+  const rig = new Rig(T, id);
+  const art = loadSpriteFrames(id);
+  const w = height * art.aspect;
+  const geo = new THREE.PlaneGeometry(w, height);
+  geo.translate(0, height / 2, 0);
+  const mat = rig.mat(0xffffff, { map: art.frames.idle, emissiveMap: art.frames.idle, emissive: 0x777777, alphaTest: 0.5, side: THREE.DoubleSide, roughness: 0.9 });
+  mat.userData.baseEmissive = mat.emissive.clone();
+  const card = rig.add(geo, mat, rig.body);
+  card.castShadow = true;
+  rig.parts = { card };
+  rig.height = height; rig.faceY = faceY;
+  let frame = 'idle';
+  rig.update = (t, dt, st) => {
+    const hurt = st?.hurt || 0, attack = st?.attack || 0;
+    const next = hurt > 0.35 ? 'hurt' : attack > 0.3 ? 'attack' : 'idle';
+    if (next !== frame) { frame = next; mat.map = mat.emissiveMap = art.frames[frame]; mat.needsUpdate = true; }
+    const breathe = Math.sin(t * 1.6);
+    card.scale.set(1 - breathe * 0.008 + attack * 0.06, 1 + breathe * 0.012 + attack * 0.06, 1);
+    card.position.x = hurt > 0 ? Math.sin(t * 70) * 0.04 * hurt : 0;
+    card.rotation.z = Math.sin(t * 0.7) * 0.015;
+  };
+  return rig;
+}
+
 export const ROSTER = {
   touma: (T) => makeStudent(T, { name: 'touma', coat: true, laptop: true }),
   anna: (T) => makeStudent(T, { name: 'anna', hair: 0x2a1a12, iris: 0x3a2618, ponytail: true, skin: 0xcaa896 }),
@@ -674,5 +702,5 @@ export const ROSTER = {
   sparkles: makeSparkles,
   calamari: makeCalamari,
   gnome: makeGnome,
-  mime: makeMime,
+  mime: (T) => (new URLSearchParams(location.search).has('3d') ? makeMime(T) : makeSpriteDemon(T, 'mime', { height: 2.5, faceY: 2.1 })),
 };

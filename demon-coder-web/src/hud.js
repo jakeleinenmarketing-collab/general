@@ -1,6 +1,7 @@
 // The laptop HUD and every overlay. Portraits are the real 3D party models, rendered live.
 import * as THREE from 'three';
 import { ROSTER } from './characters.js';
+import { loadPortrait } from './sprites.js';
 import { MAP, W, Hh, at, isFloorCh, INTERACT } from './level.js';
 import { sound } from './audio.js';
 
@@ -46,7 +47,8 @@ export class Hud {
       const dist = m.id === 'touma' ? 0.62 : m.id === 'gibbles' ? 1.05 : 0.75;
       cam.position.set(0.05, fy + 0.02, dist);
       cam.lookAt(0, fy - (m.id === 'touma' ? 0.05 : 0.03), 0);
-      m.portrait = { scene, rig, cam, hurt: 0, attack: 0 };
+      m.portrait = { scene, rig, cam, hurt: 0, attack: 0, art: new URLSearchParams(location.search).has('3d') ? null : loadPortrait(m.id), blink: 0, nextBlink: 2 };
+      if (m.portrait.art) { const cv = el.querySelector('canvas'); cv.width = 224; cv.height = 120; cv.style.imageRendering = 'auto'; }
       this.setHP(m);
     }
     for (let i = members.length; i < 6; i++) {
@@ -81,6 +83,7 @@ export class Hud {
       p.attack = Math.max(0, p.attack - dt * 2);
       const st = { hurt: Math.min(1, p.hurt * 1.5), attack: Math.sin(Math.min(1, p.attack) * Math.PI), low: m.hpNow / m.hp < 0.3 };
       if (m.hpNow <= 0) { st.hurt = 1; }
+      if (p.art) { this.drawArt(m, p, st, t, dt); continue; }
       p.rig.update(t + m.hp, dt, st);
       p.rig.setFlash(p.hurt > 0.6 ? (p.hurt - 0.6) * 1.8 : 0, 0xff2030);
       this.pr.render(p.scene, p.cam);
@@ -92,6 +95,24 @@ export class Hud {
       g.drawImage(this.pr.domElement, 0, 0);
       if (p.hurt > 0.5) { g.fillStyle = `rgba(255,30,40,${(p.hurt - 0.5) * 0.6})`; g.fillRect(0, 0, 112, 60); }
     }
+  }
+
+  // Drawn portrait: pick the expression, crop to the face, add a little life.
+  drawArt(m, p, st, t, dt) {
+    p.nextBlink -= dt;
+    if (p.nextBlink < 0) { p.blink = 0.13; p.nextBlink = 2 + Math.random() * 4; }
+    p.blink = Math.max(0, p.blink - dt);
+    const e = m.hpNow <= 0 || st.hurt > 0.3 ? 'hurt' : st.attack > 0.2 ? 'attack' : p.blink > 0 ? 'blink' : st.low ? 'low' : 'neutral';
+    const g = m.ctx, W = 224, H = 120;
+    const [a, b] = PORTRAIT_BG[m.id];
+    const grad = g.createLinearGradient(0, 0, 0, H);
+    grad.addColorStop(0, a); grad.addColorStop(1, b);
+    g.fillStyle = grad; g.fillRect(0, 0, W, H);
+    const bob = Math.sin(t * 1.6) * 1.2, shake = st.hurt > 0 ? Math.sin(t * 60) * 4 * st.hurt : 0;
+    // source crop around the face in the 400x400 art
+    const sw = 290, sh = sw * H / W, sx = 56 + shake, sy = 92 + bob - st.attack * 6;
+    g.drawImage(p.art[e], sx, sy, sw, sh, 0, 0, W, H);
+    if (p.hurt > 0.5) { g.fillStyle = `rgba(255,30,40,${(p.hurt - 0.5) * 0.5})`; g.fillRect(0, 0, W, H); }
   }
 
   // ------------------------------------------------------------ explore vs battle
