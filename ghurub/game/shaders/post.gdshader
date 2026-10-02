@@ -13,6 +13,11 @@ uniform float flash = 0.0;
 uniform float warp = 0.0;
 uniform float battle = 0.0;
 uniform float levels = 28.0;
+// 1.0 = the SMT II cover look: bleached, misty duotone with hard blacks and halation.
+uniform float sm2 = 0.0;
+uniform vec4 sm2_dark : source_color = vec4(0.07, 0.07, 0.05, 1.0);
+uniform vec4 sm2_mid : source_color = vec4(0.55, 0.54, 0.34, 1.0);
+uniform vec4 sm2_light : source_color = vec4(0.97, 0.96, 0.86, 1.0);
 
 float bayer4(vec2 p) {
 	int x = int(mod(p.x, 4.0));
@@ -63,7 +68,25 @@ void fragment() {
 	col = floor(col * levels + 0.5) / levels;
 	// vignette and grain
 	vec2 v = UV - 0.5;
-	col *= 1.0 - dot(v, v) * vignette * (1.0 + battle * 0.8);
+	if (sm2 > 0.0) {
+		// halation: bright areas bleed outward
+		vec3 glow = vec3(0.0);
+		for (int i = 0; i < 12; i++) {
+			float a = float(i) * 0.5236;
+			glow += max(texture(TEXTURE, uv + vec2(cos(a), sin(a) * 1.7) * 0.012).rgb - 0.5, 0.0);
+		}
+		glow /= 12.0;
+		float l = dot(col, vec3(0.299, 0.587, 0.114));
+		l = smoothstep(0.04, 0.92, l);
+		vec3 duo = l < 0.5 ? mix(sm2_dark.rgb, sm2_mid.rgb, l * 2.0) : mix(sm2_mid.rgb, sm2_light.rgb, (l - 0.5) * 2.0);
+		duo = mix(duo, col, 0.1);
+		duo += glow * vec3(1.0, 1.0, 0.85) * 0.45;
+		// mist creeping in from the edges instead of darkness
+		duo = mix(duo, sm2_light.rgb * 0.9, smoothstep(0.16, 0.5, dot(v, v)) * 0.3);
+		col = mix(col, duo, sm2);
+	} else {
+		col *= 1.0 - dot(v, v) * vignette * (1.0 + battle * 0.8);
+	}
 	col += (rnd(px + fract(TIME) * 91.0) - 0.5) * grain;
 	col = mix(col, flash_color.rgb, flash);
 	col *= 1.0 - fade;

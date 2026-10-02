@@ -122,6 +122,8 @@ func _build_render() -> void:
 	cam.far = 1600.0
 	stage.add_child(cam)
 	cam.current = true
+	var sm2: bool = args.get("look", "") == "sm2"
+	post.set_shader_parameter("sm2", 1.0 if sm2 else 0.0)
 
 	sun = DirectionalLight3D.new()
 	sun.light_color = Color(1.0, 0.86, 0.64)
@@ -150,6 +152,18 @@ func _build_render() -> void:
 	env.glow_intensity = 0.5
 	env.glow_bloom = 0.05
 	env.glow_hdr_threshold = 1.1
+	if sm2:
+		sun.light_color = Color(1.0, 0.98, 0.9)
+		sun.light_energy = 0.8
+		sun.basis = Basis.looking_at(Vector3(0.6, -0.75, -0.3).normalized(), Vector3.UP)
+		env.ambient_light_color = Color(0.7, 0.7, 0.62)
+		env.ambient_light_energy = 0.45
+		RenderingServer.global_shader_parameter_set("g_fog_color", Color(0.62, 0.62, 0.45))
+		RenderingServer.global_shader_parameter_set("g_fog_near", 10.0)
+		RenderingServer.global_shader_parameter_set("g_fog_far", 300.0)
+		RenderingServer.global_shader_parameter_set("g_fog_max", 0.9)
+		sky_mat.set_shader_parameter("top_color", Color(0.74, 0.74, 0.58))
+		sky_mat.set_shader_parameter("mid_color", Color(0.66, 0.66, 0.48))
 	var we := WorldEnvironment.new()
 	we.environment = env
 	stage.add_child(we)

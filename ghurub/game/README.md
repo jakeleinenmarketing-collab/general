@@ -61,3 +61,4 @@ Arguments go after `--` on the command line (or under Project → Project Settin
 - `--view=lineup|lineup2|hand|low|crane|wide|fight|desert|yard|gate|battle` shows a still camera view.
 - `--auto` lets a bot play the whole thing. Add `--god` to make Takeya unkillable, `--speed=6` to set the time scale, and `--delay=2` to slow its dialogue.
 - `--shot=out.png --at=12` saves a screenshot after 12 seconds and quits.
+- `--look=sm2` tries the SMT II cover look: a bleached, misty olive duotone with hard blacks and halation.
