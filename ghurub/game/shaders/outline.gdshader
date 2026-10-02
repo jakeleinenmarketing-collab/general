@@ -16,7 +16,7 @@ void vertex() {
 		float k = clamp(VERTEX.x + 0.5, 0.0, 1.0);
 		VERTEX.z += sin(TIME * 5.0 + VERTEX.x * 5.0 + VERTEX.y * 2.0) * wave * k;
 	}
-	VERTEX += NORMAL * thickness;
+	VERTEX += NORMAL * thickness * (1.0 - g_ink * 0.45);
 }
 
 void fragment() {
@@ -27,5 +27,6 @@ void fragment() {
 		}
 	}
 	float f = fog_amount(VERTEX);
-	ALBEDO = mix(line_color.rgb, g_fog_color.rgb, f);
+	vec3 lc = mix(line_color.rgb, vec3(0.12, 0.1, 0.08), g_ink);
+	ALBEDO = mix(lc, g_fog_color.rgb, f);
 }

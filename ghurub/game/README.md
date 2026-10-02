@@ -62,3 +62,4 @@ Arguments go after `--` on the command line (or under Project → Project Settin
 - `--auto` lets a bot play the whole thing. Add `--god` to make Takeya unkillable, `--speed=6` to set the time scale, and `--delay=2` to slow its dialogue.
 - `--shot=out.png --at=12` saves a screenshot after 12 seconds and quits.
 - `--look=sm2` tries the SMT II cover look: a bleached, misty olive duotone with hard blacks and halation.
+- `--look=ink` is the illustration look: cream paper, ink lines, soft airbrush shading, full resolution. `--view=inkangel` and `--view=inkfar` put the ChatGPT angel art (`art/angel.png`) into the opening scene.

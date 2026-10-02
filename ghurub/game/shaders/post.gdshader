@@ -15,6 +15,8 @@ uniform float battle = 0.0;
 uniform float levels = 28.0;
 // 1.0 = the SMT II cover look: bleached, misty duotone with hard blacks and halation.
 uniform float sm2 = 0.0;
+// 1.0 = illustration look: cream paper, ink edges, soft airbrush tones, light colour accents.
+uniform float ink = 0.0;
 uniform vec4 sm2_dark : source_color = vec4(0.07, 0.07, 0.05, 1.0);
 uniform vec4 sm2_mid : source_color = vec4(0.55, 0.54, 0.34, 1.0);
 uniform vec4 sm2_light : source_color = vec4(0.97, 0.96, 0.86, 1.0);
@@ -68,7 +70,31 @@ void fragment() {
 	col = floor(col * levels + 0.5) / levels;
 	// vignette and grain
 	vec2 v = UV - 0.5;
-	if (sm2 > 0.0) {
+	if (ink > 0.0) {
+		vec2 px1 = 1.0 / res;
+		float lc = dot(col, vec3(0.299, 0.587, 0.114));
+		// ink: luminance edges
+		float lx = dot(texture(TEXTURE, uv + vec2(px1.x, 0.0)).rgb - texture(TEXTURE, uv - vec2(px1.x, 0.0)).rgb, vec3(0.333));
+		float ly = dot(texture(TEXTURE, uv + vec2(0.0, px1.y)).rgb - texture(TEXTURE, uv - vec2(0.0, px1.y)).rgb, vec3(0.333));
+		float edge = smoothstep(0.08, 0.22, length(vec2(lx, ly)));
+		// tone: map to paper, keep a little of the original colour for gold and blood
+		float t = smoothstep(0.02, 0.95, lc);
+		vec3 paper = vec3(0.95, 0.93, 0.86);
+		vec3 mid = vec3(0.74, 0.71, 0.6);
+		vec3 dark = vec3(0.3, 0.28, 0.23);
+		vec3 tone = t < 0.5 ? mix(dark, mid, t * 2.0) : mix(mid, paper, (t - 0.5) * 2.0);
+		vec3 chroma = col - vec3(lc);
+		float sat = length(chroma);
+		// keep strong accents (gold, blood, banners); wash out the broad yellows
+		tone += chroma * mix(0.12, 0.6, smoothstep(0.18, 0.32, sat));
+		// paper fibre and grain
+		float fib = rnd(floor(UV * res * vec2(0.25, 1.0))) * 0.035 + rnd(floor(UV * res)) * 0.03;
+		tone -= fib * 0.6;
+		tone = mix(tone, vec3(0.13, 0.11, 0.09), edge * 0.75);
+		// pale mist at the edges of the page
+		tone = mix(tone, paper, smoothstep(0.18, 0.55, dot(v, v)) * 0.35);
+		col = mix(col, tone, ink);
+	} else if (sm2 > 0.0) {
 		// halation: bright areas bleed outward
 		vec3 glow = vec3(0.0);
 		for (int i = 0; i < 12; i++) {

@@ -123,7 +123,19 @@ func _build_render() -> void:
 	stage.add_child(cam)
 	cam.current = true
 	var sm2: bool = args.get("look", "") == "sm2"
+	var ink: bool = args.get("look", "") == "ink"
 	post.set_shader_parameter("sm2", 1.0 if sm2 else 0.0)
+	post.set_shader_parameter("ink", 1.0 if ink else 0.0)
+	if ink:
+		# illustration look renders at full resolution with no dithering
+		vp.size = Vector2i(1280, 720)
+		vp.msaa_3d = Viewport.MSAA_4X
+		screen.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+		post.set_shader_parameter("res", Vector2(1280, 720))
+		post.set_shader_parameter("levels", 255.0)
+		post.set_shader_parameter("grain", 0.0)
+		post.set_shader_parameter("haze", 0.0)
+		RenderingServer.global_shader_parameter_set("g_ink", 1.0)
 
 	sun = DirectionalLight3D.new()
 	sun.light_color = Color(1.0, 0.86, 0.64)
@@ -164,6 +176,21 @@ func _build_render() -> void:
 		RenderingServer.global_shader_parameter_set("g_fog_max", 0.9)
 		sky_mat.set_shader_parameter("top_color", Color(0.74, 0.74, 0.58))
 		sky_mat.set_shader_parameter("mid_color", Color(0.66, 0.66, 0.48))
+	if ink:
+		sun.light_color = Color(1.0, 0.97, 0.9)
+		sun.light_energy = 0.75
+		sun.shadow_blur = 3.0
+		sun.basis = Basis.looking_at(Vector3(0.55, -0.7, -0.45).normalized(), Vector3.UP)
+		env.ambient_light_color = Color(0.82, 0.8, 0.74)
+		env.ambient_light_energy = 0.6
+		env.glow_enabled = false
+		RenderingServer.global_shader_parameter_set("g_fog_color", Color(0.93, 0.91, 0.84))
+		RenderingServer.global_shader_parameter_set("g_fog_near", 14.0)
+		RenderingServer.global_shader_parameter_set("g_fog_far", 340.0)
+		RenderingServer.global_shader_parameter_set("g_fog_max", 0.94)
+		sky_mat.set_shader_parameter("top_color", Color(0.86, 0.85, 0.78))
+		sky_mat.set_shader_parameter("mid_color", Color(0.91, 0.89, 0.82))
+		sky_mat.set_shader_parameter("ground_color", Color(0.9, 0.88, 0.8))
 	var we := WorldEnvironment.new()
 	we.environment = env
 	stage.add_child(we)
@@ -254,6 +281,20 @@ func _test_view(v: String) -> void:
 				if id == "orthrus":
 					d.position.x += 1.0
 			look(base + Vector3(-4.5, 1.4, 5.2), base + Vector3(-4.5, 1.0, 0))
+		"inkangel", "inkfar":
+			var sp := Sprite3D.new()
+			sp.texture = load("res://art/angel.png")
+			sp.pixel_size = 2.9 / 1521.0
+			sp.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
+			sp.alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
+			sp.shaded = false
+			sp.double_sided = true
+			sp.position = world.fight_spot + Vector3(0.2, 1.45, 0)
+			stage.add_child(sp)
+			if v == "inkangel":
+				look(s + Vector3(0.9, EYE, -3.2), world.fight_spot + Vector3(0.2, 1.5, 0))
+			else:
+				look(s + Vector3(-5.0, 2.6, 7.0), world.fight_spot + Vector3(0, 1.0, 0))
 		"battle":
 			game.state_reset()
 			battle.debug_stage(args.get("ids", "pixie,imp").split(","))

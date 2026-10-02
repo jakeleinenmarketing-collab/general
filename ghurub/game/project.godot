@@ -40,6 +40,10 @@ g_fog_far={
 "type": "float",
 "value": 560.0
 }
+g_ink={
+"type": "float",
+"value": 0.0
+}
 g_fog_max={
 "type": "float",
 "value": 0.9

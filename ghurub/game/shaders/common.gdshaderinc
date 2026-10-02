@@ -4,6 +4,7 @@ global uniform vec4 g_fog_color;
 global uniform float g_fog_near;
 global uniform float g_fog_far;
 global uniform float g_fog_max;
+global uniform float g_ink;
 
 uniform float rim_amount = 0.35;
 uniform float spec_amount = 0.0;

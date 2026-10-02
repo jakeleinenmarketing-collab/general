@@ -35,6 +35,8 @@ void fragment() {
 	col = mix(col, sand_light.rgb, ripple * (0.08 + 0.14 * fade_near));
 	col = mix(col, col * 0.9, smoothstep(0.6, 1.0, r2) * 0.25 * (1.0 - big));
 	col *= 0.94 + 0.06 * vnoise(vec3(p * 3.0, 7.0));
+	// ink mode: bleached, faintly yellow paper sand
+	col = mix(col, vec3(dot(col, vec3(0.3, 0.59, 0.11))) * vec3(1.12, 1.08, 0.9) + 0.12, g_ink * 0.85);
 	float f = fog_amount(VERTEX);
 	ALBEDO = col * (1.0 - f);
 	ROUGHNESS = 1.0;
