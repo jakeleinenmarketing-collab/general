@@ -40,6 +40,7 @@ These are your messages from the Gemini session, kept verbatim in order (only ob
 17. **Feedback on the proposals.** On "Asahi Amagi": "No, he needs a more chill name." On Lucifer: "No, Lucifer is too cliché, needs to be another demonic chaos entity." On the motive: "Maybe more typical chaos reasons, no rules, freedom, father is a representation of order." On the factory chain: "I don't know if we need that many connections. We could find the first unit, but too much connection to the future feels forced, unless you have a really good idea." On the paradox fix: "There's no paradoxes in this story, they are going back to change everything regardless of the consequences." On sparing Kuzuryu: "Maybe. I'm making a game, so I don't know if I can make a super complex law vs chaos thing. It was a stress point on the last project. I'm a solo developer."
 18. **Ghurub's humanity.** "Another thing from the line of Ghurub units would be showing how current Ghurub is growing a bit in humanity. Very subtle, seeing himself though may be profound in a way."
 19. **The factory scene.** "This unit is Ghurub in the past, it is new and one of the few lucky models that would work. Maybe Ghurub says optimal route is to upgrade to this unit and leave him, as he is damaged. There should be like an uncertainty in Ghurub though, like he doesn't want to die in a way but he knows objectively it's the thing to do for the mission. The protagonist doesn't change. This all has to be subtle." And: "He isn't damaged really, just 1000s of years of being used and through war, it would be pertinent to get a fresh device."
+20. **Act structure.** "I kind of want to focus on the details of the opening before we go on to Act II (which I wouldn't really consider the Shinjuku section Act II, that is going to 2007 Tokyo)."
 
 ---
 
@@ -55,7 +56,7 @@ These are your messages from the Gemini session, kept verbatim in order (only ob
 | **Controlling demons** | Only possible with a rare device like Ghurub. Seeing a human bind demons shocks both demons and people. |
 | **The war** | Two human sects fought in the trenches. Both were told they were fighting over a resource cache. It was really over the **location of a time machine**. An elite group, operating in secret, was running things from the shadows. |
 | **Time travel** | The farthest back the machine can go is **2007**, about **6–8 months before Ground Zero** (the demon/angel event that ended the world). **No paradoxes:** changing the past simply changes it, and the story doesn't dwell on how. |
-| **Where the game happens** | Act I is in the future. **Most of the game is in 2007**, where rival corporate elites (one demon-worshipping, one God-worshipping, both greedy) are preparing for war, and demons and angels already show up in some areas. |
+| **Where the game happens** | **Act I is the whole future section:** the trench, the desert, Shinjuku, the vault and the time jump. **Act II starts in 2007 Tokyo.** **Most of the game is in 2007**, where rival corporate elites (one demon-worshipping, one God-worshipping, both greedy) are preparing for war, and demons and angels already show up in some areas. |
 | **Aesthetic** | Y2K retro-futurism plus dark post-apocalypse: brushed silver, rubber keys, thick LCD glass, low-res cyan backlights. Future tech is scavenged and modified 2000s tech, because 2007 was the last peak of civilization. |
 
 ---
@@ -186,7 +187,7 @@ That's the whole arc: one scene and a handful of lines. For players who notice, 
 ### 5.4 The elite scout (the first rival summoner)
 - A survivor from the hidden elite operation who carries their own device.
 - Sees the protagonist rushing through demon nests with a silver unit and assumes he's a thief or scavenger.
-- Fights him (Act I boss). When beaten, mortally wounded, gives up the lead: **the time machine is under the old city; find Kuzuryu.**
+- Fights him (first boss). When beaten, mortally wounded, gives up the lead: **the time machine is under the old city; find Kuzuryu.**
 - **Name, gender and which sect: TBD.**
 
 ### 5.5 Kuzuryu
@@ -314,6 +315,15 @@ Lines that sound like a carefree goof the first time and mean something else on 
 
 ## 6. Act I script: "The Sunset of Humanity"
 
+**Act I covers everything in the future**, from the trench to the time jump. **Act II begins in 2007 Tokyo.**
+
+| Part | What happens | Status |
+| --- | --- | --- |
+| **Part 1: The desert** | The trench, Ghurub, the gauntlet, the scout, the Shinjuku gates | Scripted below |
+| **Part 2: Shinjuku** | The underground hub, Kuzuryu's slave floor, his price for the vault | Not written yet |
+| **Part 3: The vault** | Below the old city, the time machine, the jump to 2007 | Not written yet |
+
+
 From waking in the trench to stepping into the station city. Lines marked ✎ were changed from the Gemini draft to match your notes; section 8 explains each change.
 
 ### Scene 1: The trench of the dead
@@ -398,7 +408,7 @@ At the lip of the trench, before the player climbs out:
 
 *(Whether the scout dies, flees or surrenders is TBD. A surviving scout could come back later.)*
 
-### Scene 5: The Shinjuku Station gates (end of Act I)
+### Scene 5: The Shinjuku Station gates (end of Part 1)
 
 **Setting.** The sand-choked concrete ruins of the Shinjuku Station entrance. Demons patrol the scorched surface. The protagonist slips past (or fights) and goes down crumbling tiled stairs into the dark.
 
@@ -410,7 +420,7 @@ At the lip of the trench, before the player climbs out:
 >
 > "Cross-referencing the scout's testimony with local radio traffic: subject is described as untrustworthy, harshly regarded by the elite factions, and persistently alive. Expected combat threat: low. Expected negotiation threat: high. Recommendation: proceed with financial and logistical caution. We must secure the vault coordinates."
 
-**END OF ACT I.**
+**END OF PART 1.** Act I continues in Shinjuku.
 
 ---
 
@@ -458,7 +468,7 @@ Ghurub can start to *hypothesize* once it has data. For example:
 ### Open
 1. **The antagonist's details:** sign off on Nagi Kamiya and Loki (5.8). Also when he fuses, and how the betrayal plays out.
 2. **Which future sect comes from which 2007 corporation,** and which one is the protagonist from? The scout?
-3. **Where the slave-floor scene goes.** Act I ends at the Shinjuku gates, so this is early Act II, before the time jump. It's also probably where the player has to deal with Kuzuryu to reach the vault.
+3. **Where the slave-floor scene goes.** In Act I, Part 2 (Shinjuku), before the time jump. It's also probably where the player has to deal with Kuzuryu to reach the vault.
 4. **Who in 2007 owns a working device?** The holy elite is one. The others are candidates for rival summoners.
 5. **Is "Ghurub" the AI's name or the hardware line?** The scout says "a Ghurub unit." Recommendation: Ghurub is the product line and every unit runs the same base AI. Then the holy elite's device might *also* talk like Ghurub, which could be eerie.
 6. **What the angel's line "this relic is not the only thing he can rely on" points to.** Does the protagonist gain powers of his own, Digital Devil Saga–style?
