@@ -41,6 +41,7 @@ These are your messages from the Gemini session, kept verbatim in order (only ob
 18. **Ghurub's humanity.** "Another thing from the line of Ghurub units would be showing how current Ghurub is growing a bit in humanity. Very subtle, seeing himself though may be profound in a way."
 19. **The factory scene.** "This unit is Ghurub in the past, it is new and one of the few lucky models that would work. Maybe Ghurub says optimal route is to upgrade to this unit and leave him, as he is damaged. There should be like an uncertainty in Ghurub though, like he doesn't want to die in a way but he knows objectively it's the thing to do for the mission. The protagonist doesn't change. This all has to be subtle." And: "He isn't damaged really, just 1000s of years of being used and through war, it would be pertinent to get a fresh device."
 20. **Act structure.** "I kind of want to focus on the details of the opening before we go on to Act II (which I wouldn't really consider the Shinjuku section Act II, that is going to 2007 Tokyo)."
+21. **Opening details.** "Silent but talks through choices (these choices won't matter for now, we can make them Law or Chaos voices reasonably in case we change our mind) but in general all roads lead the same way. Name doesn't really matter... I'd say I'd like it to be a T name maybe. The angel and demon, I like the ones from SMT V that have the gold mask and the cloak, and the demon a typical Imp. How it plays... I honestly think we need to do a dungeon crawler, however, I really want to impress with this project. So I'm not sure. I think Godot is better suited towards dungeon crawler. How impressive can we make a dungeon crawler be with Godot? The desert section, there may be a trench or two but I really want to emphasize more a desert landscape and numerous dead bodies. We don't need to be graphic with it but it should be dramatic. There was a battle and many died, this isn't the world we know. It should like start with a few bodies in the sand and then zoom out showing a big battle was fought. Empty is key, maybe there is a trench but mostly it's like wide open sand landscape, maybe in the background in the distance we can see a wrecked skyscraper or Tokyo Eiffel Tower thing. But empty and wasteland is key and accentuates the bodies scattered, and then soon thereafter makes a white angel with gold mask and red figure fighting over a shiny silver device more prominent."
 
 ---
 
@@ -171,18 +172,24 @@ That's the whole arc: one scene and a handful of lines. For players who notice, 
 ## 5. Characters
 
 ### 5.1 The protagonist
-- Male (you refer to him as "he"). **Name: TBD.**
-- A soldier in one of the two sects and the only survivor of the trench battle. **Which side: TBD.**
+- Male, about 20s. **Name starts with T.** Proposed: **Tōru** (通る, "to pass through"), for the man who goes straight through the demon nests and through time. Other options: **Takeru**, **Tetsu**, **Taiga**.
+- A rank-and-file soldier in one of the two sects and the only survivor of the battle. **Which side: TBD.** A grunt who knew nothing fits the "we were lied to" twist.
 - Dazed and traumatized, and at first sure he's hallucinating. Carries a standard-issue military handgun.
+- **Silent protagonist who speaks through dialogue choices.**
+  - The choices **don't change the story.** All roads lead the same way.
+  - Write each choice pair with one **Law-leaning** voice (duty, order, faith) and one **Chaos-leaning** voice (survival, freedom, self). They cost nothing now and leave the door open for alignment later.
 
 ### 5.2 The angel
-- Splendid but bloodied, and bleeds gold.
+- **Look:** tall, in a long **white cloak**, with a smooth, expressionless **gold mask**. (Inspired by the gold-masked, cloaked angels of SMT V, but redesigned as an original. Don't copy Atlus's design.)
+- Splendid but bloodied, and **bleeds gold.**
 - In a panic it attacks the protagonist, gets shot, and **apologizes for its rash attack as it dies**.
 - Says what the device is, that both sides were lied to, and that a time machine is the real prize. It **dies before it can say where the machine is.**
+- It was probably already wounded from the fight, which is why a pistol finishes it.
 
-### 5.3 The demon
-- Horrific. It lunges first and is killed outright.
-- **Species/name: TBD.**
+### 5.3 The demon: an Imp
+- **Look:** a typical **red Imp.** Small, wiry, horned, all teeth and claws. A classic folklore demon, so no IP worries.
+- The size difference is part of the image: a tall white angel and a small red imp grappling over one silver device.
+- It lunges first and is killed with one shot.
 
 ### 5.4 The elite scout (the first rival summoner)
 - A survivor from the hidden elite operation who carries their own device.
@@ -319,31 +326,43 @@ Lines that sound like a carefree goof the first time and mean something else on 
 
 | Part | What happens | Status |
 | --- | --- | --- |
-| **Part 1: The desert** | The trench, Ghurub, the gauntlet, the scout, the Shinjuku gates | Scripted below |
+| **Part 1: The desert** | The battlefield, Ghurub, the gauntlet, the scout, the Shinjuku gates | Scripted below |
 | **Part 2: Shinjuku** | The underground hub, Kuzuryu's slave floor, his price for the vault | Not written yet |
 | **Part 3: The vault** | Below the old city, the time machine, the jump to 2007 | Not written yet |
 
 
-From waking in the trench to stepping into the station city. Lines marked ✎ were changed from the Gemini draft to match your notes; section 8 explains each change.
+From waking among the dead to stepping into the station city. Lines marked ✎ were changed from the Gemini draft to match your notes; section 8 explains each change.
 
-### Scene 1: The trench of the dead
+### Scene 1: The field of the dead
 
-**Setting.** A deep, reinforced military trench cut through blazing white sand. Rusted rebar and the cracked underside of a buried Tokyo overpass hang overhead. Dozens of dead soldiers from both sects lie in the sand.
+**The look: empty.** A wide-open sea of white sand under a huge sky. Maybe one trench line cutting across it, but mostly open dunes. The emptiness is what makes the bodies hit hard. **Dramatic, never graphic:** no gore, just stillness, sand and too many people lying where they fell.
 
-**Beat.** The protagonist comes to, coughing sand, his vision swimming. A few meters away, a bloodied **angel** and a horrific **demon** are wrestling over a silver device. He thinks he's hallucinating.
+**Opening shot list (non-interactive)**
+1. **Black.** Only wind, and sand hissing.
+2. **Extreme close-up:** a gloved hand half-buried in sand. Grains blow across the knuckles. Nothing moves.
+3. **Low and close:** a few bodies in the sand. A helmet on its side. A sect patch on a sleeve, half covered.
+4. **Slow pull-back and crane up.** A few bodies become dozens, then hundreds, scattered across the dunes. Two uniform colors lie mixed together, both sides in the same sand. Dropped rifles, a torn banner snapping in the wind, a single trench line, a burned-out vehicle.
+5. **Widest shot.** The battlefield is a small stain in an endless desert. Heat haze. **On the horizon:** the snapped skeleton of a Shinjuku skyscraper, and farther off the rusted, leaning frame of **Tokyo Tower**. This isn't the world we know.
+6. **A glint.** In the middle of all that stillness, something flashes **silver**. The camera pushes toward it.
+7. **The only movement in the world:** a **white-cloaked angel in a gold mask** and a **small red imp** grappling in the sand over a **shiny silver device**. White, gold, red and silver against pale sand.
+8. **Cut back to the hand from shot 2.** The fingers twitch. **It's him.** The first body we saw was the protagonist.
+
+> **Optional:** set the opening at **late afternoon with a low sun**, so the bodies throw long shadows across the sand. It's the literal sunset that Ghurub's name means.
+
+**Beat (gameplay begins).** First-person, blurry. The protagonist pushes up out of the sand, coughing. A few meters away, the angel and the imp are still fighting over the device. He thinks he's hallucinating.
 
 They notice him and stop.
 
-- The **demon** lunges. *Player gets control:* raise the handgun and fire. **The demon dies.**
+- The **imp** lunges. *Player gets control:* raise the handgun and fire. **The imp dies.**
 - The **angel**, in a panic and suspicious, swings its blade. *Fire again.* **The angel falls, mortally wounded.**
 
 The protagonist goes to it. Gold blood soaks into the sand.
 
 > **ANGEL:** "Forgive me... my rashness. That device... it commands what is not of this world. In the wrong hands... catastrophe. Take it. Restore the order of God. You were lied to — both sides. Not resources... a machine that crosses time. Go back... summon allies... undo this. And be warned — even in the past, there are those with power. That relic alone will not be enough. The machine is—"
 
-✎ *The angel dies mid-sentence.* (Trimmed, and your original "be warned" line restored. See 8.4.)
+*The angel dies mid-sentence.*
 
-The protagonist looks around: only desert, low hills, the trench, and the bones of the city. No machine anywhere. He picks up the silver device ✎ and straps it to his left forearm.
+The protagonist looks around: only sand, the bodies, the far-off skyline. No machine anywhere. He picks up the silver device and straps it to his left forearm.
 
 ### Scene 2: Ghurub wakes up
 
@@ -361,12 +380,18 @@ The unit hums. The LCD flickers neon cyan. Blocks of pixel code scroll past. A l
 > "Your heart rate is highly elevated and your optic nerves show signs of minor shock. Local threat level: 0%. Please breathe evenly."
 >
 > "Audio logs recorded and archived. The deceased entity instructed us to 'restore the order of God.' I have logged the instruction. I lack the data to evaluate it."
+
+**First dialogue choice** (both lead to the same next line):
+- *(Law)* "It died asking for God's order. That has to mean something."
+- *(Chaos)* "God's order got everyone here killed. I just want to live."
+
+> **GHURUB:** "Response logged."
 >
 > "Its statement regarding a time machine has also been noted. My previous operator's records place the survival probability for a single human in this timeline at approximately 0.04%. The biosphere has collapsed. Usable resources are negligible."
 >
 > "Hypothesis: if the time machine exists, it is our only viable path to long-term survival. Recommendation: confirm its existence and leave this timeline immediately."
 
-**Search beat (playable).** The player can walk the trench. Ghurub sweeps the area:
+**Search beat (playable).** The player can walk the battlefield among the bodies. Ghurub sweeps the area:
 
 > **GHURUB:** "Scanning for anomalous temporal signatures... none within a five-kilometer radius. The entity's data was incomplete. We require intelligence from a human population."
 >
@@ -374,7 +399,7 @@ The unit hums. The LCD flickers neon cyan. Blocks of pixel code scroll past. A l
 
 ### Scene 3: Running the gauntlet (tutorial)
 
-At the lip of the trench, before the player climbs out:
+At the edge of the battlefield, facing open desert:
 
 > **GHURUB:** "Warning, Operator. Heavy concentrations of hostile spiritual entities detected along the shortest path to the transit hub. Standard human evasion protocol calls for a stealth detour of fourteen hours."
 >
@@ -473,7 +498,7 @@ Ghurub can start to *hypothesize* once it has data. For example:
 5. **Is "Ghurub" the AI's name or the hardware line?** The scout says "a Ghurub unit." Recommendation: Ghurub is the product line and every unit runs the same base AI. Then the holy elite's device might *also* talk like Ghurub, which could be eerie.
 6. **What the angel's line "this relic is not the only thing he can rely on" points to.** Does the protagonist gain powers of his own, Digital Devil Saga–style?
 7. **Ghurub's button label:** "SUMMON" or "EXECUTE".
-8. **Names to come up with:** the protagonist, the scout, the evil scientist, both corporations, the high demon Kuzuryu makes his pact with, the demon in Scene 1, the scout's demon, and the Act I recruitables.
+8. **Names to come up with:** the protagonist (proposed: Tōru), the scout, the evil scientist, both corporations, the high demon Kuzuryu makes his pact with, the demon in Scene 1, the scout's demon, and the Act I recruitables.
 
 ---
 
@@ -494,3 +519,34 @@ Kept here so nothing is lost.
   - What young Kuzuryu steals in 2007, in detail.
   - How ECS negotiation works.
   - What human evasion tactics look like on screen, so the player sees what rules they're breaking.
+
+---
+
+## 10. Production: engine and format
+
+### Format: first-person dungeon crawler
+- **Dungeons** (the Shinjuku underground, the vault, 2007 interiors, the factory) are **first-person, grid-based**, like SMT I and II. That's the core of the game and the easiest kind of 3D game for one person to build well.
+- **The opening** is a **cinematic** (section 6, Scene 1), not a dungeon, so it can be as big and dramatic as we want.
+- **Open areas** (the desert, 2007 streets) don't fit a tight grid. Options, cheapest first:
+  1. An **SMT-style overworld map**: a small marker moving between locations.
+  2. A **grid with very wide cells** and long sightlines, so it feels open while using the same movement code.
+  3. **Free first-person walking** in a few open zones. Most impressive, but a second movement system to build.
+
+### Engine: Godot 4
+Godot is a good fit, and a dungeon crawler can look genuinely impressive in it. Impressive comes from **lighting, atmosphere and art direction**, not from size, and that's where Godot 4 is strong:
+- **Lighting:** real-time shadows, global illumination (SDFGI/VoxelGI), and baked lightmaps for crisp, cheap lighting in dungeons.
+- **Atmosphere:** volumetric fog, glow and bloom, screen-space reflections and ambient occlusion. Sand blowing through light shafts, neon on wet subway tiles.
+- **Custom shaders and post-processing:** a 2000s LCD look for Ghurub's screen, film grain, color grading, dithering, CRT-style effects, and the warp transition into battle.
+- **Animated 3D demons** in battle, with cinematic camera angles instead of flat sprites.
+- **A diegetic Ghurub UI:** menus that live on the device's screen on the protagonist's arm, not floating boxes.
+- **Free and open source**, with no royalties, and it exports to PC and consoles (consoles through third-party porting partners).
+
+**What makes a crawler stand out:**
+- Every step feels physical: head bob, footstep sounds that change with surface (sand, tile, metal), light that shifts as you turn.
+- Environments that tell a story: the bodies in the desert, the slave floor in Shinjuku, the assembly line.
+- Battles that feel like an event: a transition effect, a camera that moves, demons that animate.
+- A strong, consistent look over high polygon counts. The Y2K-retro style helps here, since lower-detail models with great lighting look intentional.
+
+### The existing web prototype
+`demon-coder-web/` in this repo is a Three.js browser test of a different game. Switching to Godot means starting the code over, but that build is still useful as a reference for the retro look, the battle transition and the grid movement.
+
