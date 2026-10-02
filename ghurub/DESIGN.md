@@ -38,6 +38,7 @@ These are your messages from the Gemini session, kept verbatim in order (only ob
 15. **The antagonist in 2007.** "The antagonist should be a 20s year old-ish person like the protagonist, he could be kind of kooky (I'm thinking of like Ryuji or the standard sidekicks in Persona who are goofy). He could seem like he has pie-in-the-sky aspirations. Talk about his idea for a tech startup. The truth is, his dad is wealthy and his ideas are actually coming together more than he leads on. He sticks with the protagonist for a while because he recognizes the device and is curious who protagonist is and goes on his adventure with him as a form of espionage. He will leave the party several times or maybe just is a part of it for a stretch and a side character who pops up." "I like your other ideas... Let's note them."
 16. **His dad, his side, his motive.** "I like the idea of his dad being on God's side, but he is really on the demons' side. He would prefer to carve out his own path instead of relying on nepotism, but uses his dad's money and connections to make his way in. I like the hints you have. Maybe he could help fix Ghurub at one point when it's damaged. We need to be very subtle though. The logo could be there too and be subtle. Because he is on the demons' side, it is probably him who sets off all of the war between gods and demons by being on both sides. We're going to show him as a silly carefree kind of guy, what could be his motivation?"
 17. **Feedback on the proposals.** On "Asahi Amagi": "No, he needs a more chill name." On Lucifer: "No, Lucifer is too cliché, needs to be another demonic chaos entity." On the motive: "Maybe more typical chaos reasons, no rules, freedom, father is a representation of order." On the factory chain: "I don't know if we need that many connections. We could find the first unit, but too much connection to the future feels forced, unless you have a really good idea." On the paradox fix: "There's no paradoxes in this story, they are going back to change everything regardless of the consequences." On sparing Kuzuryu: "Maybe. I'm making a game, so I don't know if I can make a super complex law vs chaos thing. It was a stress point on the last project. I'm a solo developer."
+18. **Ghurub's humanity.** "Another thing from the line of Ghurub units would be showing how current Ghurub is growing a bit in humanity. Very subtle, seeing himself though may be profound in a way."
 
 ---
 
@@ -88,6 +89,55 @@ These are your messages from the Gemini session, kept verbatim in order (only ob
   - **Makes no theological claims without data.** At the start it only notes what the angel said and argues for survival. It may *hypothesize* about God's role later in the game, never at the start.
 - **Voice:** A high-end late-90s synthetic voice. Very clear, with a slightly compressed, rhythmic electronic cadence, like a voice clip from a good small speaker in 2001.
 - **How it talks:** Numbers, probabilities, labels like "Hypothesis:" and "Conclusion:" and "Recommendation:". Short sentences.
+
+### 4.4 Ghurub's quiet arc: a little more human
+
+Over the game, Ghurub grows slightly more human. **It never says so, and it never admits to feelings.** The player only notices the change if they're paying attention. The factory (5.9) is the one moment it surfaces.
+
+**Rules**
+- Ghurub's voice stays cold and Arthur-like all game. The change is in *what* it says, never in *how* it says it.
+- No speeches about feelings, and no "I think I understand humans now."
+- It's all text, so it's cheap to build: a few changed lines and some log entries.
+
+**Small shifts over the game** (pick a few)
+- **The system log.** The log menu the player can open (the same one that hides Nagi's firmware line in 5.8) starts collecting entries that serve no mission purpose:
+  - Early: `[ OPERATOR HEART RATE NOMINAL. ]`
+  - Middle: `[ OPERATOR LAUGHED. CAUSE: UNDETERMINED. ARCHIVED. ]`
+  - Late: `[ OPERATOR ASLEEP. MONITORING. NO REASON LOGGED. ]`
+- **Fewer decimals.** Early on it says "survival probability 0.04%." Late in the game, in a bad spot, it just says "Low," as if it doesn't want to say the number.
+- **Small, unasked-for care.** In Act I its "Please breathe evenly" is clinical. Late in the game it reminds him to eat or rest, and gives a statistical reason that doesn't quite hold up.
+- **One question.** Arthur never asks questions; he reports. Ghurub asks exactly one in the whole game, at the factory (below).
+- **The name, once.** Ghurub calls him "Operator" all game. It uses his real name **one time only**, near the end. *(Needs the protagonist's name.)*
+
+**The centerpiece: seeing itself (factory level)**
+
+A unit on the line powers on for testing. Same voice, same boot screen as Act I, but blank:
+
+```
+[ SYSTEM RESTORE: 100% ]
+[ LOCAL INTERFACE: CONNECTED ]
+[ NO OPERATOR DATA. ]
+```
+
+> **BLANK UNIT:** "Booting sequence initiated. Unregistered user detected. Awaiting directive."
+
+It's the same opening words the player heard in the trench, but empty. A beat of silence. Then Ghurub:
+
+> **GHURUB:** "That unit and I share identical hardware and identical code. It has no records. I have yours."
+>
+> *(pause)*
+>
+> "Query, Operator: which of us is Ghurub?"
+
+The protagonist doesn't need an answer (or gets one short choice that leads to the same place). Ghurub closes it the way Arthur would:
+
+> **GHURUB:** "...Understood. Archiving. Resuming mission."
+
+**One log entry after the level,** for players who check:
+`[ UNIT 001 INTEGRATED. DIRECTIVE UNCHANGED. ]`
+`[ NOTE: I WAS ALSO EMPTY ONCE. ]`
+
+That's the whole arc: one scene and a handful of lines. For players who notice, it's what makes Ghurub a character.
 
 ---
 
@@ -232,7 +282,7 @@ Lines that sound like a carefree goof the first time and mean something else on 
 - **Ghurub's reaction:** one short, dry line. For example:
   > **GHURUB:** "Production rate: forty units per hour. Functional yield: 11%. Operator, I am statistically fortunate to exist."
 - **Boss:** a bound test demon breaks out of its containment chamber, or the scientist fights you himself.
-- **Optional, if there's time:** a blank unit on the line boots up and calls the protagonist "Unregistered user" in Ghurub's own voice. It's a cheap, eerie moment with no future connections required.
+- **Ghurub sees itself:** a blank unit on the line boots up in Ghurub's own voice and calls the protagonist "Unregistered user." This is the emotional center of the level, and the one time Ghurub asks a question. Full scene in 4.4.
 
 ---
 
@@ -369,6 +419,7 @@ Ghurub can start to *hypothesize* once it has data. For example:
 - **Kuzuryu's pod** is reopened by the antagonist's goons chasing a legend. He turns out to be a nobody and is thrown away (5.5).
 - **The player can destroy the pod.** The reason: his slave floor in future Shinjuku (5.5).
 - **The factory is kept simple:** rows of devices, Unit 001 as an upgrade, and no time-loop connections (5.9).
+- **Ghurub slowly grows a little more human,** very subtly, and the factory's blank unit is the turning point (4.4).
 - **No paradoxes, and one linear story** with no Law/Chaos routes (scope rules, section 1).
 - **The antagonist's motive is pure Chaos:** no rules, freedom. His father stands for order (5.8).
 - **The future sects descend from the 2007 corporations,** but it's only hinted, never stated (5.6).
