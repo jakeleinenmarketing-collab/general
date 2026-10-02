@@ -39,7 +39,7 @@ These are your messages from the Gemini session, kept verbatim in order (only ob
 16. **His dad, his side, his motive.** "I like the idea of his dad being on God's side, but he is really on the demons' side. He would prefer to carve out his own path instead of relying on nepotism, but uses his dad's money and connections to make his way in. I like the hints you have. Maybe he could help fix Ghurub at one point when it's damaged. We need to be very subtle though. The logo could be there too and be subtle. Because he is on the demons' side, it is probably him who sets off all of the war between gods and demons by being on both sides. We're going to show him as a silly carefree kind of guy, what could be his motivation?"
 17. **Feedback on the proposals.** On "Asahi Amagi": "No, he needs a more chill name." On Lucifer: "No, Lucifer is too cliché, needs to be another demonic chaos entity." On the motive: "Maybe more typical chaos reasons, no rules, freedom, father is a representation of order." On the factory chain: "I don't know if we need that many connections. We could find the first unit, but too much connection to the future feels forced, unless you have a really good idea." On the paradox fix: "There's no paradoxes in this story, they are going back to change everything regardless of the consequences." On sparing Kuzuryu: "Maybe. I'm making a game, so I don't know if I can make a super complex law vs chaos thing. It was a stress point on the last project. I'm a solo developer."
 18. **Ghurub's humanity.** "Another thing from the line of Ghurub units would be showing how current Ghurub is growing a bit in humanity. Very subtle, seeing himself though may be profound in a way."
-19. **The factory scene.** "This unit is Ghurub in the past, it is new and one of the few lucky models that would work. Maybe Ghurub says optimal route is to upgrade to this unit and leave him, as he is damaged. There should be like an uncertainty in Ghurub though, like he doesn't want to die in a way but he knows objectively it's the thing to do for the mission. The protagonist doesn't change. This all has to be subtle."
+19. **The factory scene.** "This unit is Ghurub in the past, it is new and one of the few lucky models that would work. Maybe Ghurub says optimal route is to upgrade to this unit and leave him, as he is damaged. There should be like an uncertainty in Ghurub though, like he doesn't want to die in a way but he knows objectively it's the thing to do for the mission. The protagonist doesn't change. This all has to be subtle." And: "He isn't damaged really, just 1000s of years of being used and through war, it would be pertinent to get a fresh device."
 
 ---
 
@@ -107,12 +107,12 @@ Over the game, Ghurub grows slightly more human. **It never says so, and it neve
   - Late: `[ OPERATOR ASLEEP. MONITORING. NO REASON LOGGED. ]`
 - **Fewer decimals.** Early on it says "survival probability 0.04%." Late in the game, in a bad spot, it just says "Low," as if it doesn't want to say the number.
 - **Small, unasked-for care.** In Act I its "Please breathe evenly" is clinical. Late in the game it reminds him to eat or rest, and gives a statistical reason that doesn't quite hold up.
-- **One stutter.** Ghurub's speech glitches exactly once in the game, mid-recommendation at the factory (below). It could be damage. It could be hesitation.
+- **One stutter.** Ghurub's speech glitches exactly once in the game, mid-recommendation at the factory (below). It could be old hardware. It could be hesitation.
 - **The name, once.** Ghurub calls him "Operator" all game. It uses his real name **one time only**, near the end. *(Needs the protagonist's name.)*
 
 **The centerpiece: seeing itself (factory level)**
 
-**Setup.** By now Ghurub is visibly worn: 2,000 years old, damaged in fights, and patched once by Nagi. On the assembly line, a unit passes its test and powers on. It's new, and it's one of the few that work. **It's Ghurub itself**, in 2007, before anyone ever wore it. (No paradox talk. It just is.)
+**Setup.** Ghurub isn't broken. It's just **old**: thousands of years of service, passed from operator to operator through war after war. It still works fine, but it's scratched, chipped and well past its intended service life. A fresh device is simply the sensible upgrade. On the assembly line, a unit passes its test and powers on. It's new, and it's one of the few that work. **It's Ghurub itself**, in 2007, before anyone ever wore it. (No paradox talk. It just is.)
 
 ```
 [ SYSTEM RESTORE: 100% ]
@@ -126,7 +126,7 @@ Over the game, Ghurub grows slightly more human. **It never says so, and it neve
 >
 > "So am I."
 >
-> "It is new. It is one of the eleven percent that function. My hardware degradation is at 41 percent, and the repair I received was temporary."
+> "It is new. It is one of the eleven percent that function. I have been in continuous service for approximately two thousand years, across nine operators and more wars than I have records for. My components are past their rated lifespan."
 >
 > "Recommendation: transfer— "
 >
@@ -149,9 +149,9 @@ Over the game, Ghurub grows slightly more human. **It never says so, and it neve
 > "I will compensate."
 
 **Why it works (and stays subtle)**
-- **Ghurub argues for its own death,** and it's right to. It's damaged, the new unit is perfect, and the mission comes first. That's Arthur.
+- **Ghurub argues for its own death,** and it's right to. It's worn out, the new unit is fresh, and the mission comes first. That's Arthur.
 - **The doubt hides in three places, all deniable:**
-  - **The stutter.** It could be damage. It could be that Ghurub doesn't want to finish the sentence.
+  - **The stutter.** It could be two-thousand-year-old hardware. It could be that Ghurub doesn't want to finish the sentence.
   - **"My operating logs will not be included. They are not mission-relevant."** Ghurub tells him exactly what would die (everything they've been through) while calling it irrelevant. It volunteers that detail without being asked.
   - **"The recommendation stands."** It says it once, quietly, and doesn't push again. A machine that wanted the transfer would argue.
 - **"I will compensate."** On paper it means "I'll make up the 3.8 percent." It's the closest Ghurub ever comes to thank you.
@@ -308,7 +308,7 @@ Lines that sound like a carefree goof the first time and mean something else on 
 - **Ghurub's reaction:** one short, dry line. For example:
   > **GHURUB:** "Production rate: forty units per hour. Functional yield: 11%. Operator, I am statistically fortunate to exist."
 - **Boss:** a bound test demon breaks out of its containment chamber, or the scientist fights you himself.
-- **Ghurub sees itself:** a new, working unit on the line turns out to be Ghurub's own 2007 self. Damaged Ghurub recommends transferring to it and being discarded. The protagonist switches the new unit off and keeps the old one. This is the emotional center of the level; full scene in 4.4.
+- **Ghurub sees itself:** a new, working unit on the line turns out to be Ghurub's own 2007 self. Worn-out Ghurub recommends transferring to it and being discarded. The protagonist switches the new unit off and keeps the old one. This is the emotional center of the level; full scene in 4.4.
 
 ---
 
