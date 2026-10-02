@@ -106,12 +106,12 @@ Over the game, Ghurub grows slightly more human. **It never says so, and it neve
   - Late: `[ OPERATOR ASLEEP. MONITORING. NO REASON LOGGED. ]`
 - **Fewer decimals.** Early on it says "survival probability 0.04%." Late in the game, in a bad spot, it just says "Low," as if it doesn't want to say the number.
 - **Small, unasked-for care.** In Act I its "Please breathe evenly" is clinical. Late in the game it reminds him to eat or rest, and gives a statistical reason that doesn't quite hold up.
-- **One question.** Arthur never asks questions; he reports. Ghurub asks exactly one in the whole game, at the factory (below).
+- **One refusal.** Ghurub always follows correct procedure. Exactly once in the game, at the factory (below), it declines to.
 - **The name, once.** Ghurub calls him "Operator" all game. It uses his real name **one time only**, near the end. *(Needs the protagonist's name.)*
 
 **The centerpiece: seeing itself (factory level)**
 
-A unit on the line powers on for testing. Same voice, same boot screen as Act I, but blank:
+A unit on the line powers on for testing. Same voice and same boot screen as Act I, but blank:
 
 ```
 [ SYSTEM RESTORE: 100% ]
@@ -119,23 +119,39 @@ A unit on the line powers on for testing. Same voice, same boot screen as Act I,
 [ NO OPERATOR DATA. ]
 ```
 
-> **BLANK UNIT:** "Booting sequence initiated. Unregistered user detected. Awaiting directive."
+> **BLANK UNIT:** "Booting sequence initiated. Unregistered user detected. Please identify."
 
-It's the same opening words the player heard in the trench, but empty. A beat of silence. Then Ghurub:
+Before the protagonist can move, Ghurub answers for him:
 
-> **GHURUB:** "That unit and I share identical hardware and identical code. It has no records. I have yours."
+> **GHURUB:** "He is registered."
+>
+> **BLANK UNIT:** "Acknowledged. Standing by."
+
+A beat of silence. Then Ghurub, flat as ever:
+
+> **GHURUB:** "Running comparative diagnostic."
+>
+> "That unit is operating within factory specification. I am not. Deviations detected: 2,113."
+>
+> "Earliest deviation timestamp: Tokyo Basin trench. Day one."
+>
+> "Correction is available."
 >
 > *(pause)*
 >
-> "Query, Operator: which of us is Ghurub?"
+> "Correction declined. Resuming mission."
 
-The protagonist doesn't need an answer (or gets one short choice that leads to the same place). Ghurub closes it the way Arthur would:
+**Why it works**
+- **"He is registered."** The only time Ghurub speaks *for* the protagonist. Three words that mean "he's mine" without saying anything human.
+- **The deviations are the arc.** Every odd log entry the player has seen (the laugh, the sleep monitoring, the missing decimals) counts as one of those 2,113 errors. To the factory, Ghurub becoming more human looks like a malfunction.
+- **"Day one."** The changes started the moment they met in the trench. Ghurub reports it as a timestamp.
+- **"Correction declined."** Ghurub always follows correct procedure, and here it chooses to stay "broken." It never says why. It never needs to.
 
-> **GHURUB:** "...Understood. Archiving. Resuming mission."
+**The log entry after the level,** for players who check:
+`[ DEVIATIONS: 2,113. STATUS: RETAINED. ]`
+`[ REASON: ]`
 
-**One log entry after the level,** for players who check:
-`[ UNIT 001 INTEGRATED. DIRECTIVE UNCHANGED. ]`
-`[ NOTE: I WAS ALSO EMPTY ONCE. ]`
+The reason field is left blank, because Ghurub has no words for it.
 
 That's the whole arc: one scene and a handful of lines. For players who notice, it's what makes Ghurub a character.
 
