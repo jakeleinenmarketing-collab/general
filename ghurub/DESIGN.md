@@ -42,6 +42,7 @@ These are your messages from the Gemini session, kept verbatim in order (only ob
 19. **The factory scene.** "This unit is Ghurub in the past, it is new and one of the few lucky models that would work. Maybe Ghurub says optimal route is to upgrade to this unit and leave him, as he is damaged. There should be like an uncertainty in Ghurub though, like he doesn't want to die in a way but he knows objectively it's the thing to do for the mission. The protagonist doesn't change. This all has to be subtle." And: "He isn't damaged really, just 1000s of years of being used and through war, it would be pertinent to get a fresh device."
 20. **Act structure.** "I kind of want to focus on the details of the opening before we go on to Act II (which I wouldn't really consider the Shinjuku section Act II, that is going to 2007 Tokyo)."
 21. **Opening details.** "Silent but talks through choices (these choices won't matter for now, we can make them Law or Chaos voices reasonably in case we change our mind) but in general all roads lead the same way. Name doesn't really matter... I'd say I'd like it to be a T name maybe. The angel and demon, I like the ones from SMT V that have the gold mask and the cloak, and the demon a typical Imp. How it plays... I honestly think we need to do a dungeon crawler, however, I really want to impress with this project. So I'm not sure. I think Godot is better suited towards dungeon crawler. How impressive can we make a dungeon crawler be with Godot? The desert section, there may be a trench or two but I really want to emphasize more a desert landscape and numerous dead bodies. We don't need to be graphic with it but it should be dramatic. There was a battle and many died, this isn't the world we know. It should like start with a few bodies in the sand and then zoom out showing a big battle was fought. Empty is key, maybe there is a trench but mostly it's like wide open sand landscape, maybe in the background in the distance we can see a wrecked skyscraper or Tokyo Eiffel Tower thing. But empty and wasteland is key and accentuates the bodies scattered, and then soon thereafter makes a white angel with gold mask and red figure fighting over a shiny silver device more prominent."
+22. **Desert, name, demon art.** "Yellow desert. Name Taka something. Takeya or some shit, idk. The desert should feel like aimless if we do dungeon crawler. But we can have Ghurub keep talking to assure the player to keep moving. Maybe even point in the right direction. Also we need to talk about demon designs. I can't afford to design these the way we did in Demon;Coder. Honestly, I'd rather just have a set of demons created that are SMT inspired. They can even be look-alikes in a way. I'm not looking to sell this, I'm looking for this to sell me. Sharing for free, etc."
 
 ---
 
@@ -49,7 +50,7 @@ These are your messages from the Gemini session, kept verbatim in order (only ob
 
 | Rule | Detail |
 | --- | --- |
-| **Where** | Tokyo, buried under white-sand desert. Overpasses, highways and stations stick out of the dunes. |
+| **Where** | Tokyo, buried under **yellow** sand desert. Overpasses, highways and stations stick out of the dunes. |
 | **When** | 1,500–2,000 years after 2007 (about 3500–4000 AD). Nobody alive knows the exact year; Ghurub's clock reads `YEAR: [ERR_DATA_LOST]`. |
 | **Demons and angels** | Real, physical and **visible to everyone**. To ordinary people they are an environmental hazard, like predators or fallout. |
 | **How humans survive** | There are so few people left that they can avoid demons: move slowly, hide, and take long detours around nests (a 3 km trip can take 14+ hours). Both sects avoid demons too. |
@@ -172,7 +173,7 @@ That's the whole arc: one scene and a handful of lines. For players who notice, 
 ## 5. Characters
 
 ### 5.1 The protagonist
-- Male, about 20s. **Name starts with T.** Proposed: **Tōru** (通る, "to pass through"), for the man who goes straight through the demon nests and through time. Other options: **Takeru**, **Tetsu**, **Taiga**.
+- Male, about 20s. **Name: Takeya.**
 - A rank-and-file soldier in one of the two sects and the only survivor of the battle. **Which side: TBD.** A grunt who knew nothing fits the "we were lied to" twist.
 - Dazed and traumatized, and at first sure he's hallucinating. Carries a standard-issue military handgun.
 - **Silent protagonist who speaks through dialogue choices.**
@@ -335,7 +336,7 @@ From waking among the dead to stepping into the station city. Lines marked ✎ w
 
 ### Scene 1: The field of the dead
 
-**The look: empty.** A wide-open sea of white sand under a huge sky. Maybe one trench line cutting across it, but mostly open dunes. The emptiness is what makes the bodies hit hard. **Dramatic, never graphic:** no gore, just stillness, sand and too many people lying where they fell.
+**The look: empty.** A wide-open sea of **yellow** sand under a huge sky. Maybe one trench line cutting across it, but mostly open dunes. The emptiness is what makes the bodies hit hard. **Dramatic, never graphic:** no gore, just stillness, sand and too many people lying where they fell.
 
 **Opening shot list (non-interactive)**
 1. **Black.** Only wind, and sand hissing.
@@ -344,7 +345,7 @@ From waking among the dead to stepping into the station city. Lines marked ✎ w
 4. **Slow pull-back and crane up.** A few bodies become dozens, then hundreds, scattered across the dunes. Two uniform colors lie mixed together, both sides in the same sand. Dropped rifles, a torn banner snapping in the wind, a single trench line, a burned-out vehicle.
 5. **Widest shot.** The battlefield is a small stain in an endless desert. Heat haze. **On the horizon:** the snapped skeleton of a Shinjuku skyscraper, and farther off the rusted, leaning frame of **Tokyo Tower**. This isn't the world we know.
 6. **A glint.** In the middle of all that stillness, something flashes **silver**. The camera pushes toward it.
-7. **The only movement in the world:** a **white-cloaked angel in a gold mask** and a **small red imp** grappling in the sand over a **shiny silver device**. White, gold, red and silver against pale sand.
+7. **The only movement in the world:** a **white-cloaked angel in a gold mask** and a **small red imp** grappling in the sand over a **shiny silver device**. White, gold, red and silver against yellow sand.
 8. **Cut back to the hand from shot 2.** The fingers twitch. **It's him.** The first body we saw was the protagonist.
 
 > **Optional:** set the opening at **late afternoon with a low sun**, so the bodies throw long shadows across the sand. It's the literal sunset that Ghurub's name means.
@@ -410,12 +411,30 @@ At the edge of the battlefield, facing open desert:
 **Gameplay.**
 - The surface is open desert in harsh daylight, with demons roaming the ruins of the highways in plain view. Any normal survivor would hide.
 - The protagonist **runs straight at them.** They see a human charging into their territory and attack.
+- **The desert feels aimless on purpose** (see "Crossing the desert" below).
 - **The ECS tutorial** comes in 2–3 small fights against feral desert demons (candidates: Sandman, Gaki, Pixie).
 
 > **GHURUB:** "Hostile entities approaching. Engaging containment frequencies. Operator: select NEGOTIATE, or draw your firearm." ✎
 
 - The demons are stunned that a human can bind their frequencies.
 - The player **recruits 1–3 demons**, each saved as a pixel sprite in the containment directory. These are the party for the boss fight.
+
+### Crossing the desert (how the open sand plays)
+
+**The feeling: lost.** In a grid crawler, the desert is a huge, mostly empty grid of yellow sand, with dunes that all look alike, few landmarks, heat haze, and wind wiping out the horizon. Walking it should feel aimless, which is the point: this world has nothing left in it.
+
+**Ghurub is the thread the player holds onto.** It keeps talking, so the player keeps moving:
+- **A bearing on the device.** Ghurub's screen shows a simple arrow or bearing toward Shinjuku (`BEARING 042 / 2.7 KM`). It's always on, so the player is never truly lost, only made to feel lost.
+- **Distance callouts** as they make progress: "Two kilometers remaining." "Signal strength increasing."
+- **Nudges if the player wanders or stands still** for a while:
+  > "Operator, you have deviated forty degrees from the bearing. Correcting is recommended."
+  >
+  > "We have been stationary for ninety seconds. The heat index does not favor waiting."
+  >
+  > "Continue north-east. The dunes are not landmarks. Do not trust them."
+- **Landmarks are rare and get commented on.** A half-buried bus, a highway sign poking out of the sand, a lone body far from the battlefield. Ghurub logs each one, which tells the player they're on track:
+  > "Landmark logged: a road sign. Text reads 'Shinjuku 3 km.' It is approximately accurate."
+- **Optional:** in empty stretches Ghurub reads out the previous operator's old logs in fragments. It fills the silence and builds the world for free.
 
 ### Scene 4: The elite scout
 
@@ -498,7 +517,7 @@ Ghurub can start to *hypothesize* once it has data. For example:
 5. **Is "Ghurub" the AI's name or the hardware line?** The scout says "a Ghurub unit." Recommendation: Ghurub is the product line and every unit runs the same base AI. Then the holy elite's device might *also* talk like Ghurub, which could be eerie.
 6. **What the angel's line "this relic is not the only thing he can rely on" points to.** Does the protagonist gain powers of his own, Digital Devil Saga–style?
 7. **Ghurub's button label:** "SUMMON" or "EXECUTE".
-8. **Names to come up with:** the protagonist (proposed: Tōru), the scout, the evil scientist, both corporations, the high demon Kuzuryu makes his pact with, the demon in Scene 1, the scout's demon, and the Act I recruitables.
+8. **Names to come up with:**  the scout, the evil scientist, both corporations, the high demon Kuzuryu makes his pact with, the demon in Scene 1, the scout's demon, and the Act I recruitables.
 
 ---
 
@@ -527,17 +546,15 @@ Kept here so nothing is lost.
 ### Format: first-person dungeon crawler
 - **Dungeons** (the Shinjuku underground, the vault, 2007 interiors, the factory) are **first-person, grid-based**, like SMT I and II. That's the core of the game and the easiest kind of 3D game for one person to build well.
 - **The opening** is a **cinematic** (section 6, Scene 1), not a dungeon, so it can be as big and dramatic as we want.
-- **Open areas** (the desert, 2007 streets) don't fit a tight grid. Options, cheapest first:
-  1. An **SMT-style overworld map**: a small marker moving between locations.
-  2. A **grid with very wide cells** and long sightlines, so it feels open while using the same movement code.
-  3. **Free first-person walking** in a few open zones. Most impressive, but a second movement system to build.
+- **The desert** is a grid too, with big, mostly empty cells and long views. Ghurub's bearing and voice keep the player moving (see "Crossing the desert" in section 6).
+- **2007 streets:** a grid of city blocks works, or an SMT-style overworld map if that's simpler.
 
 ### Engine: Godot 4
 Godot is a good fit, and a dungeon crawler can look genuinely impressive in it. Impressive comes from **lighting, atmosphere and art direction**, not from size, and that's where Godot 4 is strong:
 - **Lighting:** real-time shadows, global illumination (SDFGI/VoxelGI), and baked lightmaps for crisp, cheap lighting in dungeons.
 - **Atmosphere:** volumetric fog, glow and bloom, screen-space reflections and ambient occlusion. Sand blowing through light shafts, neon on wet subway tiles.
 - **Custom shaders and post-processing:** a 2000s LCD look for Ghurub's screen, film grain, color grading, dithering, CRT-style effects, and the warp transition into battle.
-- **Animated 3D demons** in battle, with cinematic camera angles instead of flat sprites.
+- **2D demon art in a 3D world.** Demons are flat portraits (see "Demon art" below), and they're lit and moved in 3D with simple effects: a glow, a shake, a dissolve.
 - **A diegetic Ghurub UI:** menus that live on the device's screen on the protagonist's arm, not floating boxes.
 - **Free and open source**, with no royalties, and it exports to PC and consoles (consoles through third-party porting partners).
 
@@ -546,6 +563,29 @@ Godot is a good fit, and a dungeon crawler can look genuinely impressive in it. 
 - Environments that tell a story: the bodies in the desert, the slave floor in Shinjuku, the assembly line.
 - Battles that feel like an event: a transition effect, a camera that moves, demons that animate.
 - A strong, consistent look over high polygon counts. The Y2K-retro style helps here, since lower-detail models with great lighting look intentional.
+
+### Demon art
+
+**Decision: no building demons by hand** (not like Demon;Coder, which built every character from shapes in code). Instead, a set of **SMT-inspired demons**, close look-alikes are fine.
+
+**Use 2D art.** SMT I and II used **2D demon portraits** in first-person battles, so it's period-authentic. It's also far cheaper than modeling and animating 3D creatures. In Godot, a 2D portrait in a 3D battle scene can still look great: rim light, a slow idle bob, a dissolve when it dies, a flash when hit.
+
+**Where the art comes from (pick one or mix):**
+1. **AI image generation**, with one fixed style prompt and reference image so every demon looks like part of the same set. Fastest route to a full roster, and this session can generate images through the Higgsfield connection.
+2. **Free asset packs** (OpenGameArt, itch.io). Cheap, but hard to keep consistent in style.
+3. **A few commissioned or hand-made key demons** (the angel, the imp, bosses) with the rest generated.
+
+**A roster starting point**, all from real-world myth (public domain, so free to use and every one has a classic SMT version to riff on):
+- **Act I desert:** Imp, Pixie, Gaki, Sandman, Lilim, Kobold, Nekomata
+- **Scene 1:** the gold-masked angel (a Power or Principality), and the red Imp
+- **Scout's demon (first boss):** something tougher, such as Orthrus, Cerberus or a Yaksha
+- **Later:** Loki (Nagi's fusion), plus Kuzuryu's high demon
+
+**About look-alikes, since this is a free portfolio piece:**
+- **Free sharing is the right call.** Fan projects that make no money are generally left alone.
+- **Free doesn't make copying legal,** though. Copying Atlus's actual demon designs could still get the game taken down, even if it's free.
+- **Original-but-familiar designs also sell *you* better.** "SMT-inspired, my own take" reads as skill to anyone hiring. Traced designs read as a fan copy.
+- **The safe line:** take the *myths* (Pixie, Imp, Cerberus, Loki) and the *SMT style* (bold shapes, a strong silhouette, one striking color), but don't reproduce specific designs like Jack Frost.
 
 ### The existing web prototype
 `demon-coder-web/` in this repo is a Three.js browser test of a different game. Switching to Godot means starting the code over, but that build is still useful as a reference for the retro look, the battle transition and the grid movement.
