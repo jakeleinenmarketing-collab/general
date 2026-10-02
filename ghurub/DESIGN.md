@@ -587,6 +587,18 @@ Godot is a good fit, and a dungeon crawler can look genuinely impressive in it. 
 - **Original-but-familiar designs also sell *you* better.** "SMT-inspired, my own take" reads as skill to anyone hiring. Traced designs read as a fan copy.
 - **The safe line:** take the *myths* (Pixie, Imp, Cerberus, Loki) and the *SMT style* (bold shapes, a strong silhouette, one striking color), but don't reproduce specific designs like Jack Frost.
 
+### The Godot prototype (`ghurub/game/`)
+
+Act I, Part 1 is playable, from the opening cinematic to the Shinjuku Station gates. See `ghurub/game/README.md`.
+
+- **Demons are built in Godot**, from primitive shapes plus the same toon, outline and haze shaders as the desert. That's the answer to "the map and the demons should look like one world." There's no outside art at all.
+- **Renderer: Compatibility**, at 640×360 upscaled with an ordered-dither post pass. It runs on modest hardware and looks the same everywhere.
+- **Choices made while building** (easy to change):
+  - The angel and imp's fight is staged just north of where Takeya wakes.
+  - The scout is knocked unconscious and left alive.
+  - The scout's boss demon is Orthrus.
+  - The rail yard can only be entered from the south, and you meet the scout on the open track between the wrecked cars.
+
 ### The existing web prototype
 `demon-coder-web/` in this repo is a Three.js browser test of a different game. Switching to Godot means starting the code over, but that build is still useful as a reference for the retro look, the battle transition and the grid movement.
 
