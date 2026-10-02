@@ -5,21 +5,29 @@ Goal: concept art in the spirit of the SMT II cover (`reference/lighthouse_smt2_
 ## How to use it
 
 1. **Use one ChatGPT chat** for the whole cast, so the style stays consistent.
-2. **First message:** upload the SMT II cover and paste the style block below. Say: "Use this cover as mood reference only. Create original designs, don't copy its characters."
+2. **First message:** paste the style block below plus ONE character. Ask for one character per image, never a lineup.
 3. **For each character:** paste their description, then iterate in plain words ("longer cloak," "mask smoother").
 4. **Once you love a design,** ask for the **3D-ready version** (bottom of this file) and use that image in Tripo or Meshy.
 
-## Style block (paste first)
+## Style block (paste first, in a fresh chat)
+
+The first version of this block produced ornate modern fantasy art: jewelry, gears, castles and lineups. This version says what to avoid.
 
 ```
-Art style for every image in this chat: 1990s Japanese occult RPG illustration,
-painted concept art. Washed-out, almost monochrome palette: bone white, cream,
-pale olive, faded sepia. High-key and misty, highlights softly blooming, faint
-printed-paper grain. Hard black accents (leather straps, buckles, chains, belts)
-cutting through the pale tones. Elongated, elegant, realistic proportions, not
-chibi or cartoon. Soft painterly shading with crisp fine ink lines. Faint occult
-geometry dissolving in the fog behind the figure. Original designs only.
+One single character, full body, centered, on a plain pale gray-white background
+with only soft mist. No scenery, no buildings, no castles, no halos, no symbols.
+
+Style: 1990s Japanese video game box art, airbrush and ink. Bold clean linework,
+smooth airbrushed shading, flat and graphic, high contrast. Palette: pale bone and
+cream skin and cloth, washed olive-yellow tint, with a few LARGE solid black shapes
+(thick plain leather straps, a black blindfold or band). Black areas are big, flat
+and simple, not detailed.
+
+Avoid: ornate fantasy, filigree, jewelry, gears, compasses, gold trinkets, lace,
+parchment texture, modern digital painting, gacha or fantasy-MMO style.
 ```
+
+If it drifts ornate, reply: *"Simpler. Fewer details. Bigger, flatter black shapes. Like a 1994 game manual illustration."*
 
 ## Act I cast
 
@@ -36,12 +44,10 @@ Full body, standing, neutral pose.
 
 **The angel (opening scene)**
 ```
-A tall, solemn angel warrior. Long flowing white hooded robes with black leather straps
-and buckles crossing the chest and waist, and a broken chain hanging from one wrist.
-The face is hidden behind a smooth, expressionless polished gold mask with no mouth
-and two thin eye slits. Small white wings folded behind. A slender straight sword.
-Thin streaks of gold blood on the robes. Regal, wounded, unsettling.
-Full body, standing.
+A tall, gaunt angel in plain white robes, wrapped by three thick black leather straps
+across chest, waist and thighs. Face completely hidden behind a smooth, featureless
+gold mask. Two folded white wings. Holding a plain straight sword. Streaks of gold
+blood on the robes. Cold, still, unsettling.
 ```
 
 **The Imp**
