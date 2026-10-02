@@ -10,6 +10,11 @@ This file is the single source of truth. It holds every decision made so far, th
 
 A war between two human sects ends in a Tokyo desert with everyone dead except the protagonist. He wakes to see an angel and a demon fighting over a device. He shoots them both. The dying angel tells him the device controls otherworldly entities, that both sides were lied to (the war was really over the location of a time machine, not resources), and that he should use it to go back and prevent the world he grew up in. The device wakes up as **Ghurub**, a cold, logical AI. Together they cut straight through demon territory to a train-station city, chasing a lead to a petty criminal named **Kuzuryu**, who also exists in 2007, the year they're trying to reach.
 
+### Scope rules (solo developer)
+- **One linear story.** No Law/Neutral/Chaos route split and no branching endings. Story beats like destroying Kuzuryu's pod are things the protagonist *does*, not menu choices.
+- **No paradox rules.** The protagonist goes back to change everything, whatever the consequences. The game never stops to explain time mechanics.
+- **Don't over-connect.** Not every 2007 detail needs a future payoff. Pick a few strong links and leave the rest alone.
+
 ---
 
 ## 2. Your decisions, in your own words
@@ -32,6 +37,7 @@ These are your messages from the Gemini session, kept verbatim in order (only ob
 14. **Antagonist, the pod, the factory, the sects.** "[The person who reopens Kuzuryu's pod is] probably the main antagonist of the game, maybe a person revered as a hero among humanity on both sides in the future who also is in the past. He however survived by fusing himself with a demon. The antagonist's goons may reopen Kuzuryu's pod out of legend but they find out he is useless though and the stories of his greatness are more myth than legend." "Ghurub unit sitting in factory line in 2007 would be super cool." "Yes, they can destroy [the pod], and we should give them a reason to in the future. Potentially we see Kuzuryu with slaves or treating people bad in Shinjuku Station on the floor he controls. It should be a nice moment to end him." "That would be great if the future sects descend from the two corporations but it should be kind of obscure. Like not overt."
 15. **The antagonist in 2007.** "The antagonist should be a 20s year old-ish person like the protagonist, he could be kind of kooky (I'm thinking of like Ryuji or the standard sidekicks in Persona who are goofy). He could seem like he has pie-in-the-sky aspirations. Talk about his idea for a tech startup. The truth is, his dad is wealthy and his ideas are actually coming together more than he leads on. He sticks with the protagonist for a while because he recognizes the device and is curious who protagonist is and goes on his adventure with him as a form of espionage. He will leave the party several times or maybe just is a part of it for a stretch and a side character who pops up." "I like your other ideas... Let's note them."
 16. **His dad, his side, his motive.** "I like the idea of his dad being on God's side, but he is really on the demons' side. He would prefer to carve out his own path instead of relying on nepotism, but uses his dad's money and connections to make his way in. I like the hints you have. Maybe he could help fix Ghurub at one point when it's damaged. We need to be very subtle though. The logo could be there too and be subtle. Because he is on the demons' side, it is probably him who sets off all of the war between gods and demons by being on both sides. We're going to show him as a silly carefree kind of guy, what could be his motivation?"
+17. **Feedback on the proposals.** On "Asahi Amagi": "No, he needs a more chill name." On Lucifer: "No, Lucifer is too cliché, needs to be another demonic chaos entity." On the motive: "Maybe more typical chaos reasons, no rules, freedom, father is a representation of order." On the factory chain: "I don't know if we need that many connections. We could find the first unit, but too much connection to the future feels forced, unless you have a really good idea." On the paradox fix: "There's no paradoxes in this story, they are going back to change everything regardless of the consequences." On sparing Kuzuryu: "Maybe. I'm making a game, so I don't know if I can make a super complex law vs chaos thing. It was a stress point on the last project. I'm a solo developer."
 
 ---
 
@@ -46,7 +52,7 @@ These are your messages from the Gemini session, kept verbatim in order (only ob
 | **Why the protagonist can't** | He's racing to find the time machine before someone else does, so he takes the direct route straight through demon nests. That's the gameplay hook: he breaks the one rule everyone else lives by. |
 | **Controlling demons** | Only possible with a rare device like Ghurub. Seeing a human bind demons shocks both demons and people. |
 | **The war** | Two human sects fought in the trenches. Both were told they were fighting over a resource cache. It was really over the **location of a time machine**. An elite group, operating in secret, was running things from the shadows. |
-| **Time travel** | The farthest back the machine can go is **2007**, about **6–8 months before Ground Zero** (the demon/angel event that ended the world). |
+| **Time travel** | The farthest back the machine can go is **2007**, about **6–8 months before Ground Zero** (the demon/angel event that ended the world). **No paradoxes:** changing the past simply changes it, and the story doesn't dwell on how. |
 | **Where the game happens** | Act I is in the future. **Most of the game is in 2007**, where rival corporate elites (one demon-worshipping, one God-worshipping, both greedy) are preparing for war, and demons and angels already show up in some areas. |
 | **Aesthetic** | Y2K retro-futurism plus dark post-apocalypse: brushed silver, rubber keys, thick LCD glass, low-res cyan backlights. Future tech is scavenged and modified 2000s tech, because 2007 was the last peak of civilization. |
 
@@ -120,12 +126,9 @@ These are your messages from the Gemini session, kept verbatim in order (only ob
 
 **What Kuzuryu's survival means for the player.** In Act I he's just a shady fixer. In 2007 the player meets a man with the same face. Ghurub notices that before anyone else does (7.1), so the player knows something nobody in the future does. When he vanishes in 2007 and the pod turns up, the mystery is explained.
 
-**Destroying the pod (player choice).**
-- **Setup:** in the future, the player has seen Kuzuryu's slave floor in Shinjuku Station and has had to deal with him to reach the vault anyway. It leaves a bad taste.
-- **Payoff:** in 2007 the player finds him asleep in the pod and can **end him.** It should feel earned and satisfying.
-- **The paradox:** the player needed future Kuzuryu to reach the vault. **Recommendation:** the protagonist and Ghurub left the original timeline, so destroying the pod doesn't undo their own past. It changes the future they're *heading toward*: in that future, nobody owns that floor. Ghurub explains it in one cold line:
-  > **GHURUB:** "Our causal history is already recorded, Operator. Terminating the subject removes him from the timeline we are constructing, not the one we left. The individuals on his floor will not be born into his custody."
-- **Optional:** sparing him could pay off later (his override key; see 5.9). That would make it a real choice rather than an obvious one.
+**Destroying the pod (story beat, not a choice).**
+- **Setup:** in the future, the player has seen Kuzuryu's slave floor in Shinjuku Station and had to deal with him to reach the vault anyway. It leaves a bad taste.
+- **Payoff:** in 2007 the player finds him asleep in the pod, and the protagonist **ends him.** It should feel earned and satisfying. No paradox talk: they came back to change everything.
 
 **His future voice (draft):**
 > "Well, look what crawled out of the trenches. A pristine silver unit. I haven't seen one of those since... well, never mind when. You think you're going to use that to fix this dump of a world? Look around you, kid. The big shots up top — the angels, the demons, the elite squads — they've been fighting over the timeline for centuries. Me? I just survive. You want into the vault? Fine. But you pay upfront. I don't do charity, especially not for heroes."
@@ -163,14 +166,14 @@ These are your messages from the Gemini session, kept verbatim in order (only ob
 - **Name: TBD.**
 - He could be the person who seals Kuzuryu in and the one who designed Ghurub (5.9). That keeps the 2007 cast tight.
 
-### 5.8 The main antagonist: Asahi Amagi (proposed name)
+### 5.8 The main antagonist: Nagi Kamiya (proposed name)
 
 **Decided**
 - **Age and vibe:** early-to-mid 20s, the protagonist's age. A goofy, carefree sidekick type like Ryuji.
 - **His cover:** always pitching a **tech startup** idea that sounds like pie in the sky.
 - **The truth:** his plans are much further along than he lets on.
 - **His dad is on God's side. He is secretly on the demons' side.**
-- **Nepotism:** he wants to be self-made and resents relying on his father, **but uses his dad's money and connections** to get in anyway. That contradiction eats at him.
+- **Nepotism:** he'd rather carve out his own path, **but uses his dad's money and connections** to get in anyway.
 - **Why he tags along:** he **recognizes the device**, wants to know who the protagonist is, and joins him **as a spy.** He comes and goes from the party.
 - **He starts the war.** He has a foot in both camps (God's side through his father, the demons' side through his own choice), so he's the one who sets God and the demons against each other.
 - **In the future:** he **fused with a demon**, lived through all 2,000 years, and is **revered as a hero by both sects.** His goons dig up Kuzuryu's pod.
@@ -180,29 +183,29 @@ These are your messages from the Gemini session, kept verbatim in order (only ob
 
 | | Proposal | Why |
 | --- | --- | --- |
-| **Name** | **Asahi Amagi** (天城 朝陽) | *Amagi* means "castle of heaven", his father's holy family name, which he's stuck with. *Asahi* means "morning sun." That makes him the **dawn to Ghurub's sunset**, and the morning star is Lucifer. On the surface it's just a normal, friendly name, and people tease him that he's named after a beer. |
-| **His dad** | **Amagi Seiichirō** (聖一郎, "holy, first son"), chairman of the God-side corporation. Devout in public, ruthless in private. | That's why the son's rebellion is personal. |
-| **The demon he fuses with** | **Lucifer**, kept hidden behind an alias until late in the game (SMT has done this with "Louis Cyphre"). | Lucifer rebelled against the Father. Asahi rebels against *his* father, who serves God. The morning-sun name pays off. **Alternative**, if Lucifer feels too big: **Samael**, or a lesser fallen angel. |
+| **Name** | **Nagi Kamiya** (神谷 凪) | *Nagi* means "calm" or "lull," the stillness on the water when the wind drops. It's an easygoing name for an easygoing guy, and it's also the calm before the storm. *Kamiya* means "valley of the gods," his father's holy family name. Other chill options: **Sora**, **Kai**, **Haru**. |
+| **His dad** | **Kamiya Seiichirō**, chairman of the God-side corporation. Devout in public, ruthless in private. Stands for **order**. | |
+| **The demon he fuses with** | **Loki** | The trickster of Norse myth. A joker who lives among the gods while working against them, plays both sides, and **sets off Ragnarök, the war of the gods that ends the world.** That's exactly Nagi's role, and it fits a goofy, carefree guy far better than a brooding devil. In SMT, Loki is a mid-tier demon, not a cliché final boss. **Alternatives:** **Typhon** (the chaos monster that rose against Zeus, the father of the gods) or **Tiamat** (primordial chaos itself). |
 
-**His motivation: "disrupt"**
+**His motivation: pure Chaos**
 
-The goofy act isn't fake. He really is carefree, because **he doesn't think he's doing anything wrong.** He's a startup founder, and in startup language you "disrupt" an industry, burn down the old way, and build something new on the ashes. He's just applying it to the world.
+Typical SMT Chaos reasons: **no rules, total freedom.** His father stands for order: rules, hierarchy, obedience, God at the top. Nagi wants all of it gone.
 
-- **Freedom from fathers.** His father runs his life, and his father's God runs the world. Asahi wants a world where nobody answers to a father or a god, so everyone can carve out their own path the way he wishes he could.
-- **To be self-made.** Everything he has came from his dad, and he knows it. The only thing big enough to be truly *his* is founding a new world. The apocalypse is his launch. The war is the market crash that clears space.
-- **Why he's carefree:** he really believes it'll be better afterward. He isn't cruel. He's an optimist with no brakes, and that's scarier than a villain who knows he's evil.
-- **The irony:** his "self-made" world is built on his father's money and connections, and he can never fully escape that. Two thousand years later, two sects worship him as their founder. He finally *is* self-made, and the world he made is a desert.
+- **No rules.** He doesn't want a better system; he wants no system. Anyone should be able to do whatever they want, and the strong and clever will be fine.
+- **His father is order.** Every rule in his life came from his dad, and his dad's God. Tearing down the world is tearing down his father.
+- **Why he's carefree:** he really believes freedom is worth any price. He isn't cruel. He's someone who never learned what rules are *for*, and that's scarier than a villain who knows he's evil.
+- **The irony:** 2,000 years later, the "free" world he made is a desert where people hide from demons. Both sects worship him as their founder and live by rules carved in his name.
 
-Lines from his pitch that sound like silly startup talk on the first playthrough and mean something else on the second:
-> "Every market needs a crash before anything new can grow, y'know?"
+Lines that sound like a carefree goof the first time and mean something else on a replay:
+> "Rules are just somebody else's opinion, y'know?"
 >
-> "My dad's whole thing is 'honor your father.' My thing is — what if nobody had to?"
+> "My dad's whole life is a list of 'don'ts.' I wanna see what happens if you cross 'em all out."
 >
-> "You don't fix an old system. You let it burn and build version two."
+> "Relax, man. Everything's more fun when nobody's in charge."
 
 **How he sets off the war by being on both sides**
 - Through his father, he has access to the God side's plans, people and money.
-- Through his own deals, he's tied in with the demon side, and maybe with the device factory (he recognized the device for a reason).
+- Through his own deals, he's tied in with the demon side and the device factory. That's why he recognized the device.
 - He feeds each side just enough about the other to make it panic and arm up. Neither side realizes the same man is on both sides.
 - That's why both future sects revere him: each remembers him as *their* founder.
 
@@ -210,32 +213,26 @@ Lines from his pitch that sound like silly startup talk on the first playthrough
 - **He fixes Ghurub.** After a fight leaves Ghurub damaged, he offers to help ("I tinker!") and gets it running again, a little too fast and too well. Nothing changes on screen. **One extra line** appears in Ghurub's system log, which the player only sees if they open the log menu themselves:
   `[ FIRMWARE REV. ACCEPTED — SOURCE: LOCAL ]`
   Ghurub doesn't mention it. On a replay, it means he had access to everything.
-- **The logo.** His startup's logo is a small, simple mark (for example, a sun on a horizon line). It shows up only in places you'd never look twice: a sticker on his laptop in 2007, and in Act I, worn into a buried statue's base or stamped faintly on future gear. Never call attention to it.
+- **The logo.** His startup's logo is a small, simple mark (for example, a loose knot or a wavy line). It shows up only in places you'd never look twice: a sticker on his laptop in 2007, and in Act I, worn into a buried statue's base or stamped faintly on future gear. Never call attention to it.
 - **The scan.** If the player has Ghurub scan him, it comes back **[DATA INCOMPLETE]** and Ghurub moves on. It never comments.
 - **He knows the device too well** ("Lucky guess! Tech guy, remember?"). Use this once at most.
 - **He's too relaxed around demons.**
 - **His dad's money slips out:** a black card, a car service, keys to a building. He's embarrassed about it, which is in character and also hides more.
 
 **Still open**
-- Whether to keep the name, the dad, and Lucifer.
+- Whether to keep the name Nagi and Loki.
 - **When he fuses:** before Ground Zero, during it, or in a moment the player witnesses?
 - **Does the player accidentally help him?** By bringing future tech and knowledge into 2007 with him watching, the protagonist may hand him the blueprint.
 - **How the betrayal plays out:** a single reveal, or slow, with each departure from the party slightly darker than the last?
 
-### 5.9 Your Ghurub on the 2007 factory line
+### 5.9 The 2007 device factory (kept simple)
 
-The player walks the assembly line and Ghurub finds **its own serial number** on a unit being built. Ideas for what to do with it:
-
-1. **Ghurub's missing first memory.** Ghurub's earliest logs have always been corrupted. Near its younger self, it recovers them: who designed it, what it was really built for, and maybe a hidden directive it didn't know it had. That's a midgame reveal, and the AI the player relies on is suddenly a question mark.
-2. **Talk to the blank unit.** The 2007 Ghurub boots up fresh: same voice, no memories, and it calls the protagonist "Unregistered user." The player's Ghurub, talking to its own empty self, is the one moment where its cold logic might crack slightly.
-3. **The override key is for every unit, including yours.** The master override key Kuzuryu steals is the factory's master key for all Ghurub units. That's why the future elites fear him, and it means **he could have shut your Ghurub off at any point in the future.** It also gives the player a reason to want the key, and maybe a reason to spare him (see 5.5).
-4. **Sabotage or protect the line.** Destroying the factory could stop the elites' war machine, but your unit is on that line. Ghurub calculates the odds and **recommends destroying it anyway, including itself**, because the mission comes first, like Arthur. Then the player chooses.
-5. **The bootstrap loop.** The "SUMMON" label that "a previous owner" scratched onto the side of your unit? The protagonist scratches it there himself, in 2007, on the unit on the line. He was the previous owner all along, or at least he made that mark. It's a small detail that will blow players' minds.
-6. **Why your unit is a reject.** Most 2007 units don't work. Yours could be a QA reject that **Kuzuryu smuggled out** (he moves the devices for the elites). That explains how it survived the apocalypse and ties three threads together: Kuzuryu, the factory and Ghurub.
-7. **Gameplay payoff.** The factory has upgrade modules, firmware or a fusion program the future never recovered. Leaving it means Ghurub gains new abilities (demon fusion, a better analysis screen, etc.).
-8. **Boss.** A bound test demon in a containment chamber, used for QA, which breaks loose. Or the scientist himself.
-
-**Recommendation:** use 1, 3, 5 and 6 together. They're one connected chain: your unit is a reject, Kuzuryu smuggles it out, the override key controls it, the label was yours, and the recovered memory reveals who built it and why. Use 4 as the level's climax.
+- **The revelation:** rows of devices on an assembly line. Coming from a future where every unit is a rare relic, that image alone does the work.
+- **The first unit:** somewhere in the plant is **Unit 001**, the original prototype. Finding it is the level's prize: plugging it into Ghurub **unlocks a new ability** (for example, demon fusion). It's one item and one scene, with no time-loop strings attached.
+- **Ghurub's reaction:** one short, dry line. For example:
+  > **GHURUB:** "Production rate: forty units per hour. Functional yield: 11%. Operator, I am statistically fortunate to exist."
+- **Boss:** a bound test demon breaks out of its containment chamber, or the scientist fights you himself.
+- **Optional, if there's time:** a blank unit on the line boots up and calls the protagonist "Unregistered user" in Ghurub's own voice. It's a cheap, eerie moment with no future connections required.
 
 ---
 
@@ -350,7 +347,7 @@ Nobody in the future knows Kuzuryu is from 2007, so Ghurub can't look it up. It 
 >
 > "Current subject: human, age approximately 34, low-tier syndicate asset. The Kuzuryu we met was the same man, at an apparent age of roughly 50. Under normal biology this match is impossible."
 >
-> "Hypothesis: the subject reaches our era by means other than natural lifespan. Recommendation: we keep him under observation and do not disrupt his survival. If he does not reach the future, we may never reach the vault."
+> "Hypothesis: the subject reaches our era by means other than natural lifespan. Recommendation: observe him."
 
 ### 7.2 Ghurub on God, mid-game or later (not Act I)
 Ghurub can start to *hypothesize* once it has data. For example:
@@ -371,30 +368,25 @@ Ghurub can start to *hypothesize* once it has data. For example:
 
 - **Kuzuryu's pod** is reopened by the antagonist's goons chasing a legend. He turns out to be a nobody and is thrown away (5.5).
 - **The player can destroy the pod.** The reason: his slave floor in future Shinjuku (5.5).
-- **The protagonist's Ghurub unit is on the 2007 factory line** (5.9).
+- **The factory is kept simple:** rows of devices, Unit 001 as an upgrade, and no time-loop connections (5.9).
+- **No paradoxes, and one linear story** with no Law/Chaos routes (scope rules, section 1).
+- **The antagonist's motive is pure Chaos:** no rules, freedom. His father stands for order (5.8).
 - **The future sects descend from the 2007 corporations,** but it's only hinted, never stated (5.6).
-- **The antagonist** is a goofy, Ryuji-style guy in his 20s with a startup idea and a rich dad. He tags along with the protagonist to spy on him. His dad is on God's side and he's secretly on the demons' side, and he starts the war by playing both. He fixes Ghurub once. All hints stay very subtle (5.8).
+- **The antagonist** is a goofy, Ryuji-style guy in his 20s with a startup idea and a rich dad. He tags along with the protagonist to spy on him. His dad is on God's side and he's secretly on the demons' side, and he starts the war by playing both. He fixes Ghurub once. All hints stay very subtle. Proposed name: **Nagi Kamiya**. Proposed demon: **Loki** (5.8).
 
 ### Liked, but not decided yet
-You said you like these. They're noted to come back to:
-- The factory-line chain (5.9): your unit is a reject Kuzuryu smuggled out, the override key controls every unit, the protagonist scratched the SUMMON label himself, and Ghurub recovers its first memory. Ghurub recommends destroying the factory, itself included, as the level's climax.
-- Talking to the blank 2007 Ghurub unit (5.9).
-- The pod paradox rule: they're outside their own timeline, so destroying the pod changes the future they're heading to, not the past they came from (5.5).
-- Sparing Kuzuryu could be worth something (the override key), so destroying the pod is a real choice (5.5).
 - The evil scientist could also be Ghurub's designer (5.7).
 - The hints that the sects came from the corporations: worn logos, drifting names, scripture that's really a corporate handbook, sacred sites at old HQs (5.6).
 
 ### Open
-1. **The antagonist's details:** sign off on the name, dad and demon proposed in 5.8. Also when he fuses, whether the protagonist accidentally helps him, and how the betrayal plays out.
-2. **The pod paradox:** go with the "they're outside their own timeline" rule (5.5), or something else?
-3. **Should sparing Kuzuryu be worth something** (the override key)? Or is ending him simply the right call?
-4. **Which future sect comes from which 2007 corporation,** and which one is the protagonist from? The scout?
-5. **Where the slave-floor scene goes.** Act I ends at the Shinjuku gates, so this is early Act II, before the time jump. It's also probably where the player has to deal with Kuzuryu to reach the vault.
-6. **Who in 2007 owns a working device?** The holy elite is one. The others are candidates for rival summoners.
-7. **Is "Ghurub" the AI's name or the hardware line?** The scout says "a Ghurub unit." Recommendation: Ghurub is the product line and every unit runs the same base AI. Then the holy elite's device might *also* talk like Ghurub, which could be eerie.
-8. **What the angel's line "this relic is not the only thing he can rely on" points to.** Does the protagonist gain powers of his own, Digital Devil Saga–style?
-9. **Ghurub's button label:** "SUMMON" or "EXECUTE".
-10. **Names to come up with:** the protagonist, the scout, the evil scientist, both corporations, the high demon Kuzuryu makes his pact with, the antagonist, the demon in Scene 1, the scout's demon, and the Act I recruitables.
+1. **The antagonist's details:** sign off on Nagi Kamiya and Loki (5.8). Also when he fuses, and how the betrayal plays out.
+2. **Which future sect comes from which 2007 corporation,** and which one is the protagonist from? The scout?
+3. **Where the slave-floor scene goes.** Act I ends at the Shinjuku gates, so this is early Act II, before the time jump. It's also probably where the player has to deal with Kuzuryu to reach the vault.
+4. **Who in 2007 owns a working device?** The holy elite is one. The others are candidates for rival summoners.
+5. **Is "Ghurub" the AI's name or the hardware line?** The scout says "a Ghurub unit." Recommendation: Ghurub is the product line and every unit runs the same base AI. Then the holy elite's device might *also* talk like Ghurub, which could be eerie.
+6. **What the angel's line "this relic is not the only thing he can rely on" points to.** Does the protagonist gain powers of his own, Digital Devil Saga–style?
+7. **Ghurub's button label:** "SUMMON" or "EXECUTE".
+8. **Names to come up with:** the protagonist, the scout, the evil scientist, both corporations, the high demon Kuzuryu makes his pact with, the demon in Scene 1, the scout's demon, and the Act I recruitables.
 
 ---
 
@@ -406,6 +398,9 @@ Kept here so nothing is lost.
 - Backlight colors that were considered: green, amber or cyan. Cyan was chosen.
 - A version where future Kuzuryu was a near-immortal mythic kingpin. You rejected it in favor of the petty criminal.
 - A version where only the protagonist could see demons. You rejected it in favor of demons being visible to everyone.
+- The antagonist as "Asahi Amagi" fused with Lucifer, with a "disrupt the world" startup motive. Rejected: the name wasn't chill enough, Lucifer is a cliché, and the motive is now plain Chaos.
+- The factory-line chain (Kuzuryu smuggles your reject unit out, his override key controls every unit, the protagonist scratched the SUMMON label himself, and Ghurub recovers its first memory). Rejected as too forced.
+- The pod paradox explanation, and sparing Kuzuryu as a real choice. Rejected: no paradoxes, and no branching for a solo project.
 - Possible next steps from the Gemini session:
   - Layout of the station hub: shops, factions, Kuzuryu's den.
   - The Kuzuryu negotiation: what he wants (money, a specific demon, protection?).
