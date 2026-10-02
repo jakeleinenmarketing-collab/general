@@ -12,6 +12,20 @@ Check each tool's terms. For a free portfolio project, all of these are normally
 
 ---
 
+## 0. Using ChatGPT (recommended)
+
+ChatGPT's built-in image generation (**ChatGPT Images 2.0**, as of April 2026) is strong at following detailed descriptions and remembering earlier images in the same chat, which is exactly what a consistent set needs. You don't pick a separate image model; just ask for an image in a chat. On a paid plan, using a **thinking** model gets you "images with thinking," which plans the image before drawing it and follows long prompts more closely.
+
+**Workflow:**
+1. Start **one dedicated chat** for the whole demon set and keep every demon in it.
+2. First message: paste the style block (section 2) and say "This is the art style for every image in this chat." Then ask for the angel.
+3. Iterate on the angel in plain language ("make the mask smoother," "cloak more tattered") until it's right. That image becomes the style reference.
+4. For each next demon: "Same art style, framing and background as the angel. Now: [creature description from section 3]."
+5. If the style drifts, re-upload the approved angel image and say "match this style exactly."
+6. Ask for a **transparent background** if you want cut-outs ready for Godot. If that comes out wrong, keep the plain gray background and remove it later.
+
+---
+
 ## 1. How to keep the set consistent
 
 1. **Make the angel first.** Regenerate until one image nails the look.
