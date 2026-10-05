@@ -945,7 +945,7 @@ func _comp_menu() -> void:
 	exploring = false
 	ui.show_party(party())
 	while true:
-		var i: int = await ui.menu("GHURUB // COMP", ["ITEMS", "DEMONS", "CLOSE"])
+		var i: int = await ui.menu("GHURUB // MENU", ["ITEMS", "DEMONS", "CLOSE"])
 		if i == 0:
 			var n: int = st["items"]["Medicine"]
 			if n <= 0:
