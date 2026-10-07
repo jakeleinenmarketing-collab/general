@@ -97,6 +97,19 @@ What we agreed:
 - **Order in `world.gd`:** `clear_near()` has to run *before* `Kit.bake()`, because baking merges the props into chunked meshes.
 - **Project version:** it targets Godot 4.4+ features and has been tested on 4.6.2 and 4.7. The author is on 4.7.
 
+## 6b. Story update (latest)
+
+The Act I story was rewritten. **Use `DESIGN.md` section 11**, not section 6. It covers:
+- the Machine (unnamed, called "Father" by its followers)
+- the Communion (law-leaning cult, brown)
+- the Shinjuku Militia (Takeya's side, green)
+- Momo
+- the freelance summoner
+- the clue chain to Kuzuryu
+- the full new Act I dialogue
+
+The dialogue currently in the game is the old version and should be replaced with section 11.
+
 ## 7. Open questions still on the table
 
 - Approve the antagonist's proposed name **Nagi Kamiya** and his demon **Loki** (DESIGN.md 5.8).

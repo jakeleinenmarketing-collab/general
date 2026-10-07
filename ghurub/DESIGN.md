@@ -321,7 +321,9 @@ Lines that sound like a carefree goof the first time and mean something else on 
 
 ---
 
-## 6. Act I script: "The Sunset of Humanity"
+## 6. Act I script: "The Sunset of Humanity" (SUPERSEDED, see section 11)
+
+> **This script is out of date.** The current Act I story and dialogue are in **section 11**. This version is kept for reference only.
 
 **Act I covers everything in the future**, from the trench to the time jump. **Act II begins in 2007 Tokyo.**
 
@@ -602,3 +604,156 @@ Act I, Part 1 is playable, from the opening cinematic to the Shinjuku Station ga
 ### The existing web prototype
 `demon-coder-web/` in this repo is a Three.js browser test of a different game. Switching to Godot means starting the code over, but that build is still useful as a reference for the retro look, the battle transition and the grid movement.
 
+
+
+---
+
+## 11. Act I, revised (CURRENT)
+
+This replaces section 6. It was decided in the author's own words: the battle was over the time machine's location; the machine is guarded by a robot demi-god that demands worship; the brown side are the law-leaning cult defending it; the green side are ordinary survivors who don't worship it. Takeya fights only one of the angel and the imp; the summoner is a freelancer; Momo was *about to* go look for him.
+
+### 11.1 Lore and names
+
+| Thing | Decision |
+| --- | --- |
+| **The Machine** | A robot demi-god guarding the time machine. **It has no name.** People just say "the Machine"; its followers call it **"Father."** It demands worship and destroys those who refuse. Nobody can get near it or activate it without a summoning unit. Original design, not a copy of any SMT boss. |
+| **The Communion** | The law-leaning cult that worships the Machine and defends it. They wear **brown**. The name sounds peaceful on purpose. |
+| **The Shinjuku Militia** | Takeya's side, usually just "the militia." Ordinary survivors' armies who refuse to worship the Machine. Technically the chaos side. They wear **green**. |
+| **The war** | The battle in the opening was the Communion and the militia fighting over the Machine's location. Both sides' rank and file were told it was over water or resources. |
+| **The units** | Summoning units are rare, maybe twenty left in the whole basin, mostly carried by Communion officers. Using the Machine's door needs a unit **and** a code. |
+| **Momo** | Takeya's friend from Shinjuku, about 19, pink windbreaker, collects 2007 relics. He sees her as a little sister; she sees him as more. |
+| **The freelance summoner** | Cream coat, purple chest patch, iron chain, his own unit. Not Communion: a well-paid freelancer who knows how things work and who carries the units. |
+| **Clue chain** | Angel: there's a door and a false god → Ghurub: the coordinates are erased, but someone has them → Summoner: the Communion bought the code from a Shinjuku rat → Momo: the rat is Kuzuryu. |
+| **Kuzuryu's lair** | A buried pachinko hall reached through the old underground mall, "the bad part of the subway." In 2007 it's the hall where he runs his loan-shark business. |
+
+### 11.2 Script
+
+**1. The field**
+
+*(Black. Wind. Two voices, muffled.)*
+
+> **IMP:** Let go, feathers. Your grip's slipping. I can hear it.
+>
+> **ANGEL:** The key is not yours to carry.
+>
+> **IMP:** It's not *anyone's* now. Two armies just bled out for it, and neither of them even knew what it was.
+
+*(Vision fades in, blurred. They wrestle over the device.)*
+
+> **ANGEL:** It must not reach the Machine's door.
+>
+> **IMP:** The Machine! That clanking thing your Communion sings to? You serve the same god, don't you? Wings, halo, all polished up...
+
+*(The imp's claws rake the angel's arm. Gold blood, not oil.)*
+
+> **IMP:** ...Oh. Oh, you *bleed*. You're not one of its tin saints at all. A real one. I haven't seen a real one in a thousand years.
+>
+> **ANGEL:** And you will not see another.
+
+*(The imp's head snaps toward the camera.)*
+
+> **IMP:** Hold that thought. One of the meat ones is still breathing.
+
+*(It lunges. **[FIRE]**. This is the only fight in the scene.)*
+
+**2. The angel**
+
+*(The imp dissolves. The angel is slumped in the sand, wounded by the imp.)*
+
+> **ANGEL:** ...A militia soldier. Of course. Heaven sends what it has left.
+>
+> **ANGEL:** Take it. The key. Better a lost man than the Communion.
+>
+> **ANGEL:** They told you this was a war for water. It was for a door. A door back.
+>
+> **ANGEL:** The thing that guards it wears my Father's voice. It is not Him. Do not kneel to it.
+>
+> **ANGEL:** Go back... and undo this...
+
+*(It dissolves into gold light.)*
+
+*Choice:* "...Back where?" / "Wait— what door?" *(No answer. Only wind.)*
+
+**3. Ghurub**
+
+> **GHURUB:** Operator signal lost. New biometrics registered. Welcome, Operator. I am Ghurub.
+>
+> **GHURUB:** My previous operator was a Communion officer. Status: deceased, eleven minutes ago.
+>
+> **GHURUB:** Her mission was to escort this unit to the Machine's sanctum. The sanctum's coordinates were erased when she died. Security protocol.
+>
+> **GHURUB:** I can no longer take you there. Someone, somewhere, still can.
+>
+> **GHURUB:** Nearest human settlement: Shinjuku Station, north-east. Recommendation: go there.
+
+*Choice:* "Shinjuku. ...That's home." / "Fine. Lead the way, box."
+
+> **GHURUB:** Noted. Also noted: I am not a box.
+
+**4. The rail yard: the freelance summoner**
+
+*(A man steps out between the wrecked trains. Cream coat, purple patch. He looks at Takeya's arm before his face.)*
+
+> **SUMMONER:** Well. Somebody's wearing a unit.
+>
+> **SUMMONER:** There are maybe twenty of those left in the whole basin, and I know every hand they're strapped to. Yours isn't one of them.
+>
+> **SUMMONER:** A militia grunt carrying a Communion unit. From *that* field. Nobody walked out of that field.
+>
+> **SUMMONER:** That makes you either very lucky or very interesting. Either way, the unit comes with me.
+
+*(He summons Orthrus. Boss fight.)*
+
+*(After. He sits against a train car, bleeding, oddly calm.)*
+
+> **SUMMONER:** ...Beaten by a militia kid with a borrowed unit. That's a new one.
+>
+> **SUMMONER:** Don't look so pleased. I'd have died out here sooner or later. Everyone does. I just got paid better along the way.
+>
+> **SUMMONER:** Here's something for free, since you earned it. The Machine's door needs a unit *and* a code. The Communion never had the code. They bought it.
+>
+> **SUMMONER:** From a rat in Shinjuku. Ask around the bottom of the station.
+
+**5. Shinjuku Station**
+
+*(Sand blows in through the broken entrance. A small cat with a faint sparkle meows once and runs to the end of the hall. Momo is there with a pack on her back, about to head out. She freezes.)*
+
+> **MOMO:** ...Takeya?
+>
+> **MOMO:** You're *alive*. They said the whole company died out there. Every one. I was just— I was about to go out and look for you.
+
+*(A gust of sand. She turns away and rubs her eyes.)*
+
+> **MOMO:** Ugh. Sand. Stupid sand.
+>
+> **MOMO:** Come on. Let's go home.
+
+*Choice:* "I can't. Not yet." / "Momo... something happened out there."
+
+*(He raises his arm. She sees the device.)*
+
+> **MOMO:** Is that... one of *those*? Takeya, people get killed over those.
+>
+> **GHURUB:** People get killed over many things.
+>
+> **MOMO:** ...It *talks*?
+
+*Choice:* "I need to find whoever sold the Communion a code." / "There's a door. I have to get through it."
+
+> **MOMO:** The Communion doesn't trade with anyone down here. Except—
+>
+> **MOMO:** Kuzuryu. If someone sold them anything, it was him. He runs the bottom of the station. And the people in it.
+>
+> **MOMO:** His place is past the old underground mall, the bad part of the subway. Nobody goes there on purpose.
+>
+> **MOMO:** If you're really going, stop at the shrine by the east gates first. The old woman there patches people up. Even idiots.
+>
+> **MOMO:** ...And come back this time. Okay?
+
+### 11.3 Optional foreshadowing
+
+The imp can add one line during the opening fight, for players who replay after the antagonist reveal:
+
+> **IMP:** Even their precious Founder sold them both, and they *still* sing his name.
+
+("The Founder" is Nagi, worshipped by both sides in the future.)
