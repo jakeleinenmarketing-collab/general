@@ -110,6 +110,10 @@ The Act I story was rewritten. **Use `DESIGN.md` section 11**, not section 6. It
 
 The dialogue currently in the game is the old version and should be replaced with section 11.
 
+## 6c. Reminder for the author ⏰
+
+When 2007 is being designed, remind the author of **Momo's relic in a shop window** (DESIGN.md 7.3).
+
 ## 7. Open questions still on the table
 
 - Approve the antagonist's proposed name **Nagi Kamiya** and his demon **Loki** (DESIGN.md 5.8).

@@ -491,6 +491,14 @@ Ghurub can start to *hypothesize* once it has data. For example:
 
 ---
 
+### 7.3 REMIND THE AUTHOR: Momo's relic in 2007 ⏰
+
+**The author asked to be reminded of this when the 2007 section is being designed:**
+
+> In 2007, Takeya can find a relic she treasured in a shop window, brand new. That's a small moment with no text needed.
+
+Context (approved, "I LOVE THIS"): Momo stays behind in the future. Before the jump she loads cheerful messages into Ghurub, which unlock as mail in the Ghurub OS at milestones in 2007. The last one unlocks after the future has changed, and Ghurub says only: "File author: no record found." She may never be born; she stays positive to the end.
+
 ## 8. Contradictions and open questions
 
 ### Settled
